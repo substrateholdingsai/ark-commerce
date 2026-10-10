@@ -5,12 +5,13 @@ import { config, getConfig } from "../config/config";
 type Bindings = {
   ASSETS: Fetcher;
   DB: D1Database;
-  KV: KVNamespace;
-  R2: R2Bucket;
-  QUEUE: Queue;
-  SESSION: DurableObjectNamespace;
-  VECTORIZE: VectorizeIndex;
+  SESSION: KVNamespace; // KV namespace for @astrojs/cloudflare sessions
   AI: Ai;
+  // Add these when the resources are created in Cloudflare:
+  // KV: KVNamespace;
+  // R2: R2Bucket;
+  // QUEUE: Queue;
+  // VECTORIZE: VectorizeIndex;
 };
 
 type Variables = {
@@ -77,42 +78,3 @@ app.get("*", serveStatic({ path: "./dist/index.html" }));
 
 export default app;
 export type AppType = typeof app;
-
-// Required export: Wrangler expects this class to be exported from the entrypoint
-// because it is listed under [[durable_objects.bindings]] in wrangler.toml.
-export class SessionDurableObject implements DurableObject {
-  private state: DurableObjectState;
-
-  constructor(state: DurableObjectState, _env: Bindings) {
-    this.state = state;
-  }
-
-  async fetch(request: Request): Promise<Response> {
-    const url = new URL(request.url);
-    const sessionKey = url.searchParams.get("key") ?? "session";
-
-    if (request.method === "GET") {
-      const value = await this.state.storage.get<string>(sessionKey);
-      return new Response(JSON.stringify({ [sessionKey]: value ?? null }), {
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    if (request.method === "PUT") {
-      const body = await request.json<Record<string, unknown>>();
-      await this.state.storage.put(sessionKey, JSON.stringify(body));
-      return new Response(JSON.stringify({ ok: true }), {
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    if (request.method === "DELETE") {
-      await this.state.storage.delete(sessionKey);
-      return new Response(JSON.stringify({ ok: true }), {
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    return new Response("Method not allowed", { status: 405 });
-  }
-}

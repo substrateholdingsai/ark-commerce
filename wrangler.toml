@@ -1,7 +1,7 @@
 name = "temozonia"
 main = "worker/index.ts"
 compatibility_date = "2024-10-09"
-compatibility_flags = ["nodejs_compat"]
+compatibility_flags = [ "nodejs_compat" ]
 
 [build]
 command = "npm run astro:build"
@@ -10,34 +10,18 @@ command = "npm run astro:build"
 binding = "ASSETS"
 directory = "dist"
 
+# ── Recursos activos ──────────────────────────────────────────────────────────
+
 [[d1_databases]]
 binding = "DB"
-database_name = "temozonia-db"
-database_id = "your-database-id"
+database_name = "ark-fiscal-db"
+database_id = "9f7f2e3c-030c-47b0-974f-d4d70fd44296"
 
+# KV para sesiones — creado automáticamente por @astrojs/cloudflare
 [[kv_namespaces]]
-binding = "KV"
-id = "your-kv-namespace-id"
-
-[[r2_buckets]]
-binding = "R2"
-bucket_name = "temozonia-storage"
-
-[[queues.producers]]
-binding = "QUEUE"
-queue = "temozonia-queue"
-
-[[durable_objects.bindings]]
-name = "SESSION"
-class_name = "SessionDurableObject"
-
-[[migrations]]
-tag = "v1"
-new_classes = ["SessionDurableObject"]
-
-[[vectorize]]
-binding = "VECTORIZE"
-index_name = "temozonia-index"
+binding = "SESSION"
+id = "316c37d5fe864e4bab912a0dbbe6b00a"
+preview_id = "b93b8db2fc3e4cfeabc0e494db14ee2e"
 
 [ai]
 binding = "AI"
@@ -46,5 +30,20 @@ binding = "AI"
 ENVIRONMENT = "production"
 ASTRO_SITE_URL = "https://temozonia.example.com"
 
-[triggers]
-crons = ["0 0 * * *"]
+# ── Recursos pendientes de crear ──────────────────────────────────────────────
+# Descomenta cuando crees estos recursos en el dashboard de Cloudflare
+
+# [[r2_buckets]]
+# binding = "R2"
+# bucket_name = "temozonia-storage"
+
+# [[queues.producers]]
+# binding = "QUEUE"
+# queue = "temozonia-queue"
+
+# [[vectorize]]
+# binding = "VECTORIZE"
+# index_name = "temozonia-index"
+
+# [triggers]
+# crons = ["0 0 * * *"]
