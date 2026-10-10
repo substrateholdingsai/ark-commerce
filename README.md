@@ -1,124 +1,194 @@
-# Temozonia
+# 🥩 Temozonia
 
-Cloudflare Worker versátil para servir sitios estáticos Astro con bindings universales a servicios de Cloudflare, listo para contenido interactivo y scripts Python.
+[![Astro](https://img.shields.io/badge/Astro-5-FF5D01?logo=astro&logoColor=white)](https://astro.build/)
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare_Workers-F38020?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Hono](https://img.shields.io/badge/Hono-Next-E36002?logo=hono&logoColor=white)](https://hono.dev/)
+[![Zustand](https://img.shields.io/badge/Zustand-593D88?logo=react&logoColor=white)](https://zustand-demo.pmnd.rs/)
 
-## Estructura del Proyecto
+Temozonia es una plataforma de comercio electrónico edge-first enfocada en ventas de carne ahumada artesanal, pensada para ofrecer una experiencia de compra rápida, premium y altamente conversiva. La solución combina Astro, Cloudflare Workers, Hono, D1, KV y una lógica de checkout optimizada para WhatsApp, pagos directos y métodos locales de forma simple y escalable.
 
+> Temozonia no es solo un sitio web: es una arquitectura híbrida preparada para escalar desde un storefront de alto rendimiento hasta una plataforma SaaS o marketplace modular ejecutado en el edge.
+
+---
+
+## 🚀 Visión general
+
+Temozonia está diseñado para resolver tres problemas a la vez:
+
+1. Rendimiento extremo y SEO sólido con Astro y estáticos generados o renderizados bajo demanda.
+2. Backend ligero y escalable en Cloudflare Workers utilizando Hono y servicios serverless nativos.
+3. Checkout conversacional y sin fricción: pedidos por WhatsApp, transferencias, BTCPay, Lightning y flujo de compra simplificado en una sola página.
+
+La idea central es crear una experiencia de compra que se sienta premium, local, memorable y extremadamente eficiente, sin depender de una infraestructura pesada ni de una arquitectura monolítica.
+
+---
+
+## ✨ Características principales
+
+- ⚡ Rendimiento máximo con Astro + Cloudflare CDN.
+- 🛒 Carrito reactivo con Zustand y persistencia local.
+- 💸 Venta con múltiples métodos de pago: transferencia, tarjeta vía BTCPay, Lightning y efectivo.
+- 📱 Diseño mobile-first con flujo optimizado para conversión.
+- 🎨 Sistema visual premium con estética de madera, humo, oro y papel vintage.
+- 🔧 Arquitectura modular preparada para expandirse a catálogo, órdenes, CRM, pagos, inventario y más.
+- 🌍 Infraestructura edge-first con Cloudflare Workers y bindings listos para D1, KV, R2 y Queues.
+
+---
+
+## 🏗️ Stack tecnológico
+
+| Capa | Tecnología | Propósito |
+| :--- | :--- | :--- |
+| Frontend | [Astro](https://astro.build/) + [React](https://react.dev/) | Rendering estático, SEO y islands interactivas |
+| Estilos | [Tailwind CSS](https://tailwindcss.com/) | Diseño tokenizado y sistema visual reutilizable |
+| Backend | [Hono](https://hono.dev/) | API ligera y compatible con Web Standards |
+| Estado global | [Zustand](https://zustand-demo.pmnd.rs/) | Carrito y estado del cliente sin boilerplate |
+| Base de datos | [D1](https://developers.cloudflare.com/d1/) | SQLite serverless para catálogo y órdenes |
+| Cache/sesiones | [KV](https://developers.cloudflare.com/kv/) | Persistencia, sesiones y caché |
+| Storage | [R2](https://developers.cloudflare.com/r2/) | Archivos e imágenes |
+| Pagos | BTCPay / Lightning / Transferencias | Cobranza flexible y soberana |
+| Tooling | TypeScript, Wrangler, ESLint, Prettier | Desarrollo robusto y maintainable |
+
+---
+
+## 🧠 Arquitectura
+
+```mermaid
+graph TD
+    Client[Cliente / Navegador] -->|HTTPS| CDN[Cloudflare CDN]
+    CDN -->|Assets estáticos| Astro[Astro App]
+    CDN -->|API / checkout| Worker[Cloudflare Worker / Hono]
+
+    Worker -->|SQL| D1[(D1)]
+    Worker -->|Cache / Session| KV[(KV)]
+    Worker -->|Archivos| R2[(R2)]
+    Worker -->|Jobs asíncronos| Queue[(Queues)]
+
+    Worker -.->|Webhook / pagos| BTCPay[BTCPay / Lightning]
+    Client -.->|WhatsApp| WA[WhatsApp Business]
 ```
+
+---
+
+## 📁 Estructura del proyecto
+
+```text
 temozonia/
-├── config/
-│   └── config.ts          # Fuente de verdad - configuración centralizada
-├── worker/
-│   └── index.ts           # Entry point del Cloudflare Worker (Hono)
-├── astro/
+├── astro/                     # Frontend Astro + Tailwind
 │   ├── src/
-│   │   ├── pages/         # Páginas Astro (.astro)
-│   │   ├── layouts/       # Layouts base
-│   │   ├── components/    # Componentes (Astro, React, Vue, Svelte)
-│   │   └── styles/        # Estilos globales
-│   ├── public/            # Assets estáticos
-│   └── astro.config.mjs   # Config Astro (usa config.ts)
-├── scripts/
-│   └── python/
-│       └── main.py        # Scripts Python para Workers AI
-├── wrangler.toml          # Configuración Cloudflare Worker
+│   │   ├── components/        # Componentes reutilizables
+│   │   ├── checkout/          # Lógica del carrito y checkout
+│   │   ├── pages/             # Páginas del sitio
+│   │   ├── stores/            # Zustand stores
+│   │   ├── utils/             # Helpers, constantes y utilidades
+│   │   └── styles/            # Estilos globales
+│   └── astro.config.mjs
+├── worker/                    # Backend edge con Hono
+│   ├── index.ts               # Entry point del worker
+│   └── routes/                # Endpoints API
+├── scripts/                   # Utilidades, seeds y schema
+├── config/                    # Config centralizada
+├── public/                    # Assets públicos
+├── wrangler.toml              # Configuración Cloudflare
 ├── package.json
-└── tsconfig.json
+├── tsconfig.json
+├── README.md
+└── LICENSE
 ```
 
-## Características
+---
 
-- **Sitio Estático Astro**: Rendimiento máximo, SEO óptimo
-- **Islas Interactivas**: React/Vue/Svelte con hidratación selectiva (`client:visible`, `client:idle`, etc.)
-- **Python en el Edge**: Ejecución via Workers AI / Pyodide
-- **Bindings Universales**: D1, KV, R2, Queues, Durable Objects, Vectorize, AI
-- **Config Centralizada**: `config/config.ts` como única fuente de verdad
-- **TypeScript Estricto**: Tipado completo en Worker, Astro y scripts
+## 🚦 Inicio rápido
 
-## Bindings Cloudflare Configurados
+### Requisitos
 
-| Binding | Variable | Servicio |
-|---------|----------|----------|
-| D1 Database | `DB` | Base de datos SQL |
-| KV Namespace | `KV` | Key-Value storage |
-| R2 Bucket | `R2` | Object storage |
-| Queue | `QUEUE` | Message queues |
-| Durable Object | `SESSION` | Statefull edge compute |
-| Vectorize | `VECTORIZE` | Vector database |
-| Workers AI | `AI` | Modelos ML en el edge |
+- Node.js `>= 20`
+- `pnpm` o `npm`
+- Cuenta de Cloudflare y Wrangler autenticado
 
-## Comandos
+### Instalación
 
 ```bash
-# Desarrollo local (Worker + Astro)
-npm run dev
-
-# Solo Astro dev server
-npm run astro:dev
-
-# Build producción
-npm run build
-
-# Deploy a Cloudflare
-npm run deploy
-
-# Generar types de bindings
-npm run cf-typegen
+git clone https://github.com/arksystems/temozonia.git
+cd temozonia
+pnpm install
+cp .env.example .env.local
 ```
 
-## Configuración
-
-Edita `config/config.ts` para personalizar:
-
-- Información del sitio
-- Features habilitadas
-- Integraciones (Stripe, Sentry, etc.)
-- Configuración Python
-- Seguridad (CORS, CSP)
-- Performance (cache, compresión)
-
-## Python en el Edge
-
-Los scripts en `scripts/python/` pueden ejecutarse via Workers AI:
+### Desarrollo local
 
 ```bash
-# Test local
-python scripts/python/main.py process_product_data
-python scripts/python/main.py calculate_shipping
+pnpm dev
 ```
 
-Desde el Worker (`/api/python/execute?code=...`):
+Esto levanta:
 
-```python
-# El código se ejecuta en el sandbox de Workers AI
-result = process_product_data(products)
-```
+- Frontend: `http://localhost:4321`
+- Worker API: `http://localhost:8787`
 
-## Desarrollo
+### Base de datos local
 
-### Agregar nueva página Astro
 ```bash
-# Crear archivo en astro/src/pages/nueva.astro
+pnpm db:push
+pnpm db:seed
 ```
 
-### Agregar componente interactivo (React)
+### Build y deploy
+
 ```bash
-# Crear en astro/src/components/MiComponente.tsx
-# Usar en .astro: <MiComponente client:visible />
+pnpm build
+pnpm deploy
 ```
 
-### Agregar binding Cloudflare
-1. Configurar en `wrangler.toml`
-2. Agregar tipo en `worker/index.ts` (Bindings interface)
-3. Usar via `c.env.NOMBRE_BINDING`
+---
 
-## Deploy
+## 🎨 Design system
 
-1. Configura credenciales: `wrangler login`
-2. Crea recursos en Cloudflare Dashboard (D1, KV, R2, etc.)
-3. Actualiza IDs en `wrangler.toml`
-4. `npm run deploy`
+El proyecto sigue una identidad visual orientada a la tradición y la premiumidad:
 
-## Licencia
+- Colores clave: `brand-500`, `gold-DEFAULT`, `dark-wood`
+- Tipografía principal: `Playfair Display` para títulos
+- Tipografía body: `Inter` o equivalente para lectura cómoda
+- Efectos visuales: glassmorphism suave, textura de papel, elevación sutil y botones con presencia premium
 
-MIT
+Esto crea una experiencia más cercana a una marca artesanal con refinamiento moderno.
+
+---
+
+## 🛠️ Flujo de negocio
+
+El modelo de negocio actual está pensado para una compra directa, rápida y altamente efectiva:
+
+- El cliente explora productos.
+- Agrega artículos al carrito.
+- Revisa total, envíos y métodos de pago.
+- Genera pedido por WhatsApp o por link de pago directo.
+- Finaliza sin cargar procesos complejos de registro o pasarela pesada.
+
+Esto reduce fricción, acelera conversiones y mantiene una narrativa más cercana a la venta directa artesanal.
+
+---
+
+## 🤝 Contribución
+
+1. Crea una rama nueva: `git checkout -b feature/nombre-de-la-funcionalidad`
+2. Haz tus cambios y asegúrate de mantener el estilo del proyecto
+3. Realiza commit: `git commit -m "feat: agrega nueva funcionalidad"`
+4. Sube la rama: `git push origin feature/nombre-de-la-funcionalidad`
+5. Abre un Pull Request
+
+---
+
+## 📜 Licencia
+
+Este proyecto se distribuye bajo la licencia MIT.
+
+---
+
+## 💡 Créditos
+
+Desarrollado con ❤️ para una experiencia de venta premium, artesanal y moderna.
+
+> “Yucatán es nuestro hogar, y el fuego es nuestro lenguaje.” 🔥

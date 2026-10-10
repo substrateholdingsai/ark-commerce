@@ -1,49 +1,45 @@
 name = "temozonia"
 main = "worker/index.ts"
-compatibility_date = "2024-10-09"
-compatibility_flags = [ "nodejs_compat" ]
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
 
-[build]
-command = "npm run astro:build"
-
+# ✅ NUEVA CONFIGURACIÓN DE ASSETS (Reemplaza la antigua [site])
 [assets]
-binding = "ASSETS"
-directory = "dist"
+directory = "./dist"
+not_found_handling = "single-page-application" # Sirve index.html si la ruta no es un archivo estático
 
-# ── Recursos activos ──────────────────────────────────────────────────────────
+[vars]
+SITE_NAME = "Temozonia Carnes Ahumadas"
+# URL actual del sitio desplegado en Workers
+SITE_URL = "https://temozonia.substrateholdingsai.workers.dev/"
+WHATSAPP_NUMBER = "529994918221"
+BTCPAY_POS_URL = "https://btcpay.temozonia.com"
+CLABE = "123456789012345678"
+BANK = "BBVA"
+CLABE_HOLDER = "Temozonia Carnes Ahumadas"
+SATS_RATE = "2.5"
 
+# D1 Database
 [[d1_databases]]
 binding = "DB"
-database_name = "ark-fiscal-db"
-database_id = "9f7f2e3c-030c-47b0-974f-d4d70fd44296"
+database_name = "temozonia-db"
+database_id = "dff6d6dc-fa6c-4ec8-9180-d88d4912a9e7"
 
-# KV para sesiones — creado automáticamente por @astrojs/cloudflare
+# KV Namespaces
 [[kv_namespaces]]
 binding = "SESSION"
 id = "316c37d5fe864e4bab912a0dbbe6b00a"
-preview_id = "b93b8db2fc3e4cfeabc0e494db14ee2e"
 
-[ai]
-binding = "AI"
+[[kv_namespaces]]
+binding = "CACHE"
+id = "90269c9d7ede4252b21463bf9834f64d"
 
-[vars]
-ENVIRONMENT = "production"
-ASTRO_SITE_URL = "https://temozonia.example.com"
+# R2 Bucket
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "temozonia-storage"
 
-# ── Recursos pendientes de crear ──────────────────────────────────────────────
-# Descomenta cuando crees estos recursos en el dashboard de Cloudflare
-
-# [[r2_buckets]]
-# binding = "R2"
-# bucket_name = "temozonia-storage"
-
-# [[queues.producers]]
-# binding = "QUEUE"
-# queue = "temozonia-queue"
-
-# [[vectorize]]
-# binding = "VECTORIZE"
-# index_name = "temozonia-index"
-
-# [triggers]
-# crons = ["0 0 * * *"]
+# Queues
+[[queues.producers]]
+binding = "ORDER_QUEUE"
+queue = "temozonia-orders"

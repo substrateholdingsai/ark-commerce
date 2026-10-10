@@ -1,80 +1,46 @@
-import { Hono } from "hono";
-import { serveStatic } from "hono/cloudflare-workers";
-import { config, getConfig } from "../config/config";
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import { logger } from 'hono/logger';
+import { healthRoute } from './routes/health';
+import { apiRoutes } from './routes';
 
 type Bindings = {
-  ASSETS: Fetcher;
   DB: D1Database;
-  SESSION: KVNamespace; // KV namespace for @astrojs/cloudflare sessions
-  AI: Ai;
-  // Add these when the resources are created in Cloudflare:
-  // KV: KVNamespace;
-  // R2: R2Bucket;
-  // QUEUE: Queue;
-  // VECTORIZE: VectorizeIndex;
+  SESSION: KVNamespace;
+  CACHE: KVNamespace;
+  STORAGE: R2Bucket;
+  ORDER_QUEUE: Queue;
+  ASSETS: Fetcher; // ✅ Binding automático de Cloudflare para assets
+  BTCPAY_POS_URL: string;
+  CLABE: string;
+  BANK: string;
+  CLABE_HOLDER: string;
+  WHATSAPP_NUMBER: string;
+  SATS_RATE: string;
 };
 
-type Variables = {
-  config: ReturnType<typeof getConfig>;
-};
+const app = new Hono<{ Bindings: Bindings }>();
 
-const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
+// Middleware
+app.use('*', logger());
+app.use('*', cors());
 
-app.use("*", async (c, next) => {
-  c.set("config", getConfig());
-  await next();
-});
+// Cloudflare sirve los archivos estáticos; el Worker atiende estas rutas dinámicas.
+app.route('/health', healthRoute);
+app.route('/api', apiRoutes);
 
-app.get("/health", (c) => {
-  return c.json({
-    status: "ok",
-    service: config.site.name,
-    version: "1.0.0",
-    timestamp: new Date().toISOString(),
-  });
-});
-
-app.get("/api/config", (c) => {
-  const cfg = c.get("config");
-  return c.json({
-    site: cfg.site,
-    features: cfg.features,
-    integrations: Object.keys(cfg.integrations).filter(
-      (k) => cfg.integrations[k as keyof typeof cfg.integrations].enabled
-    ),
-  });
-});
-
-app.get("/api/python/execute", async (c) => {
-  const cfg = c.get("config");
-  if (!cfg.python.enabled) {
-    return c.json({ error: "Python execution not enabled" }, 400);
+app.notFound((c) => {
+  if (c.req.path === '/api' || c.req.path.startsWith('/api/')) {
+    return c.json({ error: 'API Endpoint Not Found' }, 404);
   }
 
-  const code = c.req.query("code");
-  if (!code) {
-    return c.json({ error: "Code parameter required" }, 400);
-  }
-
-  try {
-    const response = await c.env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
-      messages: [
-        {
-          role: "system",
-          content: "You are a Python code executor. Execute the code and return only the result.",
-        },
-        { role: "user", content: code },
-      ],
-    });
-
-    return c.json({ result: response });
-  } catch (error) {
-    return c.json({ error: String(error) }, 500);
-  }
+  return c.text('Not Found', 404);
 });
 
-app.get("*", serveStatic({ root: "./dist" }));
-app.get("*", serveStatic({ path: "./dist/index.html" }));
+// Manejador de errores global
+app.onError((err, c) => {
+  console.error('Worker Error:', err);
+  return c.json({ error: 'Internal Server Error', details: err.message }, 500);
+});
 
 export default app;
-export type AppType = typeof app;
