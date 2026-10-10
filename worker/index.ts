@@ -77,3 +77,42 @@ app.get("*", serveStatic({ path: "./dist/index.html" }));
 
 export default app;
 export type AppType = typeof app;
+
+// Required export: Wrangler expects this class to be exported from the entrypoint
+// because it is listed under [[durable_objects.bindings]] in wrangler.toml.
+export class SessionDurableObject implements DurableObject {
+  private state: DurableObjectState;
+
+  constructor(state: DurableObjectState, _env: Bindings) {
+    this.state = state;
+  }
+
+  async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    const sessionKey = url.searchParams.get("key") ?? "session";
+
+    if (request.method === "GET") {
+      const value = await this.state.storage.get<string>(sessionKey);
+      return new Response(JSON.stringify({ [sessionKey]: value ?? null }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (request.method === "PUT") {
+      const body = await request.json<Record<string, unknown>>();
+      await this.state.storage.put(sessionKey, JSON.stringify(body));
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (request.method === "DELETE") {
+      await this.state.storage.delete(sessionKey);
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response("Method not allowed", { status: 405 });
+  }
+}

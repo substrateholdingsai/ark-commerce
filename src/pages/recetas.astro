@@ -1,0 +1,128 @@
+---
+// src/pages/recetas.astro
+import Layout from '@/layouts/Layout.astro';
+
+// Datos locales del proceso (fácil de editar o mover a @/utils/constants.ts después)
+const STEPS = [
+  {
+    id: "seleccion",
+    number: "1",
+    title: "Selección Premium",
+    desc: "Elegimos exclusivamente los mejores cortes, con el marmoleo, la frescura y la calidad que nuestra tradición desde 1987 exige."
+  },
+  {
+    id: "marinado",
+    number: "2",
+    title: "Marinado y Rub Secreto",
+    desc: "Aplicamos nuestra mezcla patentada de especias y sal de mar, dejando reposar la carne para que los sabores penetren profundamente en cada fibra."
+  },
+  {
+    id: "ahumado",
+    number: "3",
+    title: "Ahumado Lento (Low & Slow)",
+    desc: "8 a 12 horas de fuego constante con madera de mezquite y encino. Controlamos la temperatura con precisión milimétrica para lograr la textura perfecta."
+  },
+  {
+    id: "calidad",
+    number: "4",
+    title: "Control de Calidad",
+    desc: "Cada pieza es inspeccionada visualmente, reposada adecuadamente y empacada al vacío para garantizar que llegue a tu mesa en condiciones óptimas."
+  }
+];
+---
+
+<Layout 
+  title="Recetas y Proceso" 
+  description="Descubre el proceso artesanal detrás de las carnes ahumadas Temozonia. Selección, marinado, ahumado lento y control de calidad."
+>
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    
+    <!-- Encabezado de la sección -->
+    <div class="mb-12 text-center">
+      <h1 class="font-script text-5xl font-bold italic text-[#8B1E1E] md:text-6xl">
+        El Secreto del Sabor
+      </h1>
+      <p class="mt-3 font-body text-base text-[#4A3A2A] md:text-lg">
+        Descubre cómo transformamos cortes selectos en obras maestras ahumadas, paso a paso.
+      </p>
+      <div class="gold-divider mx-auto mt-6 w-40">
+        <span aria-hidden="true" class="text-[#D4AF37]">◆</span>
+      </div>
+    </div>
+
+    <!-- Grid de Pasos -->
+    <div class="grid gap-6 md:grid-cols-2">
+      {STEPS.map((step) => (
+        <div 
+          class="group relative rounded-2xl border-2 border-[#D4AF37]/30 bg-[#F9F3E9] p-6 sm:p-8 transition-all duration-300 hover:border-[#D4AF37] hover:shadow-[0_8px_24px_rgba(212,175,55,0.25)] hover:-translate-y-1"
+        >
+          <div class="flex items-start gap-5 sm:gap-6">
+            <!-- Número / Icono -->
+            <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border-2 border-[#D4AF37] bg-[#2A1A0A] font-display text-xl font-black text-[#D4AF37] shadow-md transition-transform duration-300 group-hover:scale-110">
+              {step.number}
+            </div>
+            
+            <!-- Contenido -->
+            <div class="flex-1">
+              <h3 class="font-display text-lg font-bold uppercase tracking-wider text-[#8B1E1E] sm:text-xl">
+                {step.title}
+              </h3>
+              <p class="mt-2 font-body text-sm leading-relaxed text-[#4A3A2A] sm:text-base">
+                {step.desc}
+              </p>
+            </div>
+          </div>
+          
+          <!-- Decoración sutil de esquina (opcional, estilo heritage) -->
+          <div class="pointer-events-none absolute right-4 top-4 h-8 w-8 opacity-10 transition-opacity group-hover:opacity-20">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="text-[#8B1E1E]">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- CTA Inferior (Opcional pero recomendado para conversión) -->
+    <div class="mt-16 text-center">
+      <div class="inline-block rounded-2xl border-2 border-[#D4AF37] bg-gradient-to-r from-[#8B1E1E] to-[#7E1D0F] p-1 shadow-xl">
+        <div class="rounded-xl bg-[#2A1A0A]/90 px-6 py-6 sm:px-10 sm:py-8">
+          <h3 class="font-script text-2xl italic text-[#FFFCF5] sm:text-3xl">
+            ¿Quieres probar el resultado de este proceso?
+          </h3>
+          <p class="mt-2 font-body text-sm text-[#FFFCF5]/80 sm:text-base">
+            Haz tu pedido ahora y recíbelo humeante en menos de 90 minutos.
+          </p>
+          <a 
+            href="/" 
+            class="mt-5 inline-flex items-center gap-2 rounded-full bg-[#FF8800] px-8 py-3 font-display text-sm font-black uppercase tracking-widest text-[#2B0E0A] transition hover:brightness-110 active:scale-[0.98]"
+          >
+            Ir a la Tienda
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</Layout>
+
+<style>
+  /* Reutilizamos las animaciones y estilos del design system si no están en globals.css */
+  .gold-divider {
+    background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+    height: 1px;
+    position: relative;
+  }
+  .gold-divider span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #FFF9F3; /* Coincide con el fondo de la página */
+    padding: 0 8px;
+    font-size: 12px;
+  }
+</style>

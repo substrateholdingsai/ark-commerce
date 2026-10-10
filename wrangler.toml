@@ -6,12 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 [build]
 command = "npm run astro:build"
 
-[build.upload]
-format = "modules"
-dir = "dist"
-main = "worker/index.ts"
-
-[[assets]]
+[assets]
 binding = "ASSETS"
 directory = "dist"
 
@@ -28,13 +23,17 @@ id = "your-kv-namespace-id"
 binding = "R2"
 bucket_name = "temozonia-storage"
 
-[[queues]]
+[[queues.producers]]
 binding = "QUEUE"
-queue_name = "temozonia-queue"
+queue = "temozonia-queue"
 
 [[durable_objects.bindings]]
 name = "SESSION"
 class_name = "SessionDurableObject"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["SessionDurableObject"]
 
 [[vectorize]]
 binding = "VECTORIZE"

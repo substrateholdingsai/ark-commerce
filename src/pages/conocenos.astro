@@ -1,0 +1,324 @@
+---
+// src/pages/conocenos.astro
+import Layout from '@/layouts/Layout.astro';
+
+// Datos locales (puedes moverlos a @/utils/constants.ts después)
+const PILLARS = [
+  {
+    id: "lena",
+    icon: `<svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>`,
+    title: "Leña de Mezquite",
+    description: "Seleccionamos cuidadosamente mezquite de la región para lograr ese sabor ahumado profundo, auténtico e inconfundible que nos caracteriza desde 1987."
+  },
+  {
+    id: "especias",
+    icon: `<svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>`,
+    title: "Especias de la Casa",
+    description: "Nuestro rub secreto es una mezcla artesanal de especias que realza la carne sin opacar su sabor natural, creando una costra perfecta y jugosa."
+  },
+  {
+    id: "paciencia",
+    icon: `<svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+    title: "Paciencia y Tiempo",
+    description: "El buen ahumado no se apura. Mantenemos una temperatura baja y constante durante 8 a 12 horas, respetando el proceso para una textura que se deshace en la boca."
+  }
+];
+
+const SPECIALTIES = [
+  {
+    id: "carne",
+    name: "Brisket (Pecho)",
+    description: "La joya de la corona. Ahumado lentamente hasta alcanzar la perfección, con una costra oscura y un interior rosado y jugoso."
+  },
+  {
+    id: "costilla",
+    name: "Costillar St. Louis",
+    description: "Corte premium con la proporción ideal de carne y grasa, glaseado con nuestra salsa BBQ artesanal en los últimos minutos."
+  },
+  {
+    id: "longaniza",
+    name: "Longaniza Artesanal",
+    description: "Receta familiar con tripa natural, condimentada con especias tradicionales y un toque de ahumado que la hace única para tacos o desayuno."
+  },
+  {
+    id: "chamorro",
+    name: "Chamorro Ahumado",
+    description: "Gelatinoso, tierno y lleno de sabor. Ideal para calentar en casa y disfrutar con tortillas hechas a mano y salsa verde."
+  }
+];
+
+const BRANCH = {
+  locality: "Caucel, Mérida",
+  address: "Caucel, Mérida, Yucatán. (Entrega a domicilio en la zona y alrededores).",
+  phoneDisplay: "+52 999 491 8221",
+  phoneRaw: "529994918221",
+  schedule: "Miércoles a Domingo: 1:00 PM - 8:00 PM (o hasta agotar existencias)",
+  mapsQuery: "Caucel, Mérida, Yucatán"
+};
+---
+
+<Layout title="Conócenos" description="Descubre la tradición y pasión detrás de Temozonia Carnes Ahumadas en Mérida.">
+  
+  <!-- ══════════ HERO ══════════ -->
+  <section class="relative flex min-h-[55vh] items-center justify-center overflow-hidden bg-[#2A1A0A] px-6 py-14 text-center">
+    <!-- Imagen de fondo (puedes cambiarla por una real de tu ahumador) -->
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=1920&auto=format&fit=crop');">
+      <div class="absolute inset-0 bg-gradient-to-b from-[#2A1A0A]/80 via-[#2A1A0A]/55 to-[#2A1A0A]" />
+    </div>
+    
+    <!-- Efecto de Luz Cálida -->
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,_rgba(245,158,11,0.22),_transparent_60%)]" />
+
+    <!-- Humo + brasas -->
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+      <div class="smoke left-[15%] top-[10%] h-56 w-56" />
+      <div class="smoke right-[12%] top-[18%] h-72 w-72" style="animation-delay: 3s;" />
+      <span class="ember left-[14%] top-[26%]" />
+      <span class="ember left-[30%] top-[16%]" style="animation-delay: 1.2s;" />
+      <span class="ember left-[52%] top-[12%]" style="animation-delay: 2.4s;" />
+      <span class="ember left-[70%] top-[20%]" style="animation-delay: 0.8s;" />
+      <span class="ember left-[86%] top-[28%]" style="animation-delay: 1.8s;" />
+    </div>
+
+    <div class="relative z-10 mx-auto max-w-4xl animate-fade-up space-y-5">
+      <div class="flex justify-center">
+        <span class="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/50 bg-[#2A1A0A]/60 px-5 py-2 font-display text-[11px] font-bold uppercase tracking-[0.22em] text-[#FDE047] backdrop-blur-sm">
+          <svg class="h-3.5 w-3.5 text-[#FD5C0D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
+          Herencia Artesanal
+        </span>
+      </div>
+
+      <p class="font-display text-sm uppercase tracking-[0.3em] text-[#FDE047]">
+        Desde 1987
+      </p>
+
+      <h1 class="font-script text-6xl font-bold italic leading-[0.95] text-[#FFFCF5] drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] md:text-8xl">
+        Nuestra Historia
+      </h1>
+
+      <p class="mx-auto max-w-2xl font-body text-lg leading-relaxed text-[#FFFCF5]/90 drop-shadow-md md:text-xl">
+        Más que carne ahumada, somos una tradición familiar yucateca. Cada corte cuenta una historia de fuego, paciencia y sabor.
+      </p>
+
+      <div class="gold-divider mx-auto w-40">
+        <span aria-hidden="true" class="text-[#D4AF37]">◆</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ PILARES ══════════ -->
+  <section class="relative mx-auto max-w-6xl px-4 py-16">
+    <div class="text-center">
+      <span class="font-display text-xs font-bold uppercase tracking-[0.3em] text-[#4A3A2A]">
+        Nuestros Fundamentos
+      </span>
+      <h2 class="mt-3 font-script text-4xl text-[#2A1A0A] md:text-5xl">
+        El Arte del Ahumado
+      </h2>
+      <div class="mx-auto mt-6 flex items-center justify-center gap-3">
+        <div class="h-px w-24 bg-gradient-to-r from-transparent to-[#D4AF37]" />
+        <span class="text-[#D4AF37]" aria-hidden="true">◆</span>
+        <div class="h-px w-24 bg-gradient-to-l from-transparent to-[#D4AF37]" />
+      </div>
+    </div>
+
+    <div class="mt-12 grid gap-6 md:grid-cols-3">
+      {PILLARS.map((pillar) => (
+        <div class="group rounded-xl border border-[#D4AF37]/30 bg-[#F9F3E9] p-8 text-center shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-[#D4AF37] hover:shadow-xl">
+          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#D4AF37]/50 bg-[#FFFCF5] shadow-md transition-transform group-hover:scale-110 text-[#8B1E1E]">
+            {pillar.icon}
+          </div>
+          <h3 class="mt-5 font-display text-xl font-bold text-[#2A1A0A]">
+            {pillar.title}
+          </h3>
+          <p class="mt-3 font-body text-sm leading-relaxed text-[#4A3A2A]">
+            {pillar.description}
+          </p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ══════════ ESPECIALIDADES ══════════ -->
+  <section class="relative bg-[#F9F3E9] py-16 paper-texture">
+    <div class="mx-auto max-w-6xl px-4">
+      <div class="text-center">
+        <span class="font-display text-xs font-bold uppercase tracking-[0.3em] text-[#4A3A2A]">
+          Lo Mejor del Ahumador
+        </span>
+        <h2 class="mt-3 font-script text-4xl text-[#2A1A0A] md:text-5xl">
+          Nuestras Especialidades
+        </h2>
+        <div class="mx-auto mt-6 flex items-center justify-center gap-3">
+          <div class="h-px w-24 bg-gradient-to-r from-transparent to-[#D4AF37]" />
+          <span class="text-[#D4AF37]" aria-hidden="true">◆</span>
+          <div class="h-px w-24 bg-gradient-to-l from-transparent to-[#D4AF37]" />
+        </div>
+      </div>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-2">
+        {SPECIALTIES.map((item) => (
+          <article class="group relative rounded-2xl border-2 border-[#8B1E1E] bg-[#FFFCF5] p-7 shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl">
+            <div class="pointer-events-none absolute inset-2 rounded-xl border border-[#D4AF37]" aria-hidden="true" />
+            <div class="relative">
+              <div class="flex items-center gap-3">
+                <span class="text-[#D4AF37]" aria-hidden="true">◆</span>
+                <h3 class="font-display text-xl font-bold text-[#2A1A0A] transition-colors group-hover:text-[#8B1E1E]">
+                  {item.name}
+                </h3>
+              </div>
+              <p class="mt-3 font-body text-sm leading-relaxed text-[#4A3A2A]">
+                {item.description}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- Banner de Servicio -->
+      <div class="relative mt-8 overflow-hidden rounded-2xl border-2 border-[#D4AF37] bg-gradient-to-r from-[#8B1E1E] to-[#7E1D0F] p-8 text-center shadow-xl md:p-10">
+        <div class="pointer-events-none absolute inset-2 rounded-xl border border-[#D4AF37]/50" aria-hidden="true" />
+        <span class="relative inline-block bg-gradient-to-r from-[#F59E0B] to-[#D4AF37] px-4 py-1 font-display text-[11px] font-bold uppercase tracking-wide text-[#2A1A0A] [clip-path:polygon(0_0,100%_0,92%_50%,100%_100%,0_100%)]">
+          Servicio Premium
+        </span>
+        <h3 class="relative mt-4 font-script text-3xl italic text-[#FFFCF5]">
+          Ahumado para tu Evento
+        </h3>
+        <p class="relative mx-auto mt-3 max-w-2xl font-body text-[#FFFCF5]/85">
+          ¿Tienes una reunión, fiesta o evento corporativo? Llevamos la experiencia Temozonia directamente a tu celebración con nuestro servicio de catering ahumado.
+        </p>
+        <a href="https://wa.me/529994918221?text=Hola,%20me%20interesa%20el%20servicio%20de%20ahumado%20para%20un%20evento" target="_blank" rel="noopener noreferrer" class="relative mt-6 inline-flex items-center gap-2 rounded-full bg-[#FFFCF5] px-6 py-3 font-display text-sm font-bold uppercase tracking-widest text-[#7E1D0F] transition hover:bg-white">
+          Cotizar Evento
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ CITA ══════════ -->
+  <section class="relative overflow-hidden bg-[#2A1A0A] py-16 text-center">
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+      <div class="smoke left-[20%] top-[15%] h-64 w-64" />
+      <div class="smoke right-[18%] top-[20%] h-72 w-72" style="animation-delay: 4s;" />
+    </div>
+    <div class="relative mx-auto max-w-3xl px-4">
+      <span class="font-script text-6xl text-[#D4AF37]" aria-hidden="true">“</span>
+      <p class="font-script text-3xl italic text-[#FFFCF5] md:text-4xl">
+        Yucatán es nuestro hogar, y el fuego es nuestro lenguaje.
+      </p>
+      <p class="mt-4 font-body leading-relaxed text-[#FFFCF5]/75">
+        Cada pieza que sale de nuestro ahumador lleva el respeto por la tradición y el compromiso de llevar el mejor sabor a tu mesa.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════ SUCURSAL / CONTACTO ══════════ -->
+  <section class="relative mx-auto max-w-6xl px-4 py-16">
+    <div class="text-center">
+      <span class="font-display text-xs font-bold uppercase tracking-[0.3em] text-[#4A3A2A]">
+        Encuéntranos
+      </span>
+      <h2 class="mt-3 font-script text-4xl text-[#2A1A0A] md:text-5xl">
+        Nuestra Casa en Caucel
+      </h2>
+      <div class="mx-auto mt-6 flex items-center justify-center gap-3">
+        <div class="h-px w-24 bg-gradient-to-r from-transparent to-[#D4AF37]" />
+        <span class="text-[#D4AF37]" aria-hidden="true">◆</span>
+        <div class="h-px w-24 bg-gradient-to-l from-transparent to-[#D4AF37]" />
+      </div>
+    </div>
+
+    <div class="mt-12 mx-auto max-w-2xl">
+      <div class="group relative rounded-2xl border-2 border-[#8B1E1E] bg-[#FFFCF5] p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+        <div class="pointer-events-none absolute inset-2 rounded-xl border border-[#D4AF37]" aria-hidden="true" />
+        <div class="relative space-y-4">
+          <h3 class="font-script text-2xl font-bold italic text-[#2A1A0A]">
+            {BRANCH.locality}
+          </h3>
+
+          <div class="flex items-start gap-3">
+            <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-[#8B1E1E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <p class="font-body text-sm text-[#4A3A2A]">{BRANCH.address}</p>
+          </div>
+
+          <a href={`tel:${BRANCH.phoneRaw}`} class="group/phone flex items-center gap-3">
+            <svg class="h-5 w-5 flex-shrink-0 text-[#8B1E1E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            <span class="font-body text-sm font-semibold text-[#2A1A0A] transition-colors group-hover/phone:text-[#8B1E1E]">
+              Llama para ordenar: {BRANCH.phoneDisplay}
+            </span>
+          </a>
+
+          <div class="flex items-start gap-3">
+            <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-[#8B1E1E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="font-body text-sm text-[#4A3A2A]">{BRANCH.schedule}</p>
+          </div>
+
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(BRANCH.mapsQuery)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-heritage flex w-full items-center justify-center gap-2 rounded-full px-4 py-3 font-display text-xs font-bold uppercase tracking-widest"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+            Ver en Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ CTA FINAL ══════════ -->
+  <section class="relative bg-[#8B1E1E] py-16">
+    <div class="mx-auto max-w-4xl px-4 text-center">
+      <h2 class="font-display text-3xl font-bold text-[#FFFCF5] md:text-4xl">
+        ¿Listo para probar el mejor ahumado de Mérida?
+      </h2>
+      <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <a
+          href="/"
+          class="btn-heritage inline-flex items-center gap-2 rounded-full px-8 py-4 font-display font-bold"
+        >
+          Ver Catálogo y Pedir
+        </a>
+        <a
+          href="https://wa.me/529994918221"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="glass-btn inline-flex items-center gap-2 rounded-full px-8 py-4 font-display font-bold text-[#2A1A0A]"
+        >
+          <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          Escribir por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* Animaciones de humo y brasas (reutilizadas del Hero) */
+    @keyframes smoke-rise {
+      0% { transform: translateY(0) scale(1); opacity: 0.3; }
+      50% { opacity: 0.5; }
+      100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+    }
+    @keyframes ember-float {
+      0% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateX(10px) scale(1.2); opacity: 1; }
+      100% { transform: translateY(-80px) translateX(-10px) scale(0.8); opacity: 0; }
+    }
+    .smoke {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(245,158,11,0.15), transparent 70%);
+      filter: blur(40px);
+      animation: smoke-rise 12s ease-in-out infinite;
+    }
+    .ember {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #FD5C0D;
+      box-shadow: 0 0 8px #FD5C0D, 0 0 16px #F54B06;
+      animation: ember-float 8s ease-in-out infinite;
+    }
+  </style>
+</Layout>
