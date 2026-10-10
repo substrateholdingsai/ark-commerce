@@ -1,0 +1,155 @@
+---
+import { config } from "../../config/config";
+
+interface Props {
+  locale?: string;
+  t?: {
+    heroBadge: string;
+    heroKicker: string;
+    heroTitle: string;
+    heroSubtitle: string;
+    ctaCatalog: string;
+    heroPayments: string;
+    heroTransfer: string;
+    heroLocation: string;
+  };
+}
+
+const locale = Astro.props.locale || config.site.language;
+const t = Astro.props.t || {
+  heroBadge: "Herencia Artesanal",
+  heroKicker: "Desde 1987",
+  heroTitle: "Temozonia",
+  heroSubtitle: "Café de especialidad, tostado con tradición y pasión. Cada grano cuenta una historia.",
+  ctaCatalog: "Ver Catálogo",
+  heroPayments: "Métodos de pago",
+  heroTransfer: "Transferencia",
+  heroLocation: "Visítanos en Coyoacán, CDMX",
+};
+---
+
+<section class="relative flex min-h-[72vh] items-center justify-center overflow-hidden bg-warm-dark-wood px-6 py-14 text-center md:min-h-[78vh] md:py-16">
+  <!-- 1. Background Image: Iglesia Colonial cálida -->
+  <div
+    class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+    style="background-image: url('https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?w=1920&q=80');"
+  >
+    <div class="absolute inset-0 bg-gradient-to-b from-warm-dark-wood/80 via-warm-dark-wood/55 to-warm-dark-wood" />
+  </div>
+
+  <!-- 2. Efecto de Luz Cálida (Sol de la tarde) -->
+  <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,_rgba(245,158,11,0.22),_transparent_60%)]" />
+
+  <!-- 3. Humo + brasas que dan vida al espacio superior -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="smoke left-[15%] top-[8%] h-56 w-56" />
+    <div class="smoke right-[12%] top-[16%] h-72 w-72" style="animation-delay: 3s;" />
+    <span class="ember left-[12%] top-[24%]" />
+    <span class="ember left-[26%] top-[14%]" style="animation-delay: 1.2s;" />
+    <span class="ember left-[48%] top-[10%]" style="animation-delay: 2.4s;" />
+    <span class="ember left-[68%] top-[18%]" style="animation-delay: 0.8s;" />
+    <span class="ember left-[84%] top-[26%]" style="animation-delay: 1.8s;" />
+  </div>
+
+  <!-- Contenido del Hero -->
+  <div class="relative z-10 mx-auto max-w-5xl animate-fade-up space-y-5 md:space-y-6">
+    <!-- Sello heritage -->
+    <div class="flex justify-center">
+      <span class="inline-flex items-center gap-2 rounded-full border border-gold-DEFAULT/50 bg-warm-dark-wood/60 px-5 py-2 font-display text-[11px] font-bold uppercase tracking-[0.22em] text-gold-300 backdrop-blur-sm md:text-xs">
+        <svg class="size-3.5 text-brand-500" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 0 1.5.5 2 1.5"/><path d="M15 14.5A2.5 2.5 0 0 1 11 12c0-1.38.5-2 1-3 1.072-2.143.224-4.054-2-6-.5 0-1.5.5-2 1.5"/><line x1="12" x2="12" y1="16" y2="22"/><path d="M5 22c0-1.5.5-3 2-3h10c1.5 0 2 1.5 2 3"/></svg>
+        {t.heroBadge}
+      </span>
+    </div>
+
+    <!-- Kicker -->
+    <p class="font-display text-sm uppercase tracking-[0.3em] text-gold-300">
+      {t.heroKicker}
+    </p>
+
+    <!-- Título principal -->
+    <h1 class="font-script text-5xl font-bold italic leading-[0.95] text-warm-cream drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] md:text-7xl lg:text-8xl">
+      {t.heroTitle}
+    </h1>
+
+    <!-- Subtítulo -->
+    <p class="mx-auto max-w-3xl font-body text-base leading-relaxed text-warm-cream/90 drop-shadow-md md:text-xl">
+      {t.heroSubtitle}
+    </p>
+
+    <!-- Divider dorado -->
+    <div class="gold-divider mx-auto w-40">
+      <span aria-hidden="true" class="text-gold-DEFAULT">◆</span>
+    </div>
+
+    <!-- CTA Principal -->
+    <div>
+      <a href={`/${locale}/products`} class="btn-heritage px-12 py-4 text-lg">
+        {t.ctaCatalog}
+      </a>
+    </div>
+
+    <!-- Métodos de pago (Liquid Glass) -->
+    <div class="flex flex-col items-center justify-center gap-3">
+      <p class="font-display text-xs uppercase tracking-widest text-warm-cream/60">
+        {t.heroPayments}
+      </p>
+
+      <div class="glass-btn-dark flex flex-wrap items-center justify-center gap-3 rounded-full px-5 py-3">
+        <span class="font-body text-xs font-semibold text-warm-cream/80">Visa</span>
+        <span class="h-4 w-px bg-warm-cream/20" aria-hidden="true" />
+        <span class="font-body text-xs font-semibold text-warm-cream/80">Mastercard</span>
+        <span class="h-4 w-px bg-warm-cream/20" aria-hidden="true" />
+        <span class="flex items-center gap-1.5 font-body text-xs font-semibold text-warm-cream/80">
+          <svg class="size-3.5" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          {t.heroTransfer}
+        </span>
+        <span class="h-4 w-px bg-warm-cream/20" aria-hidden="true" />
+        <div class="flex items-center gap-1.5 rounded-full border border-gold-DEFAULT/40 bg-gold-DEFAULT/10 px-3 py-1">
+          <svg class="size-4 text-gold-300" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 9 9 15 13 21"/><polyline points="21 15 9 15 9 9"/><path d="M21 9V3h-6"/><path d="M3 21h6v-6"/></svg>
+          <span class="font-body text-xs font-bold text-gold-300">Bitcoin</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ubicación + indicador de scroll -->
+    <div class="flex flex-col items-center gap-1.5 pt-1">
+      <p class="font-display text-[11px] uppercase tracking-widest text-warm-cream/60">
+        {t.heroLocation}
+      </p>
+      <svg class="h-5 w-5 animate-bounce text-gold-DEFAULT/70" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+
+  <style>
+    /* Animaciones de humo y brasas */
+    @keyframes smoke-rise {
+      0% { transform: translateY(0) scale(1); opacity: 0.3; }
+      50% { opacity: 0.5; }
+      100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+    }
+
+    @keyframes ember-float {
+      0% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateX(10px) scale(1.2); opacity: 1; }
+      100% { transform: translateY(-80px) translateX(-10px) scale(0.8); opacity: 0; }
+    }
+
+    .smoke {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(245,158,11,0.15), transparent 70%);
+      filter: blur(40px);
+      animation: smoke-rise 12s ease-in-out infinite;
+    }
+
+    .ember {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #FD5C0D;
+      box-shadow: 0 0 8px #FD5C0D, 0 0 16px #F54B06;
+      animation: ember-float 8s ease-in-out infinite;
+    }
+  </style>
+</section>

@@ -1,0 +1,51 @@
+name = "temozonia"
+main = "worker/index.ts"
+compatibility_date = "2024-10-09"
+compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = "npm run astro:build"
+
+[build.upload]
+format = "modules"
+dir = "dist"
+main = "worker/index.ts"
+
+[[assets]]
+binding = "ASSETS"
+directory = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "temozonia-db"
+database_id = "your-database-id"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "your-kv-namespace-id"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "temozonia-storage"
+
+[[queues]]
+binding = "QUEUE"
+queue_name = "temozonia-queue"
+
+[[durable_objects.bindings]]
+name = "SESSION"
+class_name = "SessionDurableObject"
+
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "temozonia-index"
+
+[ai]
+binding = "AI"
+
+[vars]
+ENVIRONMENT = "production"
+ASTRO_SITE_URL = "https://temozonia.example.com"
+
+[triggers]
+crons = ["0 0 * * *"]

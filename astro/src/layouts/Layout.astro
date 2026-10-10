@@ -1,0 +1,26 @@
+---
+import { config } from "../../config/config";
+import "../../styles/globals.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = config.site.name, description = config.site.description } = Astro.props;
+---
+
+<!doctype html>
+<html lang={config.site.language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#FD5C0D" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
