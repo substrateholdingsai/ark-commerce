@@ -1,74 +1,40 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/layout/Hero.astro";
+import ProductCard from "../components/product/ProductCard.astro";
 import CheckoutCalculator from "../components/checkout/CheckoutCalculator.astro";
+import CartDrawer from "../components/checkout/CartDrawer.astro";
+import { PRODUCTS } from "@/data/products";
 import { config } from "../../config/config";
 ---
 
 <Layout title={config.site.name} description={config.site.description}>
+  
+  <!-- 1. Hero (Tu componente adaptado) -->
   <Hero locale={config.site.language} />
 
+  <!-- 2. Grid de Productos -->
+  <section id="productos" class="max-w-[1160px] mx-auto px-4 pt-10 pb-6">
+    <div class="flex items-end justify-between gap-4 mb-6">
+      <div>
+        <h2 class="font-display font-black text-[24px] sm:text-[30px] tracking-tight text-[#2B0E0A]">
+          Elige tu ahumado
+        </h2>
+        <p class="text-sm text-[#7E1D0F]/60 mt-1 font-body">5 cortes • Listos para calentar y disfrutar</p>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {PRODUCTS.map((product) => (
+        <ProductCard product={product} client:visible />
+      ))}
+    </div>
+  </section>
+
+  <!-- 3. Checkout Calculator (Calculadora + Formulario) -->
   <CheckoutCalculator client:load />
 
-  <main class="py-16 md:py-24">
-    <section id="productos" class="features mx-auto max-w-6xl px-6">
-      <h2 class="font-display text-3xl md:text-4xl font-bold text-center text-warm-dark-wood mb-12">
-        Características
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <article class="product-card-heritage text-center">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-warm-deep-red/10 flex items-center justify-center">
-            <svg class="w-8 h-8 text-warm-deep-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><globe class="size-8" /></svg>
-          </div>
-          <h3 class="font-display text-xl font-bold text-warm-dark-wood mb-2">Sitio Estático</h3>
-          <p class="text-warm-brown">Generado con Astro para máximo rendimiento y SEO óptimo.</p>
-        </article>
-        <article class="product-card-heritage text-center">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-warm-deep-red/10 flex items-center justify-center">
-            <svg class="w-8 h-8 text-warm-deep-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><zap class="size-8" /></svg>
-          </div>
-          <h3 class="font-display text-xl font-bold text-warm-dark-wood mb-2">Islas Interactivas</h3>
-          <p class="text-warm-brown">Componentes React/Vue/Svelte hidratados selectivamente en el cliente.</p>
-        </article>
-        <article class="product-card-heritage text-center">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-warm-deep-red/10 flex items-center justify-center">
-            <svg class="w-8 h-8 text-warm-deep-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><terminal class="size-8" /></svg>
-          </div>
-          <h3 class="font-display text-xl font-bold text-warm-dark-wood mb-2">Python en el Edge</h3>
-          <p class="text-warm-brown">Ejecuta scripts Python vía Workers AI en Cloudflare.</p>
-        </article>
-        <article class="product-card-heritage text-center">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-warm-deep-red/10 flex items-center justify-center">
-            <svg class="w-8 h-8 text-warm-deep-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><database class="size-8" /></svg>
-          </div>
-          <h3 class="font-display text-xl font-bold text-warm-dark-wood mb-2">Bindings Universales</h3>
-          <p class="text-warm-brown">D1, KV, R2, Queues, Durable Objects, Vectorize, AI listos para usar.</p>
-        </article>
-      </div>
-    </section>
+  <!-- 4. Cart Drawer (Panel lateral del carrito) -->
+  <CartDrawer client:load />
 
-    <section class="api-docs mx-auto max-w-3xl px-6 mt-16">
-      <h2 class="font-display text-2xl font-bold text-center text-warm-cream mb-6">Endpoints Disponibles</h2>
-      <ul class="space-y-3">
-        <li class="flex items-center justify-between py-3 border-b border-gold-DEFAULT/20">
-          <span class="font-mono text-sm text-warm-cream">GET /health</span>
-          <span class="text-warm-brown text-sm">Health check del worker</span>
-        </li>
-        <li class="flex items-center justify-between py-3 border-b border-gold-DEFAULT/20">
-          <span class="font-mono text-sm text-warm-cream">GET /api/config</span>
-          <span class="text-warm-brown text-sm">Configuración pública del sitio</span>
-        </li>
-        <li class="flex items-center justify-between py-3">
-          <span class="font-mono text-sm text-warm-cream">GET /api/python/execute</span>
-          <span class="text-warm-brown text-sm">Ejecutar Python (Workers AI)</span>
-        </li>
-      </ul>
-    </section>
-
-    <footer class="mt-16 text-center">
-      <p class="font-display text-xs uppercase tracking-widest text-warm-brown/60">
-        Desplegado en Cloudflare Workers · {new Date().getFullYear()}
-      </p>
-    </footer>
-  </main>
 </Layout>
