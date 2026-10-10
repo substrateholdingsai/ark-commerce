@@ -1,8 +1,9 @@
 ---
 import { config } from "../../config/config";
 import "../../styles/globals.css";
-import CartDrawer from "../components/checkout/CartDrawer.astro";
+import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
+import CartDrawer from "../components/checkout/CartDrawer.astro";
 
 interface Props {
   title?: string;
@@ -23,6 +24,7 @@ const { title = config.site.name, description = config.site.description } = Astr
     <title>{title}</title>
   </head>
   <body>
+    <Header />
     <slot />
     <Footer />
     <CartDrawer />
