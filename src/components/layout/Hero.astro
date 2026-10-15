@@ -29,13 +29,8 @@ const t = Astro.props.t || {
 ---
 
 <section class="relative flex min-h-[72vh] items-center justify-center overflow-hidden bg-warm-dark-wood px-6 py-14 text-center md:min-h-[78vh] md:py-16">
-  <!-- 1. Background Image: Iglesia Colonial cálida -->
-  <div
-    class="absolute inset-0 bg-cover bg-center bg-no-repeat"
-    style="background-image: url('https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?w=1920&q=80');"
-  >
-    <div class="absolute inset-0 bg-gradient-to-b from-warm-dark-wood/80 via-warm-dark-wood/55 to-warm-dark-wood" />
-  </div>
+  <!-- 1. Background Gradient (replaces external Unsplash image) -->
+  <div class="absolute inset-0 bg-gradient-to-b from-warm-dark-wood/80 via-warm-dark-wood/55 to-warm-dark-wood" />
 
   <!-- 2. Efecto de Luz Cálida (Sol de la tarde) -->
   <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,_rgba(245,158,11,0.22),_transparent_60%)]" />
