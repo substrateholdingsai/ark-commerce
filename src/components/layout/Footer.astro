@@ -1,0 +1,219 @@
+---
+// Footer adaptado al Design System de Temozonia
+// Incluye directorio actualizado, infraestructura de pago y crédito a Ark Systems.
+---
+
+<footer class="relative bg-[#2B0E0A] border-t border-white/5 pt-16 pb-8 overflow-hidden text-[#FFFCF5]">
+  <!-- Fondo decorativo sutil - Tinte cálido/dorado -->
+  <div class="absolute inset-0 bg-[radial-gradient(rgba(212,175,55,0.05)_1px,transparent_1px)] bg-[size:30px_30px] opacity-20 pointer-events-none" />
+  
+  <div class="container mx-auto px-4 relative z-10 max-w-6xl">
+    <div class="grid grid-cols-1 gap-12 md:grid-cols-4 border-b border-white/5 pb-12">
+
+      <!-- Columna 1: Branding & Status -->
+      <div class="space-y-6">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded border border-[#D4AF37] bg-[#D4AF37]/10 text-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+            <span class="font-serif font-bold text-xl">T</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-lg font-bold tracking-tight text-[#FFFCF5] font-display">
+              Temozonia
+            </span>
+            <span class="text-[10px] text-[#D4AF37] font-mono uppercase tracking-widest">
+              Carnes_Ahumadas
+            </span>
+          </div>
+        </div>
+        
+        <p class="font-body text-xs text-[#FFFCF5]/60 leading-relaxed">
+          Tradición y pasión en cada corte. Ahumado artesanal con mezquite desde 1987.
+        </p>
+
+        <!-- Simulación de Status del Ahumador -->
+        <div class="p-3 rounded bg-white/5 border border-white/5 space-y-2">
+          <div class="flex justify-between items-center text-[10px] font-mono text-[#FFFCF5]/40 uppercase">
+            <span>Smoker Status</span>
+            <span class="text-[#10B981] flex items-center gap-1">
+              <span class="block w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse"></span> Ahumando
+            </span>
+          </div>
+          <div class="font-mono text-[10px] text-[#FFFCF5]/30 truncate">
+            Temp: 110°C // Humo: Mezquite
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna 2: Directorio (Sin link a productos, reemplazado por la tiendita) -->
+      <div>
+        <div class="flex items-center gap-2 mb-6">
+          <svg class="h-4 w-4 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+          <h4 class="text-xs font-bold uppercase tracking-widest text-[#FFFCF5] font-mono">
+            /Directorio
+          </h4>
+        </div>
+        <ul class="space-y-4 font-mono text-sm">
+          <li>
+            <a href="/conocenos" class="text-[#FFFCF5]/60 hover:text-[#D4AF37] transition-colors flex items-center gap-2 group">
+              <span class="opacity-0 group-hover:opacity-100 text-[#D4AF37]/60">➜</span> ./conocenos
+            </a>
+          </li>
+          <li>
+            <a href="/recetas" class="text-[#FFFCF5]/60 hover:text-[#D4AF37] transition-colors flex items-center gap-2 group">
+              <span class="opacity-0 group-hover:opacity-100 text-[#D4AF37]/60">➜</span> ./recetas
+            </a>
+          </li>
+          <li>
+            <a href="/mayoreo" class="text-[#FFFCF5]/60 hover:text-[#D4AF37] transition-colors flex items-center gap-2 group">
+              <span class="opacity-0 group-hover:opacity-100 text-[#D4AF37]/60">➜</span> ./mayoreo
+            </a>
+          </li>
+          <li>
+            <a href="/contacto" class="text-[#FFFCF5]/60 hover:text-[#D4AF37] transition-colors flex items-center gap-2 group">
+              <span class="opacity-0 group-hover:opacity-100 text-[#D4AF37]/60">➜</span> ./contacto
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Columna 3: Infraestructura de Pago -->
+      <div>
+        <div class="flex items-center gap-2 mb-6">
+          <svg class="h-4 w-4 text-[#FD5C0D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          <h4 class="text-xs font-bold uppercase tracking-widest text-[#FFFCF5] font-mono">
+            /Infraestructura
+          </h4>
+        </div>
+        <ul class="space-y-4 font-mono text-sm">
+          <li>
+            <a href="https://btcpayserver.org" target="_blank" rel="noopener noreferrer" class="text-[#FFFCF5]/60 hover:text-[#FD5C0D] transition-colors flex items-center gap-2 group">
+              <svg class="h-3 w-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> BTCPay_Server
+            </a>
+          </li>
+          <li>
+            <a href="https://lightning.network" target="_blank" rel="noopener noreferrer" class="text-[#FFFCF5]/60 hover:text-[#FD5C0D] transition-colors flex items-center gap-2 group">
+              <svg class="h-3 w-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Lightning_Network
+            </a>
+          </li>
+          <li>
+            <span class="text-[#FFFCF5]/60 flex items-center gap-2">
+              <svg class="h-3 w-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg> Transferencia_SPEI
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Columna 4: Contacto & Uplink -->
+      <div>
+        <div class="flex items-center gap-2 mb-6">
+          <svg class="h-4 w-4 text-[#FFFCF5]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          <h4 class="text-xs font-bold uppercase tracking-widest text-[#FFFCF5] font-mono">
+            /Uplink
+          </h4>
+        </div>
+        
+        <div class="space-y-4 font-mono text-sm text-[#FFFCF5]/60">
+          <div class="flex items-start gap-3">
+            <svg class="h-4 w-4 text-[#D4AF37] mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <div>
+              <div class="text-[#FFFCF5] text-xs font-bold">Caucel, Mérida, Yucatán</div>
+              <div class="text-[10px] text-[#FFFCF5]/30">Lat: 20.96 N // Lon: 89.62 W</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-3">
+            <svg class="h-4 w-4 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+            </svg>
+            <a href="https://wa.me/529994918221" target="_blank" rel="noopener noreferrer" class="hover:text-[#D4AF37] transition-colors">
+              +52 999 491 8221
+            </a>
+          </div>
+
+          <div class="pt-4 flex flex-col gap-3 border-t border-white/5">
+            <a
+              href="https://x.com/temozonia"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-2 text-[#FFFCF5]/60 hover:text-[#D4AF37] transition-colors group"
+            >
+              <svg class="h-4 w-4 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              <span>@temozonia</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Comunidades Section (Adaptado al estilo Temozonia) -->
+    <div class="mt-8 pt-6 border-t border-white/10">
+      <div class="text-[10px] text-[#FFFCF5]/40 font-mono uppercase tracking-widest mb-3">
+        Alianzas & Comunidad
+      </div>
+      
+      <div class="flex flex-wrap gap-3 items-center">
+        <!-- My First Bitcoin Badge -->
+        <a
+          href="https://es.myfirstbitcoin.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-3 py-1.5 
+                 bg-black/40 border border-[#D4AF37]/30 rounded 
+                 hover:border-[#D4AF37] hover:shadow-[0_0_15px_rgba(212,175,55,0.2)]
+                 transition-all duration-200 group"
+          aria-label="Visitar My First Bitcoin"
+        >
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]"></span>
+          </span>
+          <span class="font-mono text-xs text-[#FFFCF5]/70 group-hover:text-[#D4AF37] transition-colors">
+            My First Bitcoin
+          </span>
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="12" 
+            height="12" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            stroke-width="2" 
+            stroke-linecap="round" 
+            stroke-linejoin="round"
+            class="text-[#D4AF37]/60 group-hover:text-[#D4AF37] transition-colors"
+          >
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- System Log (Copyright & Hecho por) -->
+    <div class="mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="font-mono text-[10px] text-[#FFFCF5]/30 uppercase tracking-widest">
+        <span class="text-[#D4AF37]">root@temozonia:~$</span> ./init_shutdown_sequence
+      </div>
+      <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4 font-mono text-[10px] text-[#FFFCF5]/40 text-center md:text-right">
+        <span>© {new Date().getFullYear()} Temozonia Carnes Ahumadas</span>
+        <span class="hidden md:inline text-[#FFFCF5]/20">|</span>
+        <span>
+          Hecho con ❤️ por <a href="https://arksystems.site/" target="_blank" rel="noopener noreferrer" class="text-[#FD5C0D] hover:text-[#D4AF37] transition-colors font-bold">Ark Systems</a>
+        </span>
+      </div>
+    </div>
+  </div>
+</footer>

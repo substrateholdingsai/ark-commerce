@@ -1,0 +1,18 @@
+import { z } from 'zod';
+
+export const CheckoutItemSchema = z.object({
+  productId: z.string().min(1),
+  quantity: z.number().int().positive().max(99),
+});
+
+export const CheckoutSchema = z.object({
+  customerName: z.string().min(2).max(100),
+  customerEmail: z.string().email(),
+  customerAddress: z.string().min(5).max(300),
+  customerPhone: z.string().min(10).max(20),
+  paymentMethod: z.enum(['transfer', 'card', 'lightning', 'whatsapp']),
+  items: z.array(CheckoutItemSchema).min(1).max(50),
+  notes: z.string().max(500).optional(),
+});
+
+export type CheckoutInput = z.infer<typeof CheckoutSchema>;

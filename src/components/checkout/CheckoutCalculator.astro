@@ -1,0 +1,503 @@
+---
+import { CONFIG } from '@/utils/constants';
+---
+
+<section 
+  id="checkout" 
+  class="relative bg-warm-cream py-12 md:py-16 paper-texture"
+>
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    
+    <!-- Encabezado de sección -->
+    <div class="mb-8 text-center md:mb-12">
+      <p class="font-display text-xs uppercase tracking-[0.3em] text-brand-900/60">
+        Paso 2 · Finaliza tu pedido
+      </p>
+      <h2 class="font-script text-4xl font-bold italic text-warm-dark-wood md:text-5xl lg:text-6xl">
+        Checkout Express
+      </h2>
+      <div class="gold-divider mx-auto mt-4 w-48">
+        <span aria-hidden="true" class="text-gold-DEFAULT">◆</span>
+      </div>
+      <p class="mx-auto mt-4 max-w-xl font-body text-sm text-warm-dark-wood/70 md:text-base">
+        Sin apps, sin registros. Elige cómo pagar y te confirmamos por WhatsApp en segundos.
+      </p>
+    </div>
+
+    <!-- Grid principal: Resumen + Formulario -->
+    <div class="grid gap-6 lg:grid-cols-[1fr_1.15fr] lg:gap-8">
+      
+      <!-- ============ COLUMNA IZQUIERDA: RESUMEN (Receipt) ============ -->
+      <aside 
+        id="checkout-summary"
+        class="receipt-gold rounded-heritage p-6 md:p-8 lg:sticky lg:top-24 self-start"
+      >
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="font-display text-sm font-bold uppercase tracking-[0.2em] text-warm-dark-wood">
+            Tu Pedido
+          </h3>
+          <span class="badge-premium rounded-full px-2.5 py-1 text-[10px]">
+            🔥 HUMEANTE
+          </span>
+        </div>
+
+        <div class="gold-divider mb-4" />
+
+        <!-- Lista de items -->
+        <ul id="checkout-items" class="space-y-3">
+          <!-- Se llena dinámicamente -->
+          <li class="text-center text-sm text-warm-dark-wood/60 py-6">
+            Tu carrito está vacío. Agrega productos arriba.
+          </li>
+        </ul>
+
+        <div class="gold-divider my-5" />
+
+        <!-- Total -->
+        <div class="flex items-baseline justify-between">
+          <span class="font-display text-xs font-bold uppercase tracking-widest text-warm-dark-wood/60">
+            Total
+          </span>
+          <span id="checkout-total" class="font-script text-4xl font-bold italic text-brand-900">
+            $0
+          </span>
+        </div>
+
+        <!-- Equivalencia sats (solo visible si eligen lightning) -->
+        <div 
+          id="sats-equivalence"
+          class="mt-2 hidden items-center justify-end gap-2 rounded-full border border-gold-DEFAULT/30 bg-gold-DEFAULT/10 px-3 py-1.5"
+        >
+          <svg class="size-3.5 text-gold-DEFAULT" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="13 9 9 15 13 21"/><polyline points="21 15 9 15 9 9"/><path d="M21 9V3h-6"/><path d="M3 21h6v-6"/>
+          </svg>
+          <span id="sats-amount" class="font-mono text-xs font-bold text-gold-DEFAULT">
+            0 sats
+          </span>
+        </div>
+
+        <!-- Botón de scroll arriba si está vacío -->
+        <button 
+          id="scroll-to-products"
+          class="mt-5 w-full rounded-full border border-brand-900/20 bg-white/60 py-2.5 text-xs font-bold uppercase tracking-widest text-brand-900 transition hover:bg-white"
+        >
+          ← Ver productos
+        </button>
+      </aside>
+
+      <!-- ============ COLUMNA DERECHA: FORMULARIO ============ -->
+      <div class="space-y-6">
+        
+        <!-- Selector de método de pago -->
+        <div class="rounded-heritage border-2 border-brand-900/10 bg-white p-5 md:p-6">
+          <h3 class="mb-4 font-display text-sm font-bold uppercase tracking-[0.2em] text-warm-dark-wood">
+            1. ¿Cómo pagas?
+          </h3>
+
+          <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+            <!-- Transferencia -->
+            <button 
+              data-method="transfer"
+              class="payment-method-btn group relative flex flex-col items-center gap-2 rounded-2xl border-2 border-brand-900/10 bg-warm-cream/40 p-3 transition hover:border-brand-900/30 hover:bg-warm-cream"
+            >
+              <svg class="size-6 text-brand-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>
+              </svg>
+              <span class="text-xs font-bold text-warm-dark-wood">Transferencia</span>
+              <span class="absolute -top-1 -right-1 hidden size-5 rounded-full bg-brand-500 text-white grid place-items-center text-[10px]">✓</span>
+            </button>
+
+            <!-- Tarjeta -->
+            <button 
+              data-method="card"
+              class="payment-method-btn group relative flex flex-col items-center gap-2 rounded-2xl border-2 border-brand-900/10 bg-warm-cream/40 p-3 transition hover:border-brand-900/30 hover:bg-warm-cream"
+            >
+              <svg class="size-6 text-brand-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>
+              </svg>
+              <span class="text-xs font-bold text-warm-dark-wood">Tarjeta</span>
+              <span class="absolute -top-1 -right-1 hidden size-5 rounded-full bg-brand-500 text-white grid place-items-center text-[10px]">✓</span>
+            </button>
+
+            <!-- Lightning -->
+            <button 
+              data-method="lightning"
+              class="payment-method-btn group relative flex flex-col items-center gap-2 rounded-2xl border-2 border-brand-900/10 bg-warm-cream/40 p-3 transition hover:border-brand-900/30 hover:bg-warm-cream"
+            >
+              <svg class="size-6 text-gold-DEFAULT" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="13 9 9 15 13 21"/><polyline points="21 15 9 15 9 9"/><path d="M21 9V3h-6"/><path d="M3 21h6v-6"/>
+              </svg>
+              <span class="text-xs font-bold text-warm-dark-wood">Lightning ⚡</span>
+              <span class="absolute -top-1 -right-1 hidden size-5 rounded-full bg-brand-500 text-white grid place-items-center text-[10px]">✓</span>
+            </button>
+
+            <!-- WhatsApp / Efectivo -->
+            <button 
+              data-method="whatsapp"
+              class="payment-method-btn group relative flex flex-col items-center gap-2 rounded-2xl border-2 border-brand-900/10 bg-warm-cream/40 p-3 transition hover:border-brand-900/30 hover:bg-warm-cream"
+            >
+              <svg class="size-6 text-emerald-600" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/>
+              </svg>
+              <span class="text-xs font-bold text-warm-dark-wood">Efectivo</span>
+              <span class="absolute -top-1 -right-1 hidden size-5 rounded-full bg-brand-500 text-white grid place-items-center text-[10px]">✓</span>
+            </button>
+          </div>
+
+          <!-- Panel dinámico según método seleccionado -->
+          <div id="payment-panel" class="mt-5">
+            <!-- Se llena dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Datos del cliente -->
+        <div class="rounded-heritage border-2 border-brand-900/10 bg-white p-5 md:p-6">
+          <h3 class="mb-4 font-display text-sm font-bold uppercase tracking-[0.2em] text-warm-dark-wood">
+            2. ¿Dónde te lo llevamos?
+          </h3>
+
+          <div class="space-y-3">
+            <div>
+              <label for="customer-name" class="mb-1 block text-xs font-bold uppercase tracking-widest text-warm-dark-wood/70">
+                Nombre
+              </label>
+              <input 
+                id="customer-name"
+                type="text"
+                placeholder="Ej. Lupita Hernández"
+                class="w-full rounded-xl border-2 border-brand-900/10 bg-warm-cream/40 px-4 py-2.5 font-body text-sm text-warm-dark-wood placeholder:text-warm-dark-wood/40 focus:border-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label for="customer-address" class="mb-1 block text-xs font-bold uppercase tracking-widest text-warm-dark-wood/70">
+                Dirección de entrega
+              </label>
+              <input 
+                id="customer-address"
+                type="text"
+                placeholder="Calle, número, colonia, referencias"
+                class="w-full rounded-xl border-2 border-brand-900/10 bg-warm-cream/40 px-4 py-2.5 font-body text-sm text-warm-dark-wood placeholder:text-warm-dark-wood/40 focus:border-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label for="customer-phone" class="mb-1 block text-xs font-bold uppercase tracking-widest text-warm-dark-wood/70">
+                Teléfono
+              </label>
+              <input 
+                id="customer-phone"
+                type="tel"
+                placeholder="999 123 4567"
+                class="w-full rounded-xl border-2 border-brand-900/10 bg-warm-cream/40 px-4 py-2.5 font-body text-sm text-warm-dark-wood placeholder:text-warm-dark-wood/40 focus:border-brand-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label for="customer-notes" class="mb-1 block text-xs font-bold uppercase tracking-widest text-warm-dark-wood/70">
+                Notas <span class="font-normal text-warm-dark-wood/50">(opcional)</span>
+              </label>
+              <textarea 
+                id="customer-notes"
+                rows="2"
+                placeholder="Ej. Tocar el timbre azul, sin cebolla..."
+                class="w-full resize-none rounded-xl border-2 border-brand-900/10 bg-warm-cream/40 px-4 py-2.5 font-body text-sm text-warm-dark-wood placeholder:text-warm-dark-wood/40 focus:border-brand-500 focus:outline-none"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA Final -->
+        <button 
+          id="checkout-cta"
+          disabled
+          class="btn-heritage w-full rounded-full py-4 text-base font-black uppercase tracking-widest transition disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          <span id="cta-text">Agrega productos para continuar</span>
+        </button>
+
+        <p class="text-center text-xs text-warm-dark-wood/50">
+          Al enviar, abriremos WhatsApp con tu pedido pre-armado. 
+          <br class="hidden sm:block" />
+          Confirmamos en menos de 5 minutos · Entrega &lt;90 min en Caucel
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { useCartStore } from '@/stores/cart';
+  import { CONFIG } from '@/utils/constants';
+
+  // ============ REFERENCIAS DOM ============
+  const itemsList = document.getElementById('checkout-items')!;
+  const totalEl = document.getElementById('checkout-total')!;
+  const satsEquiv = document.getElementById('sats-equivalence')!;
+  const satsAmount = document.getElementById('sats-amount')!;
+  const paymentPanel = document.getElementById('payment-panel')!;
+  const ctaBtn = document.getElementById('checkout-cta')! as HTMLButtonElement;
+  const ctaText = document.getElementById('cta-text')!;
+  const scrollBtn = document.getElementById('scroll-to-products')!;
+
+  // Inputs del cliente
+  const nameInput = document.getElementById('customer-name') as HTMLInputElement;
+  const addressInput = document.getElementById('customer-address') as HTMLInputElement;
+  const phoneInput = document.getElementById('customer-phone') as HTMLInputElement;
+  const notesInput = document.getElementById('customer-notes') as HTMLTextAreaElement;
+
+  // ============ RENDER ITEMS ============
+  const renderItems = () => {
+    const store = useCartStore.getState();
+    const items = store.getItemsWithProducts();
+    const total = store.getTotal();
+
+    if (items.length === 0) {
+      itemsList.innerHTML = `
+        <li class="text-center text-sm text-warm-dark-wood/60 py-6">
+          Tu carrito está vacío. Agrega productos arriba.
+        </li>
+      `;
+      totalEl.textContent = '$0';
+      ctaBtn.disabled = true;
+      ctaText.textContent = 'Agrega productos para continuar';
+      return;
+    }
+
+    itemsList.innerHTML = items
+      .map(
+        (item) => `
+      <li class="flex items-center justify-between gap-3 rounded-xl bg-warm-cream/60 px-3 py-2.5">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="font-mono text-xs font-black text-brand-500">${item.qty}×</span>
+            <span class="truncate font-body text-sm font-semibold text-warm-dark-wood">
+              ${item.product.name}
+            </span>
+          </div>
+          <span class="text-xs text-warm-dark-wood/60">${item.product.weight}</span>
+        </div>
+        <span class="font-script text-lg font-bold italic text-brand-900">
+          $${item.subtotal}
+        </span>
+      </li>
+    `
+      )
+      .join('');
+
+    totalEl.textContent = `$${total}`;
+    ctaBtn.disabled = false;
+    updateCtaText();
+  };
+
+  // ============ RENDER PAYMENT PANEL ============
+  const renderPaymentPanel = () => {
+    const method = useCartStore.getState().paymentMethod;
+
+    const panels: Record<string, string> = {
+      transfer: `
+        <div class="rounded-2xl border-2 border-gold-DEFAULT/30 bg-gold-DEFAULT/5 p-4">
+          <p class="mb-3 text-xs font-bold uppercase tracking-widest text-warm-dark-wood/70">
+            Datos para transferencia SPEI
+          </p>
+          <div class="space-y-2 font-mono text-sm">
+            <div class="flex items-center justify-between rounded-lg bg-white px-3 py-2">
+              <div>
+                <div class="text-[10px] uppercase tracking-widest text-warm-dark-wood/50">CLABE</div>
+                <div class="font-bold text-warm-dark-wood">${CONFIG.CLABE}</div>
+              </div>
+              <button id="copy-clabe" class="rounded-full bg-brand-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-900/90">
+                Copiar
+              </button>
+            </div>
+            <div class="flex justify-between rounded-lg bg-white px-3 py-2">
+              <div>
+                <div class="text-[10px] uppercase tracking-widest text-warm-dark-wood/50">Banco</div>
+                <div class="font-bold text-warm-dark-wood">${CONFIG.BANK}</div>
+              </div>
+              <div>
+                <div class="text-[10px] uppercase tracking-widest text-warm-dark-wood/50">Titular</div>
+                <div class="font-bold text-warm-dark-wood">${CONFIG.CLABE_HOLDER}</div>
+              </div>
+            </div>
+          </div>
+          <p class="mt-3 text-[11px] text-warm-dark-wood/60">
+            💡 Después de transferir, envía el comprobante por WhatsApp.
+          </p>
+        </div>
+      `,
+      card: `
+        <div class="rounded-2xl border-2 border-brand-900/10 bg-warm-cream/40 p-4">
+          <p class="mb-2 text-xs font-bold uppercase tracking-widest text-warm-dark-wood/70">
+            Pago con tarjeta vía BTCPay
+          </p>
+          <p class="text-sm text-warm-dark-wood/80">
+            Aceptamos Visa, Mastercard y Amex. El cobro se procesa de forma segura.
+          </p>
+          <button id="open-btcpay" class="mt-3 w-full rounded-full bg-brand-900 py-2.5 text-xs font-bold uppercase tracking-widest text-white hover:bg-brand-900/90">
+            Abrir pasarela segura →
+          </button>
+        </div>
+      `,
+      lightning: `
+        <div class="rounded-2xl border-2 border-gold-DEFAULT/40 bg-gradient-to-br from-gold-DEFAULT/10 to-transparent p-4">
+          <p class="mb-3 text-xs font-bold uppercase tracking-widest text-warm-dark-wood/70">
+            ⚡ Lightning Network · Bitcoin
+          </p>
+          <div class="flex items-center justify-between rounded-lg bg-white px-3 py-2">
+            <div>
+              <div class="text-[10px] uppercase tracking-widest text-warm-dark-wood/50">LN Address</div>
+              <div class="font-mono text-sm font-bold text-warm-dark-wood">temozonia@blink.sv</div>
+            </div>
+            <button id="copy-lightning" class="rounded-full bg-gold-DEFAULT px-3 py-1.5 text-xs font-bold text-warm-dark-wood hover:brightness-105">
+              Copiar
+            </button>
+          </div>
+          <p class="mt-3 text-[11px] text-warm-dark-wood/60">
+            Envía desde Blink, Phoenix, Wallet of Satoshi o cualquier wallet Lightning.
+          </p>
+        </div>
+      `,
+      whatsapp: `
+        <div class="rounded-2xl border-2 border-emerald-500/30 bg-emerald-500/5 p-4">
+          <p class="mb-2 text-xs font-bold uppercase tracking-widest text-warm-dark-wood/70">
+            💵 Pago en efectivo al recibir
+          </p>
+          <p class="text-sm text-warm-dark-wood/80">
+            Llevamos cambio. Paga directamente al repartidor cuando llegue tu pedido humeante.
+          </p>
+        </div>
+      `,
+    };
+
+    paymentPanel.innerHTML = panels[method] || '';
+    attachPaymentPanelListeners();
+
+    // Mostrar/ocultar equivalencia sats
+    if (method === 'lightning') {
+      const sats = useCartStore.getState().getSatsAmount();
+      satsAmount.textContent = `≈ ${sats.toLocaleString()} sats`;
+      satsEquiv.classList.remove('hidden');
+      satsEquiv.classList.add('flex');
+    } else {
+      satsEquiv.classList.add('hidden');
+      satsEquiv.classList.remove('flex');
+    }
+  };
+
+  // ============ LISTENERS DEL PANEL DE PAGO ============
+  const attachPaymentPanelListeners = () => {
+    const copyClabeBtn = document.getElementById('copy-clabe');
+    const copyLnBtn = document.getElementById('copy-lightning');
+    const btcpayBtn = document.getElementById('open-btcpay');
+
+    copyClabeBtn?.addEventListener('click', async () => {
+      await useCartStore.getState().copyClabe();
+      copyClabeBtn.textContent = '✓ Copiado';
+      setTimeout(() => (copyClabeBtn.textContent = 'Copiar'), 2000);
+    });
+
+    copyLnBtn?.addEventListener('click', async () => {
+      await useCartStore.getState().copyLightningData();
+      copyLnBtn.textContent = '✓ Copiado';
+      setTimeout(() => (copyLnBtn.textContent = 'Copiar'), 2000);
+    });
+
+    btcpayBtn?.addEventListener('click', () => {
+      useCartStore.getState().openBtcpay();
+    });
+  };
+
+  // ============ CTA TEXT DINÁMICO ============
+  const updateCtaText = () => {
+    const method = useCartStore.getState().paymentMethod;
+    const total = useCartStore.getState().getTotal();
+    const labels: Record<string, string> = {
+      transfer: `Confirmar por WhatsApp · $${total}`,
+      card: `Pagar con tarjeta · $${total}`,
+      lightning: `Enviar pedido Lightning · $${total}`,
+      whatsapp: `Pedir con pago en efectivo · $${total}`,
+    };
+    ctaText.textContent = labels[method] || 'Enviar pedido';
+  };
+
+  // ============ MARCAR MÉTODO ACTIVO ============
+  const markActiveMethod = () => {
+    const method = useCartStore.getState().paymentMethod;
+    document.querySelectorAll('.payment-method-btn').forEach((btn) => {
+      const isActive = (btn as HTMLElement).dataset.method === method;
+      btn.classList.toggle('border-brand-500', isActive);
+      btn.classList.toggle('bg-white', isActive);
+      btn.classList.toggle('shadow-sm', isActive);
+      const check = btn.querySelector('span:last-child') as HTMLElement;
+      if (check) check.classList.toggle('hidden', !isActive);
+    });
+  };
+
+  // ============ INICIALIZACIÓN ============
+  const init = () => {
+    // Render inicial
+    renderItems();
+    renderPaymentPanel();
+    markActiveMethod();
+
+    // Precargar datos del cliente desde el store
+    const customer = useCartStore.getState().customer;
+    nameInput.value = customer.name;
+    addressInput.value = customer.address;
+    phoneInput.value = customer.phone;
+    notesInput.value = customer.notes;
+
+    // Suscribirse al store
+    useCartStore.subscribe((state, prev) => {
+      if (state.items !== prev.items) renderItems();
+      if (state.paymentMethod !== prev.paymentMethod) {
+        renderPaymentPanel();
+        markActiveMethod();
+        updateCtaText();
+      }
+    });
+
+    // Listeners de métodos de pago
+    document.querySelectorAll('.payment-method-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const method = (btn as HTMLElement).dataset.method as any;
+        if (method) useCartStore.getState().setPaymentMethod(method);
+      });
+    });
+
+    // Listeners de inputs del cliente
+    nameInput.addEventListener('input', (e) =>
+      useCartStore.getState().updateCustomer({ name: (e.target as HTMLInputElement).value })
+    );
+    addressInput.addEventListener('input', (e) =>
+      useCartStore.getState().updateCustomer({ address: (e.target as HTMLInputElement).value })
+    );
+    phoneInput.addEventListener('input', (e) =>
+      useCartStore.getState().updateCustomer({ phone: (e.target as HTMLInputElement).value })
+    );
+    notesInput.addEventListener('input', (e) =>
+      useCartStore.getState().updateCustomer({ notes: (e.target as HTMLTextAreaElement).value })
+    );
+
+    // CTA principal
+    ctaBtn.addEventListener('click', () => {
+      const store = useCartStore.getState();
+      if (store.getItemCount() === 0) return;
+
+      if (store.paymentMethod === 'card') {
+        store.openBtcpay();
+      } else {
+        store.sendWhatsApp();
+      }
+    });
+
+    // Scroll a productos
+    scrollBtn.addEventListener('click', () => {
+      const productsSection = document.getElementById('productos');
+      productsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
+
+  init();
+</script>

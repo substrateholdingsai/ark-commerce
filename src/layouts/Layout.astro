@@ -1,52 +1,39 @@
-﻿---
+---
+import '../styles/globals.css';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import CartDrawer from '../components/checkout/CartDrawer.astro';
+import { config } from '@config/config';
+
 interface Props {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
 }
 
-const { title, description } = Astro.props;
+const { title = config.site.name, description = config.site.description } = Astro.props;
 ---
 
-<!DOCTYPE html>
-<html lang="es">
+<!doctype html>
+<html lang={config.site.language}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#FD5C0D" />
+    <!-- Fuentes: Playfair Display + Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <style>
-      :root {
-        --color-bg: #FFFCF5;
-        --color-text: #2A1A0A;
-        --color-text-muted: #4A3A2A;
-        --color-accent: #D4AF37;
-        --color-primary: #8B1E1E;
-        --color-ember: #FD5C0D;
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: 'Inter', sans-serif;
-        background-color: var(--color-bg);
-        color: var(--color-text);
-        line-height: 1.6;
-      }
-      h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
-      .font-script { font-family: 'Playfair Display', serif; font-style: italic; }
-      .font-display { font-family: 'Playfair Display', serif; }
-      .font-body { font-family: 'Inter', sans-serif; }
-      .paper-texture {
-        background-color: #F9F3E9;
-        background-image:
-          radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
-          radial-gradient(circle at 80% 20%, rgba(139, 30, 30, 0.03) 0%, transparent 50%);
-      }
-    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
   </head>
   <body>
+    <Header />
     <slot />
+    <Footer />
+    <CartDrawer />
   </body>
 </html>

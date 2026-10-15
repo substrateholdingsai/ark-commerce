@@ -1,182 +1,276 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
+/* ── Tema: Design System Temozonia ── */
+@theme {
+  /* === Paleta Brand (Ember/Rojo) === */
+  --color-brand-500: #fd5c0d;
+  --color-brand-600: #f54b06;
+  --color-brand-700: #c23006;
+  --color-brand-900: #7e1d0f;
+
+  /* === Oro === */
+  --color-gold-300: #fde047;
+  --color-gold-DEFAULT: #d4af37;
+  --color-gold-500: #f59e0b;
+
+  /* === Warm Neutral === */
+  --color-warm-cream: #fffcf5;
+  --color-warm-parchment: #f9f3e9;
+  --color-warm-brown: #4a3a2a;
+  --color-warm-dark-wood: #2a1a0a;
+  --color-warm-deep-red: #8b1e1e;
+
+  /* === Liquid Glass === */
+  --color-liquid-bg: #0a0a0f;
+  --color-liquid-accent: rgba(255,255,255,0.125);
+
+  /* === Liquid Glass backgrounds (custom values) === */
+  --color-liquid-glass-light: rgba(255,255,255,0.3);
+  --color-liquid-glass-dark: rgba(10,10,15,0.7);
+
+  /* === Tipografía === */
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-script: "Playfair Display", Georgia, serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "Orbitron", monospace;
+
+  /* === Sombras === */
+  --shadow-gold-glow: 0 0 20px rgba(212,175,55,0.3);
+  --shadow-red-glow: 0 10px 30px rgba(253,92,13,0.4);
+  --shadow-card-hover: 0 30px 60px rgba(42,26,10,0.2);
+  --shadow-liquid-glass: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow-liquid-glass-dark: 0 8px 32px rgba(0,0,0,0.5);
+
+  /* === Bordes redondeados especiales === */
+  --radius-heritage: 0.5rem;
+
+  /* === Animaciones === */
+  --animate-fade-up: fade-up 0.6s ease-out both;
+  --animate-fade-in-up: fade-in-up 0.5s ease-out both;
+  --animate-shine-slide: shine-slide 2s ease-in-out infinite;
+}
+
+/* ── Keyframes ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shine-slide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes smoke-rise {
+  0%   { transform: translateY(0) scale(1); opacity: 0.3; }
+  50%  { opacity: 0.5; }
+  100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+}
+@keyframes ember-float {
+  0%   { transform: translateY(0) scale(1); opacity: 0.6; }
+  50%  { transform: translateX(10px) scale(1.2); opacity: 1; }
+  100% { transform: translateY(-80px) translateX(-10px) scale(0.8); opacity: 0; }
+}
+
+/* ── Base ── */
 @layer base {
-  :root {
-    --font-playfair: "Playfair Display", Georgia, serif;
-    --font-cormorant: "Cormorant Garamond", Georgia, serif;
-    --font-inter: "Inter", system-ui, sans-serif;
-    --font-orbitron: "Orbitron", monospace;
-  }
-
-  html {
-    @apply scroll-smooth;
-  }
+  html { scroll-behavior: smooth; }
 
   body {
-    @apply font-body text-warm-brown bg-warm-cream antialiased;
-    background-image: theme("backgroundImage.paper-texture");
-    background-size: theme("backgroundSize.paper-texture");
-    background-repeat: repeat;
-  }
-
-  * {
-    @apply border-warm-brown/20;
+    font-family: var(--font-body);
+    color: var(--color-warm-dark-wood);
+    background-color: var(--color-warm-parchment);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   ::selection {
-    @apply bg-brand-500 text-white;
+    background-color: var(--color-brand-500);
+    color: white;
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-gold-DEFAULT ring-offset-2 ring-offset-warm-cream;
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-gold-DEFAULT);
   }
 }
 
+/* ── Componentes reutilizables ── */
 @layer components {
+  /* Botón principal heritage */
   .btn-heritage {
-    @apply relative inline-flex items-center justify-center px-8 py-4
-           font-display font-bold text-base uppercase tracking-wider
-           text-warm-cream bg-warm-deep-red border-2 border-gold-DEFAULT
-           overflow-hidden transition-all duration-300
-           hover:shadow-red-glow active:scale-[0.98];
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-warm-cream);
+    background-color: var(--color-warm-deep-red);
+    border: 2px solid var(--color-gold-DEFAULT);
+    overflow: hidden;
+    transition: all 0.3s;
   }
-
+  .btn-heritage:hover { box-shadow: var(--shadow-red-glow); }
+  .btn-heritage:active { transform: scale(0.98); }
   .btn-heritage::before {
-    @apply content-[''] absolute inset-0 bg-gradient-to-r
-           from-transparent via-white/20 to-transparent
-           -translate-x-full transition-transform duration-500;
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
   }
+  .btn-heritage:hover::before { transform: translateX(100%); }
 
-  .btn-heritage:hover::before {
-    @apply translate-x-full;
-  }
-
+  /* Liquid glass button (light) */
   .glass-btn {
-    @apply relative inline-flex items-center justify-center px-6 py-3
-           font-mono font-semibold text-sm
-           text-warm-dark-wood bg-liquid-glass-light
-           border border-white/30 rounded-lg
-           overflow-hidden transition-all duration-300
-           hover:shadow-liquid-glass active:scale-[0.97];
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--color-warm-dark-wood);
+    background: var(--color-liquid-glass-light);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 0.5rem;
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    transition: all 0.3s;
   }
-
   .glass-btn::before {
-    @apply content-[''] absolute top-0 left-0 right-0 h-2/5
-           bg-gradient-to-b from-white/40 to-transparent;
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
   }
 
+  /* Liquid glass button (dark) */
   .glass-btn-dark {
-    @apply relative inline-flex items-center justify-center px-8 py-4
-           font-mono font-bold text-lg
-           text-white bg-liquid-glass-dark
-           border border-white/10 rounded-lg
-           overflow-hidden transition-all duration-300
-           hover:shadow-liquid-glass-dark active:scale-[0.97];
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: white;
+    background: var(--color-liquid-glass-dark);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 0.5rem;
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    transition: all 0.3s;
   }
-
   .glass-btn-dark::before {
-    @apply content-[''] absolute top-0 left-0 right-0 h-2/5
-           bg-gradient-to-b from-white/20 to-transparent;
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
   }
 
-  .product-card-heritage {
-    @apply relative bg-warm-cream rounded-xl p-6
-           border-2 border-warm-deep-red
-           transition-all duration-500
-           hover:-translate-y-8 hover:shadow-card-hover;
-  }
-
-  .product-card-heritage::before {
-    @apply content-[''] absolute inset-0 border border-gold-DEFAULT
-           pointer-events-none;
-  }
-
-  .badge-bestseller {
-    @apply absolute -top-3 -right-3 transform rotate-6
-           bg-gold-gradient text-white text-xs font-bold px-3 py-1
-           clip-path polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
-  }
-
+  /* Recibo dorado */
   .receipt-gold {
-    @apply bg-[#FFFDF5] border-2 border-gold-DEFAULT rounded-xl p-6
-           shadow-gold-glow relative overflow-hidden;
+    background: #fffdf5;
+    border: 2px solid var(--color-gold-DEFAULT);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-gold-glow);
+    position: relative;
+    overflow: hidden;
   }
-
   .receipt-gold::before {
-    @apply content-[''] absolute inset-0 border border-gold-DEFAULT/40
-           pointer-events-none;
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(212,175,55,0.4);
+    pointer-events: none;
   }
 
-  .receipt-divider {
-    @apply border-t border-dashed border-gold-DEFAULT/30 my-4;
-  }
-
-  .payment-total-glass {
-    @apply relative inline-block px-6 py-4
-           font-mono font-bold text-2xl
-           text-white bg-liquid-glass-dark
-           border border-gold-DEFAULT/50 rounded-lg
-           shadow-liquid-glass-dark;
-  }
-
-  .payment-total-glass::before {
-    @apply content-[''] absolute top-0 left-0 right-0 h-2/5
-           bg-gradient-to-b from-gold-500/30 to-transparent;
-  }
-
+  /* Divisor dorado */
   .gold-divider {
-    @apply relative h-px bg-transparent my-8;
+    position: relative;
+    height: 1px;
+    background: transparent;
+    margin: 2rem 0;
   }
-
-  .gold-divider::after {
-    @apply content-['◆'] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-           text-gold-DEFAULT text-xl font-bold;
-  }
-
   .gold-divider::before {
-    @apply content-[''] absolute left-0 top-1/2 right-0 h-px -translate-y-1/2
-           bg-gold-divider;
+    content: '';
+    position: absolute;
+    left: 0; top: 50%; right: 0;
+    height: 1px;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, transparent, var(--color-gold-DEFAULT), transparent);
+  }
+  .gold-divider::after {
+    content: '◆';
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--color-gold-DEFAULT);
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: var(--color-warm-cream);
+    padding: 0 0.5rem;
   }
 
-  .logo-seal {
-    @apply relative inline-flex items-center justify-center w-20 h-20 rounded-full
-           bg-warm-cream border-4 border-gold-DEFAULT
-           shadow-gold-glow;
+  /* Badge premium */
+  .badge-premium {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--color-gold-DEFAULT), var(--color-gold-500));
+    color: white;
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
-  .liquid-glass-shine {
-    @apply relative overflow-hidden;
+  /* Heritage border radius */
+  .rounded-heritage { border-radius: 0.75rem; }
+
+  /* Smoke animation */
+  .smoke {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(245,158,11,0.15), transparent 70%);
+    filter: blur(40px);
+    animation: smoke-rise 12s ease-in-out infinite;
   }
 
-  .liquid-glass-shine::before {
-    @apply content-[''] absolute inset-0 bg-gradient-to-r
-           from-transparent via-white/30 to-transparent
-           -translate-x-full animate-shine-slide;
+  /* Ember animation */
+  .ember {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #fd5c0d;
+    box-shadow: 0 0 8px #fd5c0d, 0 0 16px #f54b06;
+    animation: ember-float 8s ease-in-out infinite;
   }
 
-  .text-gradient-gold {
-    @apply bg-gold-gradient bg-clip-text text-transparent;
+  /* Paper texture */
+  .paper-texture {
+    background-color: var(--color-warm-parchment);
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(212,175,55,0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(139,30,30,0.03) 0%, transparent 50%);
   }
 
-  .text-gradient-brand {
-    @apply bg-brand-gradient bg-clip-text text-transparent;
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .animate-in {
-    @apply animate-fade-in-up;
-  }
-
-  .delay-100 { animation-delay: 100ms; }
-  .delay-200 { animation-delay: 200ms; }
-  .delay-300 { animation-delay: 300ms; }
-  .delay-400 { animation-delay: 400ms; }
-  .delay-500 { animation-delay: 500ms; }
+  /* Fade-up animation utility */
+  .animate-fade-up { animation: var(--animate-fade-up); }
 }

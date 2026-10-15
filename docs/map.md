@@ -4,186 +4,108 @@
 
 ```
 temozonia/
-├── .github/                          # GitHub workflows (CI/CD)
+├── .github/                          # GitHub workflows (CI/CD) [TODO]
 │   └── workflows/
-│       ├── deploy.yml                # Deploy a Cloudflare Workers
-│       └── typecheck.yml             # TypeScript + lint checks
+│       ├── deploy.yml
+│       └── typecheck.yml
 │
-├── .vscode/                          # Configuración del editor
-│   ├── settings.json                 # Formato, TypeScript, Tailwind
-│   └── extensions.json               # Extensiones recomendadas
+├── .vscode/                          # Configuración del editor [TODO]
+│   ├── settings.json
+│   └── extensions.json
 │
-├── astro/                            # 🌐 Sitio público (Astro + Tailwind)
-│   ├── public/                       # Assets estáticos servidos directamente
-│   │   ├── favicon.svg
-│   │   ├── robots.txt
-│   │   ├── sitemap.xml
-│   │   └── images/
-│   │       ├── products/
-│   │       └── hero/
-│   ├── src/
-│   │   ├── components/               # Componentes reutilizables
-│   │   │   ├── ui/                   # Primitivas UI (Button, Card, Input)
-│   │   │   ├── layout/               # Header, Footer, Navigation
-│   │   │   ├── product/              # ProductCard, ProductGrid, Badges
-│   │   │   ├── checkout/             # Cart, PaymentTotal, Form
-│   │   │   └── interactive/          # Islas React hidratadas (client:visible)
-│   │   ├── layouts/                  # Layouts base de página
-│   │   │   ├── Layout.astro          # Layout principal
-│   │   │   ├── LayoutClean.astro     # Sin header/footer (landing, checkout)
-│   │   │   └── LayoutAuth.astro      # Páginas de auth
-│   │   ├── pages/                    # Rutas (file-based routing)
-│   │   │   ├── index.astro           # Home
-│   │   │   ├── products/
-│   │   │   │   ├── index.astro       # Listado con filtros
-│   │   │   │   └── [slug].astro      # Detalle de producto (SSR opcional)
-│   │   │   ├── cart.astro            # Carrito
-│   │   │   ├── checkout.astro        # Checkout multi-paso
-│   │   │   ├── account/              # Perfil, pedidos, direcciones
-│   │   │   ├── about.astro
-│   │   │   ├── contact.astro
-│   │   │   ├── blog/
-│   │   │   │   ├── index.astro
-│   │   │   │   └── [slug].astro
-│   │   │   ├── api/                  # Endpoints API (Astro API routes)
-│   │   │   │   ├── cart.ts
-│   │   │   │   ├── webhook.ts
-│   │   │   │   └── search.ts
-│   │   │   └── rss.xml.js            # Feed RSS
-│   │   ├── styles/
-│   │   │   └── globals.css           # Tailwind + Design System (importado en Layout)
-│   │   ├── scripts/                  # Scripts cliente (no islas)
-│   │   │   ├── analytics.ts
-│   │   │   └── service-worker.ts
-│   │   ├── content/                  # Colecciones de contenido (Astro Content)
-│   │   │   ├── blog/
-│   │   │   └── config.ts
-│   │   ├── i18n/                     # Internacionalización
-│   │   │   ├── es.json
-│   │   │   └── en.json
-│   │   ├── utils/                    # Helpers puros
-│   │   │   ├── currency.ts
-│   │   │   ├── date.ts
-│   │   │   └── validation.ts
-│   │   ├── stores/                   # Estado global (Zustand)
-│   │   │   ├── cart.ts
-│   │   │   └── ui.ts
-│   │   └── types/                    # Tipos TypeScript compartidos
-│   │       ├── product.ts
-│   │       ├── cart.ts
-│   │       └── user.ts
-│   ├── astro.config.mjs              # Config Astro + Tailwind Vite plugin
-│   ├── package.json                  # Dependencias del sitio (workspace)
-│   └── tsconfig.json                 # Extiende config raíz
-│
-├── worker/                           # ⚡ Cloudflare Worker (Hono)
-│   ├── index.ts                      # Entry point principal
-│   ├── routes/                       # Rutas API organizadas
-│   │   ├── health.ts                 # GET /health
-│   │   ├── config.ts                 # GET /api/config
-│   │   ├── products.ts               # CRUD productos (D1)
-│   │   ├── cart.ts                   # Carrito server-side (KV/DO)
-│   │   ├── checkout.ts               # Procesar pedidos (D1 + Queues)
-│   │   ├── payments/
-│   │   │   ├── btcpay.ts             # Webhooks BTCPay
-│   │   │   └── mercadopago.ts        # Webhooks Mercado Pago
-│   │   ├── webhooks.ts               # Stripe, email, etc.
-│   │   ├── python.ts                 # POST /api/python/execute
-│   │   └── search.ts                 # Vectorize search
-│   ├── middleware/                   # Middleware Hono
-│   │   ├── auth.ts                   # JWT validation
-│   │   ├── cors.ts                   # CORS config
-│   │   ├── rate-limit.ts             # Rate limiting (KV)
-│   │   └── logging.ts                # Request logging
-│   ├── services/                     # Lógica de negocio
-│   │   ├── db.ts                     # D1 queries
-│   │   ├── kv.ts                     # KV helpers
-│   │   ├── r2.ts                     # R2 upload/download
-│   │   ├── queue.ts                  # Queue producers/consumers
-│   │   ├── durable-objects/
-│   │   │   ├── SessionDO.ts          # Session state
-│   │   │   └── CartDO.ts             # Carrito persistente
-│   │   ├── vectorize.ts              # Embeddings + search
-│   │   └── ai.ts                     # Workers AI helpers
-│   ├── bindings.ts                   # Tipos de bindings Cloudflare
-│   └── utils/                        # Helpers worker
-│       ├── response.ts
-│       └── validation.ts
-│
-├── scripts/                          # 🛠 Scripts de utilidad y Python
-│   ├── python/
-│   │   ├── main.py                   # Entry point (CLI + Workers AI)
-│   │   ├── analytics/
-│   │   │   ├── product_stats.py
-│   │   │   └── sales_report.py
-│   │   ├── recommendations/
-│   │   │   └── collaborative.py
-│   │   ├── shipping/
-│   │   │   └── calculator.py
-│   │   └── utils/
-│   │       └── helpers.py
-│   ├── deploy/
-│   │   ├── create-resources.sh       # Crear D1, KV, R2, Queues, DO
-│   │   ├── seed-database.ts          # Poblar D1 con datos iniciales
-│   │   └── deploy-worker.ts          # Script deploy personalizado
-│   ├── dev/
-│   │   ├── start-all.sh              # Inicia worker + astro dev
-│   │   └── tunnel.sh                 # Cloudflare tunnel para testing
-│   └── generate/
-│       ├── types.ts                  # Genera tipos desde wrangler/Bindings
-│       └── openapi.ts                # Genera spec OpenAPI
-│
-├── config/                           # ⚙️ Configuración centralizada (Single Source of Truth)
-│   ├── config.ts                     # Config principal tipada
-│   ├── site.ts                       # Info del sitio (nombre, URL, idiomas)
-│   ├── features.ts                   # Feature flags
-│   ├── integrations.ts               # Keys/secretos de integraciones
-│   ├── python.ts                     # Config Python (packages, runtime)
-│   ├── security.ts                   # CORS, CSP, rate limits
-│   └── performance.ts                # Cache headers, compression
+├── config/                           # ⚙️ Configuración centralizada
+│   └── config.ts                     # Config principal tipada
 │
 ├── docs/                             # 📚 Documentación
 │   ├── designsystem.md               # Design System completo
-│   ├── map.md                        # Este archivo
-│   ├── api.md                        # Documentación API (OpenAPI)
-│   ├── deployment.md                 # Guía de deploy
-│   ├── development.md                # Guía de desarrollo local
-│   ├── cloudflare-bindings.md        # Referencia bindings D1/KV/R2/DO
-│   ├── python-scripts.md             # Guía scripts Python
-│   └── architecture.md               # Diagramas y decisiones
+│   └── map.md                        # Este archivo (Status y Roadmap)
 │
-├── tests/                            # 🧪 Tests
-│   ├── unit/
-│   │   ├── worker/
-│   │   └── astro/
-│   ├── integration/
-│   │   ├── api.test.ts
-│   │   └── checkout.test.ts
-│   ├── e2e/
-│   │   └── playwright.config.ts
-│   └── fixtures/
-│       ├── products.json
-│       └── users.json
+├── public/                           # 🖼 Assets estáticos
+│   ├── favicon.svg                   # Favicon
+│   ├── .assetsignore
+│   └── images/                       # [PENDIENTE] Fotos reales de productos
+│       └── products/
 │
-├── dist/                             # Build output (gitignored)
-│   ├── worker/                       # Worker compilado
-│   └── client/                       # Astro build estático
+├── src/                              # 🌐 Frontend principal (Astro 5 + Tailwind v4)
+│   ├── components/
+│   │   ├── checkout/
+│   │   │   ├── CartDrawer.astro      # Panel deslizante del carrito
+│   │   │   └── CheckoutCalculator.astro # Resumen, cálculo y envío WhatsApp
+│   │   ├── layout/
+│   │   │   ├── Header.astro          # Navbar con badge dinámico del carrito
+│   │   │   ├── Hero.astro            # Hero con brasas y humo
+│   │   │   └── Footer.astro          # Directorio y status del ahumador
+│   │   └── product/
+│   │       └── ProductCard.astro     # Card de producto con botón interactivo
+│   ├── data/
+│   │   └── products.ts               # Catálogo local de cortes ahumados
+│   ├── layouts/
+│   │   └── Layout.astro              # Layout base (Header, Footer, CartDrawer, CSS)
+│   ├── pages/
+│   │   ├── index.astro               # Home (Hero + Productos + Checkout)
+│   │   ├── conocenos.astro           # Historia y tradición
+│   │   ├── contacto.astro            # Canales de atención y WhatsApp
+│   │   ├── mayoreo.astro             # B2B / Restaurantes
+│   │   ├── recetas.astro             # Guías y preparación
+│   │   └── test.astro                # Ruta de prueba
+│   ├── stores/
+│   │   └── cart.ts                   # Store Zustand (items, CLABE, Lightning, WhatsApp)
+│   ├── styles/
+│   │   └── globals.css               # Tailwind v4 (@theme tokens + utilidades)
+│   ├── types/
+│   │   ├── cart.ts                   # Tipos de Carrito y Comprador
+│   │   └── product.ts                # Tipos de Producto y Orden
+│   └── utils/
+│       ├── constants.ts              # Configuración WhatsApp, CLABE, Lightning
+│       └── whatsapp.ts               # Generador de mensaje de pedido
 │
+├── worker/                           # ⚡ Backend Cloudflare Worker (Hono)
+│   ├── index.ts                      # Entrypoint con bindings y middleware
+│   └── routes/
+│       ├── health.ts                 # GET /health
+│       └── index.ts                  # Montaje API (stubs pendientes)
+│
+├── scripts/                          # 🛠 Scripts utilitarios y base de datos
+│   ├── python/
+│   │   └── main.py                   # Script de analítica / Workers AI
+│   └── sql/
+│       └── schema.sql                # Esquema D1 (products, orders, order_items)
+│
+├── astro.config.mjs                  # Configuración Astro (@/ y @config aliases)
+├── package.json                      # Scripts de compilación y dependencias
+├── tsconfig.json                     # Paths de TypeScript
+├── wrangler.toml                     # Bindings Cloudflare (D1, KV, R2, Queue)
+└── dist/                             # Build final servido por Cloudflare Assets
+├── worker/                           # ⚡ Cloudflare Worker (Hono)
+│   ├── index.ts                      # Entry point principal (Bindings + Hono app)
+│   └── routes/                       # Rutas API
+│       ├── health.ts                 # GET /health (Activo con check D1)
+│       ├── index.ts                  # Montaje API (Stubs)
+│       ├── products.ts               # [PENDIENTE] CRUD productos (D1)
+│       └── checkout.ts               # [PENDIENTE] Registro pedidos (D1 + Queue)
+│
+├── scripts/                          # 🛠 Scripts utilitarios y base de datos
+│   ├── python/
+│   │   └── main.py                   # Entry point (CLI + Workers AI stub)
+│   └── sql/
+│       └── schema.sql                # Esquema D1 (products, orders, order_items)
+│
+├── config/                           # ⚙️ Configuración centralizada
+│   └── config.ts                     # Config principal tipada
+│
+├── docs/                             # 📚 Documentación
+│   ├── designsystem.md               # Design System completo
+│   └── map.md                        # Este archivo
+│
+├── tests/                            # 🧪 Tests [PENDIENTE]
+├── dist/                             # Build output (generado por astro build)
 ├── node_modules/                     # Dependencias (gitignored)
-│
 ├── .gitignore
-├── .env.example                      # Template variables entorno
-├── .env.local                        # Variables locales (gitignored)
-├── package.json                      # Workspace root + scripts principales
-├── pnpm-workspace.yaml               # Config pnpm workspaces (opcional)
-├── tsconfig.json                     # Config TypeScript raíz
-├── tailwind.config.ts                # Design System tokens
-├── postcss.config.js                 # PostCSS (Tailwind v4)
-├── wrangler.toml                     # Config Cloudflare Worker
-├── wrangler.local.toml               # Overrides locales (gitignored)
-├── README.md
-├── LICENSE
-└── CHANGELOG.md
+├── astro.config.mjs                  # Configuración Astro (@/ y @config aliases)
+├── package.json                      # Workspace root + dependencias principales
+├── tsconfig.json                     # Configuración TypeScript
+├── wrangler.toml                     # Bindings Cloudflare (D1, KV, R2, Queue)
+└── README.md
 ```
 
 ---
@@ -494,21 +416,73 @@ const result = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
 
 | Archivo | Propósito |
 |---------|-----------|
-| `config/config.ts` | **Fuente de verdad** - toda config tipada |
-| `wrangler.toml` | Bindings Cloudflare (D1, KV, R2, Queue, DO, Vectorize, AI) |
-| `tailwind.config.ts` | Design System tokens (colores, fuentes, sombras) |
-| `src/styles/globals.css` | Componentes UI (btn-heritage, glass-btn, etc.) |
-| `worker/bindings.ts` | Tipos TypeScript de `env` |
-| `astro/src/stores/cart.ts` | Estado carrito (Zustand + persist) |
+| `config/config.ts` | **Fuente de verdad** - Configuración tipada del proyecto |
+| `wrangler.toml` | Bindings Cloudflare reales (D1: `temozonia-db`, KV: `SESSION`/`CACHE`, R2, Queues) |
+| `src/styles/globals.css` | Design System Tailwind v4 (`@theme`, colores brand, gold, glass, utilidades) |
+| `src/stores/cart.ts` | Estado del carrito (Zustand con persistencia localStorage y checkout WhatsApp/SPEI/Lightning) |
+| `src/data/products.ts` | Catálogo de cortes de carne y precios base |
+| `worker/index.ts` | Entrypoint Hono en Cloudflare Workers |
+| `scripts/sql/schema.sql` | Esquema D1 (`products`, `orders`, `order_items`) |
 
 ---
 
-## 7. Próximos Pasos / TODO
+## 7. Estado Actual del Proyecto (Actualizado: Octubre 2026)
 
-- [ ] Configurar CI/CD GitHub Actions
-- [ ] Implementar auth (JWT + Durable Objects Session)
-- [ ] Añadir tests E2E críticos (checkout, pagos)
-- [ ] Configurar Sentry para error tracking
-- [ ] Documentar API con OpenAPI/Swagger
-- [ ] Implementar i18n (es/en) completo
-- [ ] Optimizar imágenes con `@astrojs/image` + Cloudflare Images
+### ✅ Completado e Integrado
+- **Frontend Astro 5 + Tailwind v4**:
+  - Unificación completa: `src/` contiene todas las páginas y componentes del flujo de compra.
+  - Vistas activas: `index.astro` (Hero, Grilla de Productos, Checkout Calculator), `conocenos.astro`, `contacto.astro`, `mayoreo.astro`, `recetas.astro`.
+  - Navegación global compartida: `Header.astro` con badge reactivo del carrito, `CartDrawer.astro` lateral interactivo, y `Footer.astro`.
+  - Animaciones y tokens de identidad: Efecto de humo y brasas, botones *heritage* y *liquid glass*, divisores dorados.
+- **Flujo de Carrito & Checkout**:
+  - Store Zustand con persistencia en cliente.
+  - Cálculo de subtotales, totales, equivalencia en Satoshis (Bitcoin Lightning).
+  - Formulario de checkout directo con generación de pedido estructurado para WhatsApp.
+  - Copia rápida de CLABE interbancaria al portapapeles.
+- **Infraestructura Cloudflare**:
+  - Bindings configurados y aprovisionados en `wrangler.toml`.
+  - Build verificado y compatible con `@astrojs/cloudflare` adapter y Cloudflare Assets.
+
+---
+
+## 8. Check List de Lo Que Falta (Pending / Missing Roadmap)
+
+### 🔴 Prioridad Alta (Esencial para Operación y Producción)
+- [ ] **Rutas API en Backend (`worker/routes/`)**:
+  - [ ] Implementar `GET /api/products` (obtener catálogo desde D1 en lugar de estático).
+  - [ ] Implementar `POST /api/checkout` (persistir órdenes en tabla `orders` y `order_items` de D1 y encolar en `ORDER_QUEUE`).
+  - [ ] Implementar `GET /api/orders/:id` para consulta de estado de pedido.
+- [ ] **Sembrado de Base de Datos D1**:
+  - [ ] Crear script o migraciones `INSERT` en `scripts/sql/` para poblar la tabla `products` en D1 (local y remote).
+- [ ] **Assets de Imágenes Reales**:
+  - [ ] Agregar fotografías de productos en `public/images/products/` (`carne-ahumada.jpg`, `costillas-bbq.jpg`, `chorizo.jpg`, `salchichón.jpg`, `pack-degustacion.jpg`).
+- [ ] **Datos Bancarios Reales**:
+  - [ ] Reemplazar la CLABE ficticia (`123456789012345678`) y nombre de titular en `src/utils/constants.ts` y `wrangler.toml` con los datos reales de la cuenta comercial.
+- [ ] **Limpieza de carpeta `astro/`**:
+  - [ ] Remover de forma segura la subcarpeta residual `astro/` para evitar redundancias de código.
+
+### 🟠 Prioridad Media (Experiencia de Usuario y Robustez)
+- [ ] **Páginas de Producto Individuales**:
+  - [ ] Implementar ruta dinámica `src/pages/products/[slug].astro` o modal de detalle con ingredientes y sugerencias de maridaje.
+- [ ] **Tasa Dinámica de Satoshis**:
+  - [ ] Sustituir la constante fija `SATS_RATE` por consulta a API de precio BTC/MXN en tiempo real.
+- [ ] **Middleware en Worker**:
+  - [ ] Configurar autenticación JWT o API Key para endpoints administrativos.
+  - [ ] Implementar rate limiting en endpoints de checkout usando Cloudflare KV.
+- [ ] **Página 404 y Mantenimiento**:
+  - [ ] Crear `src/pages/404.astro` adaptada al diseño cálido y rústico.
+- [ ] **SEO y Metadatos**:
+  - [ ] Crear `public/robots.txt` y `public/sitemap.xml`.
+  - [ ] Configurar Open Graph tags e imágenes para previews en redes y WhatsApp.
+
+### 🟡 Prioridad Baja / Mejoras Futuras
+- [ ] **Automatización CI/CD**:
+  - [ ] Configurar GitHub Actions (`.github/workflows/deploy.yml`) para despliegue automatizado en `main`.
+- [ ] **Analítica & Monitoreo**:
+  - [ ] Integrar Sentry u OpenTelemetry para monitoreo de errores en el Worker.
+  - [ ] Activar Cloudflare Web Analytics.
+- [ ] **Internacionalización (i18n)**:
+  - [ ] Soporte para catálogo en inglés para clientes turísticos / expatriados en Mérida.
+- [ ] **Tests Automatizados**:
+  - [ ] Tests unitarios para el store del carrito (`vitest`).
+  - [ ] Test end-to-end del flujo de compra y checkout (`playwright`).

@@ -13,6 +13,7 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv"
   },
   "dependencies": {
+    "@astrojs/react": "^7.0.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.3.0",
@@ -24,6 +25,7 @@
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "tailwindcss": "^4.3.3",
+    "zod": "^3.25.76",
     "zustand": "^5.0.15"
   },
   "devDependencies": {
