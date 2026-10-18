@@ -1,12 +1,90 @@
 import React, { useState } from 'react';
 
-export default function ArkLanding() {
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [toast, setToast] = useState<string | null>(null);
+const WHATSAPP_NUMBER = '529994918221';
 
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 2800);
+const RETAIL_CATEGORIES = [
+  {
+    id: 'gastro',
+    icon: '🥩',
+    title: 'Alimentos & Empacados',
+    subtitle: 'Carnes, salsas, quesos y botanas',
+    sampleStore: 'ahumadosdelnorte.ark.mx',
+    products: [
+      { name: 'Brisket Ahumado 1kg', price: '$420', desc: 'Ahumado 10h con leña de mezquite' },
+      { name: 'Costillas BBQ 1kg', price: '$380', desc: 'Glaseado artesanal de la casa' },
+      { name: 'Salsa Habanera Tatemada', price: '$95', desc: 'Frasco 250ml sin conservadores' },
+    ],
+    whatsappPreview: 'Hola! Quiero pedir 1x Brisket 1kg + 1x Salsa Tatemada. Total: $515 MXN. Ya te transferí por SPEI.',
+  },
+  {
+    id: 'cafe',
+    icon: '☕',
+    title: 'Café & Artesanales',
+    subtitle: 'Café de especialidad, miel y mezcal',
+    sampleStore: 'cafedealtura.ark.mx',
+    products: [
+      { name: 'Café Chiapas Tostado 500g', price: '$210', desc: 'Notas a chocolate amargo y avellana' },
+      { name: 'Miel Virgen de Flor 350g', price: '$140', desc: '100% pura de apiario artesanal' },
+      { name: 'Mezcal Espadín 750ml', price: '$490', desc: 'Artesanal 45° de Oaxaca' },
+    ],
+    whatsappPreview: 'Hola! Quiero 2x Café Chiapas 500g. Total: $420 MXN. Copié tu CLABE para transferir.',
+  },
+  {
+    id: 'postres',
+    icon: '🧁',
+    title: 'Repostería & Eventos',
+    subtitle: 'Pasteles, galletas y mesas dulces',
+    sampleStore: 'dulcecanela.ark.mx',
+    products: [
+      { name: 'Pastel Red Velvet 10 pax', price: '$480', desc: 'Betún de queso crema artesanal' },
+      { name: 'Caja 12 Galletas Chispas', price: '$220', desc: 'Rellenas de chocolate belga' },
+      { name: 'Crumble de Manzana', price: '$340', desc: 'Horneado al día con canela de varita' },
+    ],
+    whatsappPreview: 'Hola! Quiero encargar 1x Pastel Red Velvet para el sábado. Total: $480 MXN.',
+  },
+  {
+    id: 'moda',
+    icon: '🧢',
+    title: 'Streetwear & Moda',
+    subtitle: 'Gorras, sneakers y marcas de autor',
+    sampleStore: 'nortehype.ark.mx',
+    products: [
+      { name: 'Gorra Trucker Edición Limitada', price: '$550', desc: 'Bordado 3D de alta densidad' },
+      { name: 'Heavyweight Tee Black', price: '$450', desc: 'Algodón peinado 240g corte boxy' },
+      { name: 'Cadena Plata .925 Cubana', price: '$890', desc: 'Eslabón cerrado hecha en Taxco' },
+    ],
+    whatsappPreview: 'Hola! Me interesa la Gorra Trucker y la Tee Talla L. Total: $1,000 MXN. Pago con tarjeta.',
+  },
+  {
+    id: 'belleza',
+    icon: '💈',
+    title: 'Belleza & Barber Supply',
+    subtitle: 'Pomadas, aceites y kits de cuidado',
+    sampleStore: 'barberiasupreme.ark.mx',
+    products: [
+      { name: 'Pomada Matte Clay 100g', price: '$220', desc: 'Fijación alta sin brillo' },
+      { name: 'Aceite para Barba Bergamota', price: '$190', desc: 'Hidratación con jojoba y argán' },
+      { name: 'Kit Cuidado Completo', price: '$499', desc: 'Shampoo + Aceite + Cera moldeadora' },
+    ],
+    whatsappPreview: 'Hola! Quiero el Kit Cuidado Completo. Total: $499 MXN. Paso por él a la sucursal.',
+  },
+];
+
+export default function ArkLanding() {
+  const [selectedCat, setSelectedCat] = useState(RETAIL_CATEGORIES[0]);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [copiedClabe, setCopiedClabe] = useState(false);
+
+  const getWaLink = (msg: string) => {
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  };
+
+  const handleCopyDemoClabe = () => {
+    try {
+      navigator.clipboard.writeText('012180012345678901');
+      setCopiedClabe(true);
+      setTimeout(() => setCopiedClabe(false), 2200);
+    } catch {}
   };
 
   const scrollTo = (id: string) => {
@@ -22,578 +100,695 @@ export default function ArkLanding() {
         .font-body { font-family: 'Inter', sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         .lima-glow { box-shadow: 0 8px 30px -6px rgba(180,255,0,0.35); }
-        .grid-bg { background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 48px 48px; }
-        @keyframes pulseLima {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(180,255,0,0.4); }
-          50% { box-shadow: 0 0 0 14px rgba(180,255,0,0); }
+        .grid-bg { 
+          background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); 
+          background-size: 40px 40px; 
         }
-        .animate-pulse-lima { animation: pulseLima 2.2s ease-in-out infinite; }
       `}</style>
 
-      {/* HEADER / NAVIGATION */}
+      {/* =========================================================================
+          HEADER
+         ========================================================================= */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0B0C0E]/90 backdrop-blur-xl">
-        <div className="mx-auto max-w-[1240px] px-5 sm:px-8 h-[68px] flex items-center justify-between">
+        <div className="mx-auto max-w-[1240px] px-4 sm:px-8 h-[68px] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-[#B4FF00] flex items-center justify-center font-display font-black text-[15px] tracking-wider text-[#0B0C0E] shadow-sm">
+            <div className="h-9 w-9 rounded-xl bg-[#B4FF00] flex items-center justify-center font-display font-black text-[15px] text-[#0B0C0E] shadow-sm">
               ▲
             </div>
             <div>
-              <span className="font-display font-bold text-lg tracking-tight text-white">
-                ARK<span className="text-[#B4FF00]">PULSE</span>
+              <span className="font-display font-black text-lg tracking-tight text-white">
+                ARK<span className="text-[#B4FF00]">COMMERCE</span>
               </span>
-              <span className="hidden sm:inline-block ml-3 font-mono text-[11px] tracking-widest text-[#7C8590]">
-                v1.0 · ARK SYSTEMS
+              <span className="hidden sm:inline-block ml-3 font-mono text-[11px] tracking-widest text-[#B4FF00] bg-[#B4FF00]/10 px-2 py-0.5 rounded border border-[#B4FF00]/20">
+                $299/MES · 0% COMISIÓN
               </span>
             </div>
           </div>
 
+          <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-[#A7AEB8]">
+            <button onClick={() => scrollTo('rubros')} className="hover:text-white transition">Giros de negocio</button>
+            <button onClick={() => scrollTo('comparativa')} className="hover:text-white transition">Comparativa</button>
+            <button onClick={() => scrollTo('pagos')} className="hover:text-white transition">Métodos de pago</button>
+            <button onClick={() => scrollTo('como-funciona')} className="hover:text-white transition">Cómo funciona</button>
+            <button onClick={() => scrollTo('faq')} className="hover:text-white transition">Preguntas</button>
+          </nav>
+
           <div className="flex items-center gap-3">
             <a
-              href="/temozonia"
-              className="hidden sm:flex h-9 items-center rounded-lg border border-white/10 px-4 font-body text-[12px] font-medium text-[#D2D6DB] hover:border-[#B4FF00] hover:text-[#B4FF00] transition"
+              href={getWaLink('Hola Ark! Quiero pedir mi tienda en línea de $299/mes para mi negocio.')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-10 rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] px-5 flex items-center font-display text-[13px] font-bold text-[#0B0C0E] transition lima-glow active:scale-[0.98]"
             >
-              Demo Cliente (Temozonia)
+              Pedir por WhatsApp →
             </a>
-            <button
-              onClick={() => scrollTo('demo')}
-              className="hidden sm:flex h-9 items-center rounded-lg border border-white/10 px-4 font-body text-[12px] font-medium text-[#D2D6DB] hover:bg-white/[0.04] transition"
-            >
-              Ver Código
-            </button>
-            <button
-              onClick={() => scrollTo('checkout')}
-              className="h-9 rounded-lg bg-[#B4FF00] hover:bg-[#C6FF33] px-5 font-display text-[13px] font-bold tracking-wide text-[#0B0C0E] transition lima-glow"
-            >
-              Comprar Kit $49
-            </button>
           </div>
         </div>
       </header>
 
-      {/* HERO SECTION */}
-      <section className="relative overflow-hidden grid-bg border-b border-white/10">
-        <div className="absolute top-1/4 right-[8%] w-32 h-32 rounded-3xl bg-[#B4FF00]/10 border border-[#B4FF00]/20 blur-xl pointer-events-none" />
+      {/* =========================================================================
+          HERO SECTION
+         ========================================================================= */}
+      <section className="relative overflow-hidden grid-bg border-b border-white/10 pt-14 pb-20 sm:pt-20 sm:pb-28">
+        <div className="absolute top-1/3 right-[10%] w-72 h-72 rounded-full bg-[#B4FF00]/10 blur-[100px] pointer-events-none" />
 
-        <div className="relative mx-auto max-w-[1240px] px-5 sm:px-8 pt-16 sm:pt-24 pb-16 sm:pb-28">
-          <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-12 sm:gap-8 items-center">
+        <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-8 items-center">
+            
+            {/* Copy Principal */}
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1 text-xs font-mono text-[#B4FF00] mb-6">
-                <span className="h-2 w-2 rounded-full bg-[#B4FF00] animate-pulse" />
-                ARK SYSTEMS DESIGN CANON · 1 HTML • 0 DEPENDENCIAS
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#B4FF00]/30 bg-[#B4FF00]/10 px-3.5 py-1 text-xs font-mono font-bold text-[#B4FF00] mb-6">
+                <span>🇲🇽</span> HECHO EN MÉXICO PARA COBRAR EN MÉXICO
               </div>
 
-              <h1 className="font-display text-5xl sm:text-7xl font-bold tracking-tight leading-[0.96]">
-                Todo tu inventario, <br />
-                <span className="text-[#B4FF00]">un solo pulso.</span>
+              <h1 className="font-display text-4xl sm:text-6xl lg:text-[64px] font-black tracking-tight leading-[1.02]">
+                Tu tienda que vende y cobra por WhatsApp.{' '}
+                <span className="text-[#B4FF00] block mt-1">$299 al mes.</span>
               </h1>
 
-              <p className="font-body mt-6 max-w-[540px] text-[16px] sm:text-[18px] leading-[1.65] text-[#A7AEB8]">
-                El arca que carga tu inventario; el pulso que convierte visitantes en compradores.
-                Sin WordPress, sin Shopify, sin cuotas mensuales. 1 archivo, deploy en 3 minutos y cobros instantáneos.
+              <p className="font-body mt-6 text-[16px] sm:text-[18px] leading-[1.65] text-[#A7AEB8] max-w-xl">
+                En México no se compra con carritos lentos en dólares. Se vende por Instagram y se cobra por <strong className="text-white">SPEI directo a tu banco</strong>.
+                Ark te entrega tu tienda online lista en 5 minutos con tu catálogo, tus fotos y tus pedidos ordenados en tu WhatsApp.
               </p>
 
-              <div className="mt-8 flex flex-wrap gap-3">
-                <button
-                  onClick={() => scrollTo('demo')}
-                  className="flex h-[52px] items-center gap-3 rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] px-7 font-display text-[14px] font-bold tracking-wide text-[#0B0C0E] transition animate-pulse-lima"
+              {/* Badges de nocaut */}
+              <div className="mt-6 flex flex-wrap gap-2 text-xs font-mono font-semibold text-zinc-300">
+                <span className="bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                  <span className="text-[#B4FF00]">✓</span> 0% Comisiones por venta
+                </span>
+                <span className="bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                  <span className="text-[#B4FF00]">✓</span> Tu dinero directo a tu CLABE
+                </span>
+                <span className="bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                  <span className="text-[#B4FF00]">✓</span> Lista hoy en 5 minutos
+                </span>
+              </div>
+
+              {/* Botones de acción */}
+              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                <a
+                  href={getWaLink('Hola Ark! Quiero activar mi tienda online por $299/mes.')}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-14 px-8 rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] flex items-center justify-center font-display text-base font-bold text-[#0B0C0E] transition lima-glow active:scale-[0.98]"
                 >
-                  Explorar Storefront
-                  <span className="font-mono text-base">→</span>
-                </button>
+                  🚀 Quiero mi tienda por $299/mes
+                </a>
                 <button
-                  onClick={() => scrollTo('checkout')}
-                  className="h-[52px] rounded-xl border border-white/20 hover:border-[#B4FF00] hover:text-[#B4FF00] bg-white/[0.03] px-7 font-body text-[14px] font-medium text-white transition"
+                  onClick={() => scrollTo('rubros')}
+                  className="h-14 px-6 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/30 flex items-center justify-center font-display text-sm font-semibold text-white transition"
                 >
-                  Comprar Kit ($49 USD)
+                  Ver tiendas activas ↓
                 </button>
               </div>
 
-              <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-white/10 max-w-xl">
-                <div>
-                  <div className="font-display text-3xl font-bold text-[#B4FF00] font-mono">10+</div>
-                  <div className="text-[#7C8590] text-xs font-body mt-1">Componentes</div>
-                </div>
-                <div>
-                  <div className="font-display text-3xl font-bold text-[#B4FF00] font-mono">&lt; 2s</div>
-                  <div className="text-[#7C8590] text-xs font-body mt-1">Velocidad carga</div>
-                </div>
-                <div>
-                  <div className="font-display text-3xl font-bold text-[#B4FF00] font-mono">100</div>
-                  <div className="text-[#7C8590] text-xs font-body mt-1">Lighthouse Score</div>
-                </div>
-                <div>
-                  <div className="font-display text-3xl font-bold text-[#B4FF00] font-mono">$0</div>
-                  <div className="text-[#7C8590] text-xs font-body mt-1">Costo servidor</div>
-                </div>
-              </div>
+              <p className="mt-4 text-xs text-[#7C8590] font-mono">
+                Sin contratos forzosos · Cancela cuando quieras · Soporte directo por WhatsApp
+              </p>
             </div>
 
-            {/* PREVIEW CONTAINER */}
-            <div className="relative lg:pl-6">
-              <div className="rounded-2xl border border-white/10 bg-[#1A1D22] p-2.5 shadow-2xl">
-                <div className="rounded-xl bg-[#121417] border border-white/[0.06] overflow-hidden">
-                  <div className="flex items-center justify-between border-b border-white/[0.06] px-4 h-[44px]">
-                    <div className="flex items-center gap-2">
-                      <div className="h-3 w-3 rounded-full bg-[#FF5F57]" />
-                      <div className="h-3 w-3 rounded-full bg-[#FFBD2E]" />
-                      <div className="h-3 w-3 rounded-full bg-[#28CA42]" />
+            {/* Mockup Interactivo de la Tienda */}
+            <div className="relative">
+              <div className="relative rounded-2xl border border-white/15 bg-[#121417] p-5 sm:p-6 shadow-2xl overflow-hidden">
+                <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-red-500/80 inline-block" />
+                    <span className="w-3 h-3 rounded-full bg-yellow-500/80 inline-block" />
+                    <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block" />
+                    <span className="ml-2 font-mono text-xs text-zinc-400 bg-white/[0.04] px-2.5 py-0.5 rounded border border-white/5">
+                      tunegocio.ark.mx
+                    </span>
+                  </div>
+                  <span className="font-mono text-[11px] font-bold text-[#B4FF00] bg-[#B4FF00]/10 px-2 py-0.5 rounded">
+                    EN LÍNEA
+                  </span>
+                </div>
+
+                {/* Tienda simulada */}
+                <div className="space-y-3">
+                  <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3.5 flex items-center justify-between">
+                    <div>
+                      <div className="font-display font-bold text-sm text-white">Carne Ahumada al Vacío 1kg</div>
+                      <div className="text-xs text-[#7C8590]">Empacado listo para calentar</div>
                     </div>
-                    <div className="flex items-center gap-2 text-[11px] font-mono text-[#7C8590]">
-                      <span>index.html</span>
-                      <span className="rounded bg-white/[0.06] px-2 py-0.5 text-[10px] text-[#B4FF00]">18.4 KB</span>
+                    <div className="text-right">
+                      <div className="font-mono font-bold text-[#B4FF00] text-sm">$380 MXN</div>
+                      <span className="text-[10px] text-zinc-400 bg-white/[0.05] px-1.5 py-0.5 rounded">1 pza</span>
                     </div>
                   </div>
 
-                  <div className="p-6">
-                    <div className="mb-4 flex items-center justify-between">
-                      <div className="text-[11px] font-mono tracking-widest text-[#7C8590] uppercase">
-                        Store Engine Activo
-                      </div>
-                      <div className="h-1.5 w-20 rounded-full bg-white/10">
-                        <div className="h-full w-[85%] bg-[#B4FF00] rounded-full" />
-                      </div>
+                  <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3.5 flex items-center justify-between">
+                    <div>
+                      <div className="font-display font-bold text-sm text-white">Costillas BBQ Ahumadas 1kg</div>
+                      <div className="text-xs text-[#7C8590]">Cocción lenta de 6 horas</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-mono font-bold text-[#B4FF00] text-sm">$420 MXN</div>
+                      <span className="text-[10px] text-zinc-400 bg-white/[0.05] px-1.5 py-0.5 rounded">1 pza</span>
+                    </div>
+                  </div>
+
+                  {/* Caja de Checkout SPEI en 1 Clic */}
+                  <div className="rounded-xl border border-[#B4FF00]/30 bg-[#B4FF00]/[0.03] p-4 space-y-3">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-[#A7AEB8] font-mono">TOTAL PEDIDO:</span>
+                      <span className="font-mono font-black text-lg text-[#B4FF00]">$800 MXN</span>
                     </div>
 
-                    <div className="space-y-3">
-                      <div className="h-[96px] rounded-xl bg-gradient-to-r from-[#1A1D22] to-[#2A3038] border border-white/10 p-4 flex flex-col justify-end">
-                        <span className="font-mono text-[10px] text-[#B4FF00] tracking-widest uppercase">ARK PULSE ENGINE</span>
-                        <span className="font-display text-xl font-bold text-white">Vende productos en minutos</span>
+                    <div className="bg-[#0B0C0E] border border-white/10 rounded-lg p-2.5 flex items-center justify-between text-xs">
+                      <div className="truncate pr-2">
+                        <span className="text-zinc-500 block text-[10px]">CLABE SPEI (BBVA):</span>
+                        <span className="font-mono text-zinc-200">0121 8001 2345 6789 01</span>
                       </div>
-
-                      <div className="grid grid-cols-3 gap-3">
-                        <div className="h-20 rounded-xl bg-[#1A1D22] border border-white/5 p-2.5 flex flex-col justify-between">
-                          <span className="text-[11px] text-[#A7AEB8]">01. SnS</span>
-                          <span className="font-mono text-xs font-bold text-[#B4FF00]">$299 MXN</span>
-                        </div>
-                        <div className="h-20 rounded-xl bg-[#1A1D22] border border-white/5 p-2.5 flex flex-col justify-between">
-                          <span className="text-[11px] text-[#A7AEB8]">02. Drop</span>
-                          <span className="font-mono text-xs font-bold text-[#B4FF00]">Lightning</span>
-                        </div>
-                        <div className="h-20 rounded-xl bg-[#1A1D22] border border-white/5 p-2.5 flex flex-col justify-between">
-                          <span className="text-[11px] text-[#A7AEB8]">03. Agenda</span>
-                          <span className="font-mono text-xs font-bold text-[#B4FF00]">Stripe</span>
-                        </div>
-                      </div>
-
                       <button
-                        onClick={() => scrollTo('checkout')}
-                        className="mt-2 h-11 w-full rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] font-display text-[13px] font-bold text-[#0B0C0E] transition"
+                        onClick={handleCopyDemoClabe}
+                        className="px-2.5 py-1.5 rounded bg-white/10 hover:bg-white/20 text-[11px] font-bold text-white transition shrink-0"
                       >
-                        Comprar Kit $49 USD
+                        {copiedClabe ? '✓ Copiado' : 'Copiar'}
                       </button>
                     </div>
+
+                    <a
+                      href={getWaLink('Hola! Hice un pedido de $800 MXN en tunegocio.ark.mx. Ya copié tu CLABE para transferir.')}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full h-11 rounded-lg bg-[#25D366] hover:bg-[#22bf5b] font-bold text-white text-xs flex items-center justify-center gap-2 shadow-md transition"
+                    >
+                      <span>💬</span> Enviar Pedido a WhatsApp
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* PILARES DEL SISTEMA */}
-      <section className="mx-auto max-w-[1240px] px-5 sm:px-8 py-16 sm:py-24">
-        <div className="flex items-end justify-between gap-6 mb-12">
-          <div>
-            <p className="font-mono text-xs text-[#B4FF00] tracking-widest uppercase mb-2">01 · FUNDACIONES</p>
-            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight">
-              El problema es simple. <br />
-              <span className="text-[#55606B]">La solución también.</span>
+      {/* =========================================================================
+          EL DOLOR DEL PDF (Por qué pierdes ventas)
+         ========================================================================= */}
+      <section className="py-16 sm:py-24 border-b border-white/10 bg-[#0E1013]">
+        <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
+              La fuga silenciosa de clientes
+            </span>
+            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
+              Deja de mandar el catálogo en PDF.
             </h2>
+            <p className="mt-4 text-[#A7AEB8] text-sm sm:text-base">
+              El 70% de las ventas por Instagram se caen en el momento en que obligas al cliente a descargar un archivo pesado o le mandas 8 fotos sueltas.
+            </p>
           </div>
-          <p className="hidden sm:block max-w-[320px] text-[13px] leading-[1.6] text-[#7C8590]">
-            Deja de vender webs de $300/mes que nadie mantiene. Vende activos de 1 archivo respaldados por Ark Systems.
-          </p>
-        </div>
 
-        <div className="grid md:grid-cols-3 gap-5">
-          {[
-            {
-              n: '01',
-              title: 'Presencia digital rápida con imagen premium',
-              desc: 'Plantillas oscuras arquitectónicas, tipografía Space Grotesk + Inter y contrastes precisos. Pareces SnS Grills, no un theme genérico.',
-              bullets: ['Space Grotesk + Inter', 'Color Lima en CTAs estratégicos', 'Mobile first 390px perfecto'],
-            },
-            {
-              n: '02',
-              title: 'Pasarela de cobro multi-método instantánea',
-              desc: 'El mismo archivo cobra. Sin plugins pesados. Vincula tu link de Stripe, Mercado Pago, PayPal o BTCPay Server.',
-              bullets: ['Stripe Payment Links', 'Mercado Pago + OXXO offline', 'Bitcoin Lightning 0% comisiones'],
-            },
-            {
-              n: '03',
-              title: 'Escalable y gratis en Cloudflare',
-              desc: 'Un archivo o Worker estático. Dominio propio en 60s. El cliente puede duplicarlo 100 veces sin pagar más hosting.',
-              bullets: ['Cloudflare Workers & Vercel', '0 base de datos obligatoria', 'Duplicable por nicho local'],
-            },
-          ].map((o) => (
-            <div
-              key={o.n}
-              className="rounded-2xl border border-white/10 bg-[#121417] p-7 hover:border-[#B4FF00]/40 transition group"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <span className="font-mono text-xs text-[#7C8590]">{o.n}</span>
-                <span className="h-7 w-7 rounded-lg bg-white/5 grid place-items-center text-xs text-[#B4FF00]">▲</span>
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {/* Como se hace hoy */}
+            <div className="rounded-2xl border border-red-500/20 bg-red-950/[0.1] p-6 sm:p-8">
+              <div className="flex items-center gap-3 mb-4 text-red-400 font-display font-bold">
+                <span className="text-2xl">❌</span>
+                <span>Como vendes hoy sin Ark:</span>
               </div>
-              <h3 className="font-display text-xl font-bold">{o.title}</h3>
-              <p className="font-body mt-3 text-sm leading-[1.65] text-[#A7AEB8]">{o.desc}</p>
-              <div className="mt-6 space-y-2 border-t border-white/5 pt-4">
-                {o.bullets.map((b) => (
-                  <div key={b} className="flex items-center gap-2 text-xs text-[#D2D6DB]">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#B4FF00]" />
-                    {b}
-                  </div>
-                ))}
-              </div>
+              <ul className="space-y-3.5 text-sm text-[#A7AEB8]">
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-0.5">•</span>
+                  <span>El cliente te pide el menú por DM o WhatsApp.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-0.5">•</span>
+                  <span>Le mandas un PDF de 25 MB que tarda en abrir o fotos borrosas.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-0.5">•</span>
+                  <span>Al cliente le da flojera hacer cuentas mentales del total.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-0.5">•</span>
+                  <span>Tienes que dictarle tu CLABE por mensaje (y a veces se equivocan).</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-0.5">•</span>
+                  <strong className="text-red-300">Resultado: Te dejan en visto y compran en otro lado.</strong>
+                </li>
+              </ul>
             </div>
-          ))}
+
+            {/* Con Ark */}
+            <div className="rounded-2xl border border-[#B4FF00]/30 bg-[#B4FF00]/[0.03] p-6 sm:p-8">
+              <div className="flex items-center gap-3 mb-4 text-[#B4FF00] font-display font-bold">
+                <span className="text-2xl">⚡</span>
+                <span>Con tu tienda Ark ($299/mes):</span>
+              </div>
+              <ul className="space-y-3.5 text-sm text-zinc-200">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#B4FF00] mt-0.5">✓</span>
+                  <span>Le mandas tu link <code className="text-[#B4FF00] bg-white/5 px-1 py-0.5 rounded">tunegocio.ark.mx</code>.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#B4FF00] mt-0.5">✓</span>
+                  <span>Abre en 0.2 segundos desde cualquier teléfono sin descargar nada.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#B4FF00] mt-0.5">✓</span>
+                  <span>Selecciona sus productos y la pantalla calcula el total exacto.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#B4FF00] mt-0.5">✓</span>
+                  <span>Copia tu CLABE con un solo toque y te manda el comprobante.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#B4FF00] mt-0.5">✓</span>
+                  <strong className="text-[#B4FF00]">Resultado: Pedido cerrado y pagado en menos de 2 minutos.</strong>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* DEMO CODE */}
-      <section id="demo" className="border-y border-white/10 bg-[#121417]">
-        <div className="mx-auto max-w-[1240px] px-5 sm:px-8 py-16 sm:py-24 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-start">
-          <div className="rounded-2xl border border-white/10 bg-[#0B0C0E] overflow-hidden">
-            <div className="flex items-center justify-between px-5 h-[48px] border-b border-white/10 bg-[#1A1D22]">
-              <div className="flex items-center gap-2 text-xs font-mono text-[#D2D6DB]">
-                <span className="h-2 w-2 rounded-full bg-[#B4FF00]" />
-                CONFIG — Edita esto, vende eso
-              </div>
-              <div className="font-mono text-[10px] text-[#7C8590]">INDEX.HTML</div>
-            </div>
-            <pre className="p-6 text-[13px] leading-[1.7] overflow-x-auto font-mono text-[#D2D6DB]">
-{`const CONFIG = {
-  // Negocio
-  nombre: "Tacos El Fuego - Suc. Centro",
-  tagline: "Al pastor 24h con tortilla de maíz azul",
-  precio: 299,
-  moneda: "MXN",
-
-  // Checkout: pega tus links
-  checkout: {
-    stripe: "https://buy.stripe.com/...",
-    mercadopago: "https://mpago.la/...",
-    btcPay: "https://btcpay.tu-dominio.com/...",
-    paypal: "https://paypal.me/..."
-  },
-
-  // Identidad visual (Canon Ark Pulse)
-  colores: { primario: "#B4FF00", fondo: "#0B0C0E" },
-  whatsapp: "5215512345678"
-};
-
-// 1 archivo. 0 build. 0 dolor de cabeza.`}
-            </pre>
-            <div className="flex items-center gap-2 px-5 py-3 border-t border-white/10 bg-[#1A1D22] text-xs font-mono text-[#7C8590]">
-              <span className="bg-[#B4FF00]/10 text-[#B4FF00] px-2 py-0.5 rounded text-[10px] font-bold">✓ VALIDADO</span>
-              Listo para producción en Cloudflare
-            </div>
+      {/* =========================================================================
+          SHOWCASE DE GIROS (Comercio al Menudeo)
+         ========================================================================= */}
+      <section id="rubros" className="py-16 sm:py-24 border-b border-white/10">
+        <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
+              Adaptable a tu negocio
+            </span>
+            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
+              Hecho para cualquier comercio al menudeo.
+            </h2>
+            <p className="mt-4 text-[#A7AEB8] text-sm sm:text-base">
+              Si vendes un producto físico y cobras por transferencia o entrega, Ark está diseñado exactamente para ti.
+            </p>
           </div>
 
-          <div className="lg:sticky lg:top-[90px]">
-            <p className="font-mono text-xs text-[#B4FF00] tracking-widest uppercase mb-2">02 · PROCESO</p>
-            <h2 className="font-display text-3xl sm:text-5xl font-bold leading-tight">
-              Edita 6 líneas. <br />
-              Entrega en 3 minutos.
-            </h2>
-            <div className="mt-8 space-y-6">
-              {[
-                {
-                  t: '1. Duplica el template',
-                  d: 'Abre index.html. No hay npm requerido, no hay dependencias frágiles.',
-                },
-                {
-                  t: '2. Pega tus links de cobro',
-                  d: 'Stripe Payment Link en 2 clics. Mercado Pago con OXXO automático. BTCPay para Lightning.',
-                },
-                {
-                  t: '3. Deploy a Cloudflare o Vercel',
-                  d: 'Arrastra la carpeta. Asigna el dominio del cliente en 60 segundos y factura tu margen.',
-                },
-              ].map((o) => (
-                <div key={o.t} className="flex gap-4">
-                  <div className="mt-1 h-6 w-6 shrink-0 rounded-lg bg-[#B4FF00] grid place-items-center font-display text-[12px] font-bold text-[#0B0C0E]">
-                    ✓
-                  </div>
+          {/* Selector de Rubros */}
+          <div className="flex flex-wrap justify-center gap-2 mb-10">
+            {RETAIL_CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCat(cat)}
+                className={`px-4 py-2.5 rounded-xl font-display text-xs sm:text-sm font-bold flex items-center gap-2 transition ${
+                  selectedCat.id === cat.id
+                    ? 'bg-[#B4FF00] text-[#0B0C0E] shadow-lg shadow-[#B4FF00]/20'
+                    : 'bg-white/[0.04] border border-white/10 text-[#A7AEB8] hover:text-white hover:bg-white/[0.08]'
+                }`}
+              >
+                <span>{cat.icon}</span>
+                <span>{cat.title}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Tarjeta del rubro activo */}
+          <div className="max-w-4xl mx-auto rounded-2xl border border-white/15 bg-[#121417] p-6 sm:p-10 shadow-2xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/10 pb-6 mb-6 gap-4">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">{selectedCat.icon}</span>
                   <div>
-                    <div className="font-display text-base font-bold text-white">{o.t}</div>
-                    <div className="font-body mt-1 text-sm text-[#A7AEB8]">{o.d}</div>
+                    <h3 className="font-display font-bold text-xl text-white">{selectedCat.title}</h3>
+                    <p className="text-xs text-[#7C8590]">{selectedCat.subtitle}</p>
                   </div>
+                </div>
+              </div>
+              <div className="font-mono text-xs text-[#B4FF00] bg-[#B4FF00]/10 px-3 py-1.5 rounded-lg border border-[#B4FF00]/20 self-start sm:self-auto">
+                Ejemplo: {selectedCat.sampleStore}
+              </div>
+            </div>
+
+            {/* Lista de productos de ejemplo */}
+            <div className="grid sm:grid-cols-3 gap-4 mb-6">
+              {selectedCat.products.map((p, i) => (
+                <div key={i} className="rounded-xl border border-white/10 bg-white/[0.02] p-4 flex flex-col justify-between">
+                  <div>
+                    <div className="font-display font-bold text-sm text-white">{p.name}</div>
+                    <div className="text-xs text-[#7C8590] mt-1">{p.desc}</div>
+                  </div>
+                  <div className="font-mono font-bold text-[#B4FF00] text-sm mt-3">{p.price} MXN</div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-8 rounded-xl border border-[#B4FF00]/30 bg-[#B4FF00]/10 p-5 flex gap-4">
-              <span className="font-display text-2xl text-[#B4FF00]">⚡</span>
-              <p className="font-body text-xs leading-[1.6] text-[#E8EAED]">
-                <strong className="text-white">Margen 90%:</strong> Cobras $3,500 – $8,000 MXN por landing a negocios locales. Tu costo: $0 hosting + 30 min de personalización.
-              </p>
+            {/* Mensaje que llega a WhatsApp */}
+            <div className="rounded-xl border border-emerald-500/20 bg-emerald-950/20 p-4 flex items-start gap-3">
+              <span className="text-xl">💬</span>
+              <div>
+                <div className="text-[11px] font-mono text-emerald-400 font-bold uppercase tracking-wider">
+                  Así te llega el mensaje a tu WhatsApp:
+                </div>
+                <div className="text-sm text-zinc-200 mt-1 italic">
+                  "{selectedCat.whatsappPreview}"
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5 TEMPLATES BASE */}
-      <section className="mx-auto max-w-[1240px] px-5 sm:px-8 py-16 sm:py-24">
-        <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
-          <div>
-            <p className="font-mono text-xs text-[#B4FF00] tracking-widest uppercase mb-2">03 · CATÁLOGO</p>
-            <h2 className="font-display text-3xl sm:text-5xl font-bold leading-tight">
-              5 templates base listos para clonar
+      {/* =========================================================================
+          COMPATIBILIDAD DE PAGOS (Cobra como tú quieras)
+         ========================================================================= */}
+      <section id="pagos" className="py-16 sm:py-24 border-b border-white/10 bg-[#0E1013]">
+        <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
+              Flexibilidad Financiera
+            </span>
+            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
+              Compatible con todo lo que ya usas hoy.
+            </h2>
+            <p className="mt-4 text-[#A7AEB8] text-sm sm:text-base">
+              No te obligamos a abrir cuentas nuevas ni a firmar contratos con bancos. Tu tienda se adapta a tu forma actual de cobrar.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* SPEI */}
+            <div className="rounded-2xl border border-white/10 bg-[#121417] p-6 flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-2xl mb-4">
+                  🏦
+                </div>
+                <h3 className="font-display font-bold text-lg text-white">SPEI (Cualquier Banco)</h3>
+                <p className="text-xs text-[#A7AEB8] mt-2 leading-relaxed">
+                  BBVA, Nu, Banorte, Santander, Hey Banco, Mercado Pago, Citibanamex, HSBC o Banco Azteca.
+                </p>
+              </div>
+              <div className="mt-4 pt-4 border-t border-white/5 font-mono text-[11px] text-[#B4FF00]">
+                ✓ Copia tu CLABE en 1 clic
+              </div>
+            </div>
+
+            {/* Tarjetas */}
+            <div className="rounded-2xl border border-white/10 bg-[#121417] p-6 flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-2xl mb-4">
+                  💳
+                </div>
+                <h3 className="font-display font-bold text-lg text-white">Tarjetas con tu Terminal</h3>
+                <p className="text-xs text-[#A7AEB8] mt-2 leading-relaxed">
+                  ¿Ya tienes cuenta en Clip, Mercado Pago, Stripe o PayPal? Pegamos tu link de pago directo a tu botón.
+                </p>
+              </div>
+              <div className="mt-4 pt-4 border-t border-white/5 font-mono text-[11px] text-[#B4FF00]">
+                ✓ Cero comisiones de Ark
+              </div>
+            </div>
+
+            {/* Efectivo */}
+            <div className="rounded-2xl border border-white/10 bg-[#121417] p-6 flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-2xl mb-4">
+                  🏪
+                </div>
+                <h3 className="font-display font-bold text-lg text-white">Efectivo & Contra Entrega</h3>
+                <p className="text-xs text-[#A7AEB8] mt-2 leading-relaxed">
+                  Ideal para entregas a domicilio locales donde el cliente paga al recibir o mediante depósito en OXXO / 7-Eleven.
+                </p>
+              </div>
+              <div className="mt-4 pt-4 border-t border-white/5 font-mono text-[11px] text-[#B4FF00]">
+                ✓ Desglose listo para entregar
+              </div>
+            </div>
+
+            {/* Pagos Digitales / Lightning */}
+            <div className="rounded-2xl border border-white/10 bg-[#121417] p-6 flex flex-col justify-between">
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-2xl mb-4">
+                  ⚡
+                </div>
+                <h3 className="font-display font-bold text-lg text-white">Bitcoin & Lightning (Blink)</h3>
+                <p className="text-xs text-[#A7AEB8] mt-2 leading-relaxed">
+                  Cobros instantáneos opcionales vía Lightning Network directo a tu billetera con QR dinámico.
+                </p>
+              </div>
+              <div className="mt-4 pt-4 border-t border-white/5 font-mono text-[11px] text-[#B4FF00]">
+                ✓ Liquidación en segundos
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          TABLA COMPARATIVA (Nocaut)
+         ========================================================================= */}
+      <section id="comparativa" className="py-16 sm:py-24 border-b border-white/10">
+        <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
+              Comparativa Implacable
+            </span>
+            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
+              ¿Por qué pagar en dólares por cosas que no necesitas?
             </h2>
           </div>
-          <span className="font-mono text-xs text-[#7C8590]">Cada uno = 1 archivo independiente</span>
-        </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {[
-            {
-              name: 'Físico / Restaurante',
-              tag: 'SnS STYLE',
-              desc: 'Menú, fotos full-bleed, reserva + pago. Como Temozonia ahumados.',
-              accent: '#B4FF00',
-            },
-            {
-              name: 'Digital / Producto',
-              tag: 'E-COMM 1-SKU',
-              desc: 'Un producto hero, variantes y checkout directo sin fricción.',
-              accent: '#A7AEB8',
-            },
-            {
-              name: 'Info-producto',
-              tag: 'CURSO / EBOOK',
-              desc: 'Video VSL, módulos temáticos, garantía y pagos en cuotas.',
-              accent: '#B4FF00',
-            },
-            {
-              name: 'Reserva / Servicio',
-              tag: 'AGENDA',
-              desc: 'Calendario, WhatsApp, anticipo con Stripe para clínicas y gimnasios.',
-              accent: '#E8EAED',
-            },
-            {
-              name: 'Waitlist / Drop',
-              tag: 'HYPE',
-              desc: 'Contador regresivo, lista de espera y cobro anticipado Lightning.',
-              accent: '#C6FF33',
-            },
-          ].map((o) => (
-            <div key={o.name} className="rounded-2xl border border-white/10 bg-[#121417] p-5 flex flex-col justify-between">
-              <div>
-                <div className="h-[100px] rounded-xl bg-[#1A1D22] border border-white/5 p-3.5 flex flex-col justify-between mb-4">
-                  <span className="font-mono text-[9px] tracking-widest text-[#B4FF00] uppercase font-bold">{o.tag}</span>
-                  <div className="h-6 w-full rounded bg-white/5" />
-                </div>
-                <div className="font-display text-sm font-bold">{o.name}</div>
-                <div className="font-body mt-2 text-xs leading-[1.5] text-[#7C8590]">{o.desc}</div>
-              </div>
-              <button
-                onClick={() => showToast(`Template ${o.name} listo en el kit`)}
-                className="mt-5 h-8 rounded-lg border border-white/10 hover:border-[#B4FF00] hover:text-[#B4FF00] font-mono text-[11px] text-[#A7AEB8] transition"
-              >
-                Ver Estructura
-              </button>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* COMPARATIVA */}
-      <section className="border-y border-white/10 bg-[#0B0C0E]">
-        <div className="mx-auto max-w-[1240px] px-5 sm:px-8 py-16 sm:py-24">
-          <h3 className="font-display text-center text-3xl sm:text-4xl font-bold tracking-tight">
-            ¿Por qué 1 HTML le gana a todo?
-          </h3>
-
-          <div className="mt-10 overflow-x-auto rounded-2xl border border-white/10 bg-[#121417]">
-            <table className="w-full min-w-[760px] text-xs font-body">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[620px]">
               <thead>
-                <tr className="border-b border-white/10 font-mono text-[10px] tracking-widest text-[#7C8590] uppercase">
-                  <th className="text-left font-medium px-6 py-4">Criterio</th>
-                  <th className="text-left font-bold px-6 py-4 text-[#B4FF00] bg-white/[0.02]">
-                    ARK PULSE (1 HTML)
-                  </th>
-                  <th className="text-left font-medium px-6 py-4 text-[#7C8590]">WordPress</th>
-                  <th className="text-left font-medium px-6 py-4 text-[#7C8590]">Shopify</th>
-                  <th className="text-left font-medium px-6 py-4 text-[#7C8590]">Carrd</th>
+                <tr className="border-b border-white/10 text-xs font-mono uppercase text-[#7C8590]">
+                  <th className="py-4 px-4">Opción</th>
+                  <th className="py-4 px-4">Costo Mensual</th>
+                  <th className="py-4 px-4">Comisiones por Venta</th>
+                  <th className="py-4 px-4">Enfoque México (SPEI/WhatsApp)</th>
+                  <th className="py-4 px-4">Tiempo de Entrega</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5 text-[#D2D6DB]">
-                {[
-                  ['Peso / Velocidad', '18 KB, <2s, 100 Lighthouse', '2-5 MB, plugins lentos', '1-3 MB, scripts pesados', '50 KB pero limitado'],
-                  ['Costo mensual', '$0 hosting Cloudflare / Vercel', '$10-30 host + plugins', '$29-79 + comisiones', '$19/año pro'],
-                  ['Tiempo deploy', '3 minutos drag & drop', '1-2 horas setup', '2-4 horas', '15 min pero sin pagos MX'],
-                  ['Pasarelas México', 'Stripe + MP + OXXO + BTCPay', 'Plugin MP extra $', 'Solo Stripe, no OXXO', 'Solo Stripe/PayPal'],
-                  ['Mantenimiento', 'Cero, es un HTML', 'Actualizaciones semanales', 'Apps que rompen', 'Nulo'],
-                  ['Propiedad cliente', 'Archivo entregable 100%', 'Depende de host', 'Cerrado', 'Cerrado'],
-                ].map(([o, u, a, c, m]) => (
-                  <tr key={o}>
-                    <td className="px-6 py-4 font-semibold text-white">{o}</td>
-                    <td className="px-6 py-4 font-bold text-[#B4FF00] bg-white/[0.02]">{u}</td>
-                    <td className="px-6 py-4 text-[#7C8590]">{a}</td>
-                    <td className="px-6 py-4 text-[#7C8590]">{c}</td>
-                    <td className="px-6 py-4 text-[#7C8590]">{m}</td>
-                  </tr>
-                ))}
+              <tbody className="divide-y divide-white/5 text-sm">
+                <tr className="hover:bg-white/[0.02]">
+                  <td className="py-4 px-4 font-bold text-zinc-300">Shopify</td>
+                  <td className="py-4 px-4 font-mono">$599+ MXN/mes</td>
+                  <td className="py-4 px-4 text-red-400 font-mono">Hasta 2% extra</td>
+                  <td className="py-4 px-4 text-zinc-400">Poco adaptado a SPEI</td>
+                  <td className="py-4 px-4 text-zinc-400">Tú lo configuras solo</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02]">
+                  <td className="py-4 px-4 font-bold text-zinc-300">Wix / Tiendanube</td>
+                  <td className="py-4 px-4 font-mono">$350–$500 MXN/mes</td>
+                  <td className="py-4 px-4 text-zinc-400 font-mono">Comisiones según pasarela</td>
+                  <td className="py-4 px-4 text-zinc-400">Carritos lentos y pesados</td>
+                  <td className="py-4 px-4 text-zinc-400">Días de diseño</td>
+                </tr>
+                <tr className="hover:bg-white/[0.02]">
+                  <td className="py-4 px-4 font-bold text-zinc-300">Agencia Web Tradicional</td>
+                  <td className="py-4 px-4 font-mono">$10,000 inicial + $500/mes</td>
+                  <td className="py-4 px-4 text-zinc-400 font-mono">Depende de pasarela</td>
+                  <td className="py-4 px-4 text-zinc-400">WordPress lento</td>
+                  <td className="py-4 px-4 text-zinc-400">3 a 6 semanas</td>
+                </tr>
+                <tr className="bg-[#B4FF00]/[0.05] border-y-2 border-[#B4FF00]/40 font-bold">
+                  <td className="py-5 px-4 font-display text-[#B4FF00] text-base flex items-center gap-2">
+                    <span>▲</span> ARK COMMERCE
+                  </td>
+                  <td className="py-5 px-4 font-mono text-[#B4FF00] text-base">$299 MXN/mes</td>
+                  <td className="py-5 px-4 text-emerald-400 font-mono">0% COMISIÓN</td>
+                  <td className="py-5 px-4 text-white">SPEI, CLABE en 1 clic y WhatsApp</td>
+                  <td className="py-5 px-4 text-[#B4FF00]">Te la entregamos en 5 min</td>
+                </tr>
               </tbody>
             </table>
           </div>
         </div>
       </section>
 
-      {/* CHECKOUT DOGFOODING */}
-      <section id="checkout" className="mx-auto max-w-[1240px] px-5 sm:px-8 py-16 sm:py-24">
-        <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 items-start">
-          <div>
-            <div className="inline-flex rounded-md bg-[#B4FF00] text-[#0B0C0E] px-3 py-1 font-mono text-[10px] font-bold tracking-widest uppercase">
-              CHECKOUT DIRECTO
-            </div>
-            <h2 className="font-display mt-4 text-4xl sm:text-5xl font-bold leading-tight">
-              El mismo sistema que vendes es el que te cobra a ti.
+      {/* =========================================================================
+          CÓMO FUNCIONA (3 pasos)
+         ========================================================================= */}
+      <section id="como-funciona" className="py-16 sm:py-24 border-b border-white/10 bg-[#0E1013]">
+        <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
+              Esfuerzo Cero de tu Parte
+            </span>
+            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
+              Nosotros hacemos la talacha.
             </h2>
-            <p className="font-body mt-4 text-sm leading-[1.7] text-[#A7AEB8]">
-              Sin backend oculto ni pasarelas complejas. Cada botón es un Payment Link verificado.
+            <p className="mt-4 text-[#A7AEB8] text-sm sm:text-base">
+              No tienes que aprender a programar ni pelearte con plantillas complejas.
             </p>
-
-            <div className="mt-8 rounded-2xl border border-white/10 bg-[#121417] p-5">
-              <div className="font-mono text-xs tracking-widest text-[#B4FF00] uppercase mb-3">El kit incluye:</div>
-              <ul className="space-y-2.5 text-xs text-[#D2D6DB]">
-                <li className="flex gap-2.5">
-                  <span className="text-[#B4FF00]">✓</span> 5 templates HTML listos + guía de deploy en 3 min
-                </li>
-                <li className="flex gap-2.5">
-                  <span className="text-[#B4FF00]">✓</span> Snippets de cobro para Stripe, Mercado Pago, BTCPay y PayPal
-                </li>
-                <li className="flex gap-2.5">
-                  <span className="text-[#B4FF00]">✓</span> Script de prospección para negocios locales vía WhatsApp
-                </li>
-                <li className="flex gap-2.5">
-                  <span className="text-[#B4FF00]">✓</span> Licencia comercial: revende sin límite de clientes
-                </li>
-              </ul>
-            </div>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div className="rounded-2xl border border-white/10 bg-[#121417] p-8 text-center relative">
+              <div className="w-14 h-14 rounded-2xl bg-[#B4FF00]/10 border border-[#B4FF00]/30 text-[#B4FF00] font-display font-black text-2xl flex items-center justify-center mx-auto mb-6">
+                1
+              </div>
+              <h3 className="font-display font-bold text-lg text-white">Nos mandas tu información</h3>
+              <p className="text-xs text-[#A7AEB8] mt-3 leading-relaxed">
+                Nos pasas por WhatsApp tu logo, tus fotos de producto, tus precios y tu cuenta CLABE para transferencias.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-[#121417] p-8 text-center relative">
+              <div className="w-14 h-14 rounded-2xl bg-[#B4FF00]/10 border border-[#B4FF00]/30 text-[#B4FF00] font-display font-black text-2xl flex items-center justify-center mx-auto mb-6">
+                2
+              </div>
+              <h3 className="font-display font-bold text-lg text-white">Montamos tu tienda en 5 min</h3>
+              <p className="text-xs text-[#A7AEB8] mt-3 leading-relaxed">
+                Te entregamos tu link oficial <span className="text-[#B4FF00] font-mono">tunegocio.ark.mx</span> con tu catálogo ordenado y listo para cobrar.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-[#121417] p-8 text-center relative">
+              <div className="w-14 h-14 rounded-2xl bg-[#B4FF00]/10 border border-[#B4FF00]/30 text-[#B4FF00] font-display font-black text-2xl flex items-center justify-center mx-auto mb-6">
+                3
+              </div>
+              <h3 className="font-display font-bold text-lg text-white">Lo pegas en tu Instagram</h3>
+              <p className="text-xs text-[#A7AEB8] mt-3 leading-relaxed">
+                Lo pones en el link de tu biografía y en tus historias. Tus clientes eligen, pagan y el pedido te cae listo a WhatsApp.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          PRICING SECTION ($299/mes)
+         ========================================================================= */}
+      <section className="py-16 sm:py-24 border-b border-white/10">
+        <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
+          <div className="max-w-xl mx-auto rounded-3xl border-2 border-[#B4FF00] bg-gradient-to-b from-[#161a14] to-[#121417] p-8 sm:p-12 text-center shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 bg-[#B4FF00] text-[#0B0C0E] font-display font-bold text-[11px] px-4 py-1 rounded-bl-xl tracking-wider uppercase">
+              PLAN TODO INCLUIDO
+            </div>
+
+            <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
+              Acceso Completo
+            </span>
+            <h2 className="font-display text-4xl sm:text-5xl font-black text-white mt-2">
+              $299 <span className="text-base sm:text-lg font-normal text-[#A7AEB8]">MXN / mes</span>
+            </h2>
+            <p className="mt-2 text-xs text-zinc-400 font-mono">Sin plazos forzosos · Cancela cuando quieras</p>
+
+            <div className="my-8 border-t border-white/10 pt-8 text-left space-y-3.5 text-sm">
+              <div className="flex items-center gap-3">
+                <span className="text-[#B4FF00]">✓</span>
+                <span className="text-zinc-200"><strong>Tu link propio:</strong> <code className="text-[#B4FF00] font-mono">tunegocio.ark.mx</code></span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[#B4FF00]">✓</span>
+                <span className="text-zinc-200"><strong>Catálogo ilimitado</strong> con fotos en alta velocidad</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[#B4FF00]">✓</span>
+                <span className="text-zinc-200"><strong>Copia tu CLABE SPEI</strong> en 1 clic sin errores</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[#B4FF00]">✓</span>
+                <span className="text-zinc-200"><strong>Pedidos organizados</strong> directos a tu WhatsApp</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[#B4FF00]">✓</span>
+                <span className="text-zinc-200"><strong>Panel de control móvil:</strong> cambia precios y stock desde tu celular</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[#B4FF00]">✓</span>
+                <span className="text-zinc-200"><strong>Cero comisiones:</strong> Si vendes $10,000 o $100,000, los $299 son fijos</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[#B4FF00]">✓</span>
+                <span className="text-zinc-200"><strong>Hosting Cloudflare Edge</strong> que abre al instante y no se cae</span>
+              </div>
+            </div>
+
+            <a
+              href={getWaLink('Hola Ark! Quiero activar mi tienda online por $299/mes.')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full h-14 rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] font-display font-bold text-base text-[#0B0C0E] flex items-center justify-center gap-2 transition lima-glow active:scale-[0.98]"
+            >
+              👉 Activar Mi Tienda por $299 al Mes
+            </a>
+
+            <p className="mt-4 text-[11px] text-[#7C8590] font-mono">
+              Nos mandas tus fotos y te la entregamos funcionando hoy mismo.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          FAQ
+         ========================================================================= */}
+      <section id="faq" className="py-16 sm:py-24 border-b border-white/10 bg-[#0E1013]">
+        <div className="mx-auto max-w-[800px] px-4 sm:px-8">
+          <div className="text-center mb-12">
+            <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
+              Dudas Comunes
+            </span>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mt-2">
+              Preguntas Frecuentes
+            </h2>
+          </div>
+
+          <div className="space-y-3">
             {[
               {
-                name: 'Stripe Payment Link',
-                desc: 'Tarjeta global, Apple Pay y Link. Cobro en USD o MXN.',
-                badge: 'RECOMENDADO GLOBAL',
-                cta: 'Pagar con Stripe',
+                q: '¿Por qué no cobran comisión por venta?',
+                a: 'Porque nosotros cobramos una suscripción fija de software ($299 MXN al mes) por darte la plataforma y el hosting. No somos intermediarios de tus pagos ni tocamos tu dinero; las transferencias de tus clientes van directas a tu banco.',
               },
               {
-                name: 'Mercado Pago',
-                desc: 'OXXO offline, SPEI, tarjetas y meses sin intereses en México.',
-                badge: 'MEJOR CONVERSIÓN MX',
-                cta: 'Pagar con Mercado Pago',
+                q: '¿Tengo que saber programar o diseñar?',
+                a: 'Para nada. Tú solo nos mandas tus fotos, nombres de productos y precios por WhatsApp. Nosotros configuramos tu tienda y te entregamos tu link listo en 5 minutos.',
               },
               {
-                name: 'BTCPay Server',
-                desc: 'Bitcoin on-chain + Lightning Network con 0% comisiones.',
-                badge: '0% FEES + LIGHTNING',
-                cta: 'Pagar con Bitcoin',
+                q: '¿Cómo cambio precios o productos después?',
+                a: 'Te damos acceso a un panel administrativo súper sencillo que puedes abrir desde tu celular. En 10 segundos cambias un precio, subes un producto nuevo o marcas uno como agotado.',
               },
               {
-                name: 'PayPal Checkout',
-                desc: 'Para clientes internacionales sin tarjeta de crédito.',
-                badge: 'INTERNACIONAL',
-                cta: 'Pagar con PayPal',
+                q: '¿Puedo usar mi propio dominio personalizado (ej. mitienda.com)?',
+                a: 'Sí. De fábrica te damos tunegocio.ark.mx sin costo adicional, pero si ya compraste tu propio dominio .com o .mx, lo conectamos a tu tienda fácilmente.',
               },
-            ].map((o) => (
-              <div key={o.name} className="rounded-2xl border border-white/10 bg-[#121417] p-5 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-display font-bold text-sm text-white">{o.name}</span>
-                    <span className="font-mono text-[9px] bg-white/5 border border-white/10 px-2 py-0.5 rounded text-[#B4FF00]">
-                      {o.badge}
-                    </span>
-                  </div>
-                  <p className="font-body text-xs text-[#7C8590] leading-[1.6] min-h-[40px]">{o.desc}</p>
-                </div>
+              {
+                q: '¿Qué pasa si quiero cancelar?',
+                a: 'No hay plazos forzosos. Si un mes no quieres renovar, simplemente nos avisas por WhatsApp y cancelas sin penalizaciones ni letras chiquitas.',
+              },
+            ].map((item, i) => (
+              <div key={i} className="rounded-xl border border-white/10 bg-[#121417] overflow-hidden">
                 <button
-                  onClick={() => showToast(`${o.name}: Listo para vincular en CONFIG`)}
-                  className="mt-5 h-11 w-full rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] font-display text-xs font-bold text-[#0B0C0E] transition"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full p-5 text-left font-display font-bold text-sm sm:text-base flex justify-between items-center text-white hover:text-[#B4FF00] transition"
                 >
-                  {o.cta} — $49 USD
+                  <span>{item.q}</span>
+                  <span className="text-[#B4FF00] ml-3">{openFaq === i ? '−' : '+'}</span>
                 </button>
+                {openFaq === i && (
+                  <div className="px-5 pb-5 text-xs sm:text-sm text-[#A7AEB8] leading-relaxed border-t border-white/5 pt-3 font-body">
+                    {item.a}
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="mx-auto max-w-[860px] px-5 sm:px-8 py-16 sm:py-24">
-        <h2 className="font-display text-center text-3xl sm:text-4xl font-bold">
-          Preguntas Frecuentes
-        </h2>
-
-        <div className="mt-10 divide-y divide-white/10 rounded-2xl border border-white/10 bg-[#121417] overflow-hidden">
-          {[
-            {
-              q: '¿Necesito saber programar?',
-              a: 'No. Solo editas el bloque CONFIG al inicio del archivo HTML. Es como rellenar un formulario: nombre, precio, links de pago y número de WhatsApp.',
-            },
-            {
-              q: '¿Cómo hospedo gratis en Cloudflare o Vercel?',
-              a: 'Arrastras la carpeta al dashboard de Cloudflare Pages o Vercel. Te genera una URL gratuita de inmediato o vinculas el dominio personalizado de tu cliente en 60 segundos.',
-            },
-            {
-              q: '¿Cómo funciona el cobro por OXXO y SPEI?',
-              a: 'Es automático con Mercado Pago Link: en tu cuenta activas “Medios offline” y el comprador recibe su código de barras OXXO en el checkout sin tocar código.',
-            },
-            {
-              q: '¿Cómo coexisten las tiendas clientes como Temozonia?',
-              a: 'Temozonia es un cliente que corre sobre la infraestructura multi-tenant de Ark Systems. Cada cliente puede tener su propio catálogo, carrito y diseño temático mientras Ark gestiona la plataforma.',
-            },
-            {
-              q: '¿Puedo revender el kit ilimitadamente?',
-              a: 'Sí. La licencia comercial te permite crear y vender tantas tiendas y landings como quieras a clientes locales sin pagar regalías.',
-            },
-          ].map((o, idx) => (
-            <div key={o.q}>
-              <button
-                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left hover:bg-white/[0.02] transition"
-              >
-                <span className="font-display text-sm sm:text-base font-bold text-white">{o.q}</span>
-                <span className="font-mono text-sm text-[#B4FF00]">{openFaq === idx ? '−' : '+'}</span>
-              </button>
-              {openFaq === idx && (
-                <div className="px-6 pb-5 font-body text-xs sm:text-sm text-[#A7AEB8] leading-[1.65]">
-                  {o.a}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="border-t border-white/10 bg-[#0B0C0E] py-10 text-xs font-body text-[#7C8590]">
-        <div className="mx-auto max-w-[1240px] px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      {/* =========================================================================
+          FOOTER
+         ========================================================================= */}
+      <footer className="py-12 bg-[#0B0C0E] text-zinc-500 text-xs">
+        <div className="mx-auto max-w-[1240px] px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-display font-bold text-white text-sm">ARK<span className="text-[#B4FF00]">PULSE</span></span>
-            <span>· Ark Systems Multi-Tenant Platform</span>
+            <span className="font-display font-black text-white">ARK<span className="text-[#B4FF00]">COMMERCE</span></span>
+            <span>· Hecho en México con tecnología Cloudflare</span>
           </div>
-          <div className="flex items-center gap-6">
-            <a href="/temozonia" className="hover:text-[#B4FF00] transition">
-              Tienda Demo (Temozonia)
+          <div className="flex items-center gap-4">
+            <a
+              href={getWaLink('Hola Ark! Tengo una duda sobre el servicio de $299/mes.')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#B4FF00] hover:underline"
+            >
+              Contacto por WhatsApp
             </a>
-            <a href="/admin" className="hover:text-[#B4FF00] transition">
-              Panel Admin
-            </a>
+            <span>·</span>
+            <a href="/admin" className="hover:text-white transition">Acceso Admin Tiendas</a>
           </div>
-          <div>© {new Date().getFullYear()} Ark Systems. Todos los derechos reservados.</div>
         </div>
       </footer>
-
-      {/* FLOATING TOAST */}
-      {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-[#B4FF00] px-5 py-2 text-xs font-display font-bold text-[#0B0C0E] shadow-2xl z-[80] animate-bounce">
-          ⚡ {toast}
-        </div>
-      )}
     </div>
   );
 }

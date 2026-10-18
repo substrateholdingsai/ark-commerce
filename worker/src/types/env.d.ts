@@ -1,9 +1,12 @@
-﻿export type Env = {
+export type Env = {
   DB: D1Database;
   SESSION: KVNamespace;
   CACHE: KVNamespace;
   STORAGE: R2Bucket;
   ORDER_QUEUE: Queue<CheckoutMessage>;
+  RESEND_API_KEY?: string;
+  EMAIL_FROM?: string;
+  ENVIRONMENT?: string;
   BTCPAY_POS_URL?: string;
   CLABE?: string;
   BANK?: string;
@@ -39,3 +42,4 @@ export type CheckoutMessage = {
     price: number;
   }>;
 };
+

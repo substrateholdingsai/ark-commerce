@@ -1,5 +1,6 @@
 ---
 import { CONFIG } from '@/utils/constants';
+import { useCustomerAuth } from '@/stores/customerAuth';
 ---
 
 <section 
@@ -229,6 +230,7 @@ import { CONFIG } from '@/utils/constants';
 <script>
   import { useCartStore } from '@/stores/cart';
   import { CONFIG } from '@/utils/constants';
+  import { useCustomerAuth } from '@/stores/customerAuth';
 
   // ============ REFERENCIAS DOM ============
   const itemsList = document.getElementById('checkout-items')!;

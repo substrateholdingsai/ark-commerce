@@ -1,10 +1,29 @@
-﻿import { Hono } from 'hono';
+import { Hono } from 'hono';
+import { getCookie } from 'hono/cookie';
 import { CheckoutSchema } from '../schemas/checkout';
+import { getUnixTime, sha256Hex } from '../lib/crypto';
 import type { Env, CheckoutMessage } from '../types/env';
+import type { CustomerSessionData } from '../types/auth';
 
 type ProductRow = { id: string; name: string; price: number };
 
 const checkout = new Hono<{ Bindings: Env; Variables: { tenant: any; tenantId: string | null } }>();
+const CUSTOMER_COOKIE = 'customer_session';
+
+async function loadSession(env: Env, token: string): Promise<CustomerSessionData | null> {
+  const raw = await env.SESSION.get(`customer_session:${token}`);
+  if (raw) return JSON.parse(raw);
+  const tokenHash = await sha256Hex(token);
+  const s = await env.DB.prepare(
+    'SELECT customer_id, tenant_id, cart_id, expires_at, revoked_at FROM store_sessions WHERE token_hash = ?'
+  )
+    .bind(tokenHash)
+    .first<{ customer_id: string | null; tenant_id: string; cart_id: string | null; expires_at: number; revoked_at: number | null }>();
+  if (!s || s.revoked_at || s.expires_at < getUnixTime()) return null;
+  const data: CustomerSessionData = { tenantId: s.tenant_id, customerId: s.customer_id, cartId: s.cart_id, isGuest: s.customer_id == null };
+  await env.SESSION.put(`customer_session:${token}`, JSON.stringify(data), { expirationTtl: Math.max(60, s.expires_at - getUnixTime()) });
+  return data;
+}
 
 checkout.post('/', async (c) => {
   const tenantId = c.get('tenantId');
@@ -21,6 +40,15 @@ checkout.post('/', async (c) => {
   }
 
   const { customerName, customerEmail, customerAddress, customerPhone, paymentMethod, items, notes } = validation.data;
+
+  let customerId: string | null = null;
+  const tokenCookie = getCookie(c, CUSTOMER_COOKIE);
+  if (tokenCookie) {
+    const sess = await loadSession(c.env, tokenCookie);
+    if (sess && sess.tenantId === tenantId) {
+      customerId = sess.customerId;
+    }
+  }
 
   try {
     const productIds = [...new Set(items.map((item) => item.productId))];
@@ -44,26 +72,30 @@ checkout.post('/', async (c) => {
     const orderId = crypto.randomUUID();
     const orderNumber = `${tenantId.toUpperCase().slice(0,3)}-${orderId.toUpperCase().slice(0,8)}`;
     const statements = [
-      c.env.DB.prepare(
-        `INSERT INTO orders (id, order_number, tenant_id, customer_name, customer_address, customer_phone, customer_notes, payment_method, total, status)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`
-      ).bind(orderId, orderNumber, tenantId, customerName, customerAddress, customerPhone, notes ?? null, paymentMethod, total),
+      c.env.DB.prepare(`INSERT INTO orders (id, order_number, tenant_id, customer_id, customer_name, customer_address, customer_phone, customer_email, customer_notes, payment_method, total, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "pending")`)
+        .bind(orderId, orderNumber, tenantId, customerId, customerName, customerAddress, customerPhone, customerEmail, notes ?? null, paymentMethod, total),
       ...orderItems.map((item) =>
-        c.env.DB.prepare(
-          `INSERT INTO order_items (id, order_id, product_id, quantity, price, name) VALUES (?, ?, ?, ?, ?, ?)`
-        ).bind(crypto.randomUUID(), orderId, item.productId, item.quantity, item.price, item.name)
+        c.env.DB.prepare(`INSERT INTO order_items (id, order_id, product_id, quantity, price, name) VALUES (?, ?, ?, ?, ?, ?)`)
+          .bind(crypto.randomUUID(), orderId, item.productId, item.quantity, item.price, item.name)
       ),
     ];
     await c.env.DB.batch(statements);
-
     const message: CheckoutMessage = { orderId, customerName, customerEmail, total, items: orderItems };
     await c.env.ORDER_QUEUE.send(message);
-
+    if (customerId) {
+      const now = getUnixTime();
+      await c.env.DB.prepare('UPDATE carts SET items = ?, updated_at = ? WHERE tenant_id = ? AND customer_id = ?').bind('[]', now, tenantId, customerId).run();
+      if (tokenCookie) {
+        const sess = await loadSession(c.env, tokenCookie);
+        if (sess?.cartId) {
+          await c.env.DB.prepare('UPDATE carts SET items = ?, updated_at = ? WHERE id = ?').bind('[]', now, sess.cartId).run();
+        }
+      }
+    }
     return c.json({ success: true, data: { orderId, orderNumber, total, status: 'pending', message: 'Order created successfully' } }, 201);
   } catch (error) {
     console.error('Checkout error:', error);
     return c.json({ success: false, error: 'Failed to process checkout' }, 500);
   }
 });
-
 export default checkout;

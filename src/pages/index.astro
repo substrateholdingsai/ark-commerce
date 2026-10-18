@@ -1,20 +1,23 @@
 ---
-// src/pages/index.astro — Plataforma Principal: Ark Systems (Landing Express Kit)
+// src/pages/index.astro — Plataforma Principal: Ark Commerce ($299/mes)
 import '../styles/globals.css';
 import ArkLanding from '../components/ark/ArkLanding';
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ark Systems | Landing Express Kit — Vende Landings Que Cobran En 1 HTML</title>
+    <title>Ark Commerce · Tu tienda que vende y cobra por WhatsApp | $299/mes</title>
     <meta
       name="description"
-      content="Sin WordPress, sin Shopify, sin mensualidades. 1 archivo, deploy en 3 minutos, cobra con Stripe, Mercado Pago y Bitcoin Lightning."
+      content="En México no se compra con carritos lentos en dólares. Ark te da tu tienda online lista en 5 minutos: catálogo con fotos, tu CLABE copiable en 1 clic y pedidos directos a tu WhatsApp. 0% comisiones."
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:title" content="Ark Commerce · Tu tienda que vende y cobra por WhatsApp | $299/mes" />
+    <meta property="og:description" content="Sin Shopify, 0% comisiones. El dinero cae directo a tu banco. Te la entregamos lista en 5 minutos." />
+    <meta property="og:type" content="website" />
     <script is:inline>
       // Si la petición viene dirigida a Temozonia por subdominio o parámetro, redirigir a su tienda
       (function() {
@@ -29,7 +32,7 @@ import ArkLanding from '../components/ark/ArkLanding';
       })();
     </script>
   </head>
-  <body class="bg-[#0A0A0B] text-zinc-100 min-h-screen">
+  <body class="bg-[#0B0C0E] text-zinc-100 min-h-screen">
     <ArkLanding client:load />
   </body>
 </html>

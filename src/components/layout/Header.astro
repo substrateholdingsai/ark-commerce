@@ -1,6 +1,8 @@
 ---
 // src/components/layout/Header.astro
 import { CONFIG } from '@/utils/constants';
+import UserMenu from '@/components/auth/UserMenu';
+import AuthModal from '@/components/auth/AuthModal';
 ---
 
 <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#FFF9F3]/90 border-b border-[#7E1D0F]/10 transition-all">
@@ -25,6 +27,10 @@ import { CONFIG } from '@/utils/constants';
 
     <!-- Actions -->
     <div class="flex items-center gap-2">
+      <div class="hidden sm:block">
+        <UserMenu client:load />
+      </div>
+
       <a 
         href={`https://wa.me/${CONFIG.WHATSAPP}`}
         target="_blank"
@@ -54,6 +60,8 @@ import { CONFIG } from '@/utils/constants';
     </div>
   </div>
 </header>
+
+<AuthModal client:load />
 
 <script>
   import { useCartStore } from '@/stores/cart';
