@@ -36,5 +36,9 @@ coverage/
 __pycache__/
 *.py[cod]
 
+# Generated Invoices / Artifacts
+facturas/
+deploy/
+
 # TypeScript
 *.tsbuildinfo
