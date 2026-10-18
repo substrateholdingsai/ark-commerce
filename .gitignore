@@ -32,5 +32,9 @@ npm-debug.log*
 # Testing
 coverage/
 
+# Python
+__pycache__/
+*.py[cod]
+
 # TypeScript
 *.tsbuildinfo

@@ -10,6 +10,14 @@ import json, re, sys, os, shutil
 from pathlib import Path
 from datetime import datetime
 
+# Soporte UTF-8 en consola Windows
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 # ── Colores ANSI para mejor UX ─────────────────────────────
 class C:
     G = "\033[92m"   # verde
