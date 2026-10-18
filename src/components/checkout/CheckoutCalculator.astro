@@ -52,7 +52,21 @@ import { useCustomerAuth } from '@/stores/customerAuth';
           </li>
         </ul>
 
-        <div class="gold-divider my-5" />
+        <!-- Desglose de totales -->
+        <div class="space-y-2 text-xs text-warm-dark-wood/80">
+          <div class="flex justify-between">
+            <span>Subtotal productos:</span>
+            <span id="checkout-subtotal" class="font-mono font-bold text-warm-dark-wood">$0</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="flex items-center gap-1">
+              <span>Envío (Envia.com):</span>
+            </span>
+            <span id="checkout-shipping" class="font-mono font-bold text-emerald-700">Por calcular</span>
+          </div>
+        </div>
+
+        <div class="gold-divider my-4" />
 
         <!-- Total -->
         <div class="flex items-baseline justify-between">
@@ -182,6 +196,44 @@ import { useCustomerAuth } from '@/stores/customerAuth';
               />
             </div>
 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="customer-zip" class="mb-1 block text-xs font-bold uppercase tracking-widest text-warm-dark-wood/70">
+                  Código Postal (C.P.)
+                </label>
+                <div class="relative">
+                  <input 
+                    id="customer-zip"
+                    type="text"
+                    maxlength="5"
+                    placeholder="Ej. 06600 o 97000"
+                    class="w-full rounded-xl border-2 border-brand-900/10 bg-warm-cream/40 px-4 py-2.5 font-mono text-sm text-warm-dark-wood placeholder:text-warm-dark-wood/40 focus:border-brand-500 focus:outline-none"
+                  />
+                  <span id="zip-indicator" class="absolute right-3 top-2.5 text-xs text-brand-500 hidden">✓</span>
+                </div>
+              </div>
+
+              <div>
+                <label for="customer-state" class="mb-1 block text-xs font-bold uppercase tracking-widest text-warm-dark-wood/70">
+                  Estado
+                </label>
+                <select 
+                  id="customer-state"
+                  class="w-full rounded-xl border-2 border-brand-900/10 bg-warm-cream/40 px-3 py-2.5 font-body text-sm text-warm-dark-wood focus:border-brand-500 focus:outline-none"
+                >
+                  <option value="YUC">Yucatán</option>
+                  <option value="CMX">Ciudad de México (CDMX)</option>
+                  <option value="JAL">Jalisco</option>
+                  <option value="NLE">Nuevo León</option>
+                  <option value="PUE">Puebla</option>
+                  <option value="QRO">Querétaro</option>
+                  <option value="ROO">Quintana Roo</option>
+                  <option value="BCN">Baja California</option>
+                  <option value="OTHER">Otro Estado (MX)</option>
+                </select>
+              </div>
+            </div>
+
             <div>
               <label for="customer-phone" class="mb-1 block text-xs font-bold uppercase tracking-widest text-warm-dark-wood/70">
                 Teléfono
@@ -204,6 +256,27 @@ import { useCustomerAuth } from '@/stores/customerAuth';
                 placeholder="Ej. Tocar el timbre azul, sin cebolla..."
                 class="w-full resize-none rounded-xl border-2 border-brand-900/10 bg-warm-cream/40 px-4 py-2.5 font-body text-sm text-warm-dark-wood placeholder:text-warm-dark-wood/40 focus:border-brand-500 focus:outline-none"
               ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ PASO 3: ENVÍO Y PAQUETERÍA (Envia.com) ============ -->
+        <div class="rounded-heritage border-2 border-brand-900/10 bg-white p-5 md:p-6">
+          <div class="mb-2 flex items-center justify-between">
+            <h3 class="font-display text-sm font-bold uppercase tracking-[0.2em] text-warm-dark-wood">
+              3. Paquetería y Envío
+            </h3>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
+              <span class="size-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ENVIA.COM
+            </span>
+          </div>
+          <p class="text-xs text-warm-dark-wood/60 mb-4">
+            Ingresa tu Código Postal arriba para cotizar tarifas en vivo con transportistas nacionales.
+          </p>
+
+          <div id="shipping-options" class="space-y-2.5">
+            <div class="rounded-xl border-2 border-dashed border-warm-dark-wood/20 p-4 text-center text-xs text-warm-dark-wood/60">
+              🚚 Ingresa tu Código Postal (5 dígitos) para ver las tarifas de envío en tiempo real
             </div>
           </div>
         </div>
@@ -231,9 +304,12 @@ import { useCustomerAuth } from '@/stores/customerAuth';
   import { useCartStore } from '@/stores/cart';
   import { CONFIG } from '@/utils/constants';
   import { useCustomerAuth } from '@/stores/customerAuth';
+  import type { ShippingRate } from '@/types/cart';
 
   // ============ REFERENCIAS DOM ============
   const itemsList = document.getElementById('checkout-items')!;
+  const subtotalEl = document.getElementById('checkout-subtotal')!;
+  const shippingEl = document.getElementById('checkout-shipping')!;
   const totalEl = document.getElementById('checkout-total')!;
   const satsEquiv = document.getElementById('sats-equivalence')!;
   const satsAmount = document.getElementById('sats-amount')!;
@@ -245,13 +321,22 @@ import { useCustomerAuth } from '@/stores/customerAuth';
   // Inputs del cliente
   const nameInput = document.getElementById('customer-name') as HTMLInputElement;
   const addressInput = document.getElementById('customer-address') as HTMLInputElement;
+  const zipInput = document.getElementById('customer-zip') as HTMLInputElement;
+  const zipIndicator = document.getElementById('zip-indicator') as HTMLElement;
+  const stateSelect = document.getElementById('customer-state') as HTMLSelectElement;
   const phoneInput = document.getElementById('customer-phone') as HTMLInputElement;
   const notesInput = document.getElementById('customer-notes') as HTMLTextAreaElement;
+  const shippingOptionsContainer = document.getElementById('shipping-options')!;
 
-  // ============ RENDER ITEMS ============
+  let quoteDebounceTimer: any = null;
+  let currentQuotes: ShippingRate[] = [];
+
+  // ============ RENDER ITEMS Y TOTALES ============
   const renderItems = () => {
     const store = useCartStore.getState();
     const items = store.getItemsWithProducts();
+    const subtotal = store.getSubtotal();
+    const shipping = store.getShippingCost();
     const total = store.getTotal();
 
     if (items.length === 0) {
@@ -260,6 +345,9 @@ import { useCustomerAuth } from '@/stores/customerAuth';
           Tu carrito está vacío. Agrega productos arriba.
         </li>
       `;
+      subtotalEl.textContent = '$0';
+      shippingEl.textContent = 'Por calcular';
+      shippingEl.className = 'font-mono text-warm-dark-wood/50';
       totalEl.textContent = '$0';
       ctaBtn.disabled = true;
       ctaText.textContent = 'Agrega productos para continuar';
@@ -287,9 +375,213 @@ import { useCustomerAuth } from '@/stores/customerAuth';
       )
       .join('');
 
+    subtotalEl.textContent = `$${subtotal}`;
+
+    if (store.shippingRate) {
+      if (shipping === 0) {
+        shippingEl.textContent = 'Gratis ($0)';
+        shippingEl.className = 'font-mono font-bold text-emerald-700';
+      } else {
+        shippingEl.textContent = `+$${shipping}`;
+        shippingEl.className = 'font-mono font-bold text-emerald-700';
+      }
+    } else {
+      shippingEl.textContent = 'Por calcular';
+      shippingEl.className = 'font-mono text-warm-dark-wood/50';
+    }
+
     totalEl.textContent = `$${total}`;
     ctaBtn.disabled = false;
     updateCtaText();
+
+    // Actualizar sats si lightning está activo
+    if (store.paymentMethod === 'lightning') {
+      const sats = store.getSatsAmount();
+      satsAmount.textContent = `≈ ${sats.toLocaleString()} sats`;
+    }
+  };
+
+  // ============ RENDER ENVÍO Y PAQUETERÍAS (Envia.com) ============
+  const renderShippingOptions = (rates: ShippingRate[], selectedRate: ShippingRate | null) => {
+    if (!rates || rates.length === 0) {
+      shippingOptionsContainer.innerHTML = `
+        <div class="rounded-xl border border-amber-500/30 bg-amber-50/50 p-4 text-center text-xs text-warm-dark-wood">
+          ⚠️ No encontramos tarifas automáticas para este C.P. Puedes elegir recolección o coordinar por WhatsApp.
+          <button id="opt-pickup-fallback" class="mt-3 block w-full rounded-lg border border-brand-900/20 bg-white py-2 text-xs font-bold text-warm-dark-wood hover:bg-warm-cream">
+            📍 Recoger en sucursal (Caucel, Mérida) · Gratis ($0)
+          </button>
+        </div>
+      `;
+      document.getElementById('opt-pickup-fallback')?.addEventListener('click', () => {
+        selectShippingRate({
+          carrier: 'LOCAL',
+          service: 'pickup',
+          serviceDescription: 'Recoger en Sucursal (Caucel, Mérida)',
+          deliveryEstimate: 'Mismo día / Inmediato',
+          cost: 0,
+          currency: 'MXN'
+        });
+      });
+      return;
+    }
+
+    const allOptions: ShippingRate[] = [
+      ...rates,
+      {
+        carrier: 'LOCAL',
+        service: 'pickup',
+        serviceDescription: 'Recoger en Sucursal (Caucel, Mérida)',
+        deliveryEstimate: 'Mismo día / Inmediato',
+        cost: 0,
+        currency: 'MXN'
+      }
+    ];
+
+    shippingOptionsContainer.innerHTML = allOptions
+      .map((rate, idx) => {
+        const isSelected =
+          selectedRate &&
+          selectedRate.carrier.toUpperCase() === rate.carrier.toUpperCase() &&
+          selectedRate.service === rate.service;
+
+        const carrierBadges: Record<string, { bg: string; text: string; label: string }> = {
+          ESTAFETA: { bg: 'bg-red-50 text-red-700 border-red-200', text: 'Estafeta', label: '🚚 Estafeta' },
+          REDPACK: { bg: 'bg-amber-50 text-amber-700 border-amber-200', text: 'Redpack', label: '📦 Redpack' },
+          FEDEX: { bg: 'bg-purple-50 text-purple-700 border-purple-200', text: 'FedEx', label: '✈️ FedEx' },
+          DHL: { bg: 'bg-yellow-50 text-yellow-800 border-yellow-200', text: 'DHL', label: '⚡ DHL' },
+          LOCAL: { bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', text: 'Local', label: '📍 En Tienda' },
+        };
+
+        const badge = carrierBadges[rate.carrier.toUpperCase()] || {
+          bg: 'bg-brand-50 text-brand-900 border-brand-200',
+          text: rate.carrier,
+          label: `📦 ${rate.carrier}`,
+        };
+
+        return `
+          <div 
+            data-rate-idx="${idx}"
+            class="shipping-rate-card cursor-pointer rounded-xl border-2 p-3 transition flex items-center justify-between gap-3 ${
+              isSelected
+                ? 'border-brand-500 bg-brand-500/5 shadow-sm ring-1 ring-brand-500/20'
+                : 'border-brand-900/10 bg-warm-cream/30 hover:border-brand-900/30 hover:bg-warm-cream/60'
+            }"
+          >
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="size-4 rounded-full border-2 flex items-center justify-center ${
+                isSelected ? 'border-brand-500 bg-brand-500' : 'border-warm-dark-wood/30 bg-white'
+              }">
+                ${isSelected ? '<div class="size-1.5 rounded-full bg-white"></div>' : ''}
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="rounded px-1.5 py-0.5 text-[10px] font-bold border ${badge.bg}">
+                    ${badge.label}
+                  </span>
+                  <span class="font-body text-xs font-bold text-warm-dark-wood truncate">
+                    ${rate.serviceDescription}
+                  </span>
+                </div>
+                <div class="text-[11px] text-warm-dark-wood/60 mt-0.5">
+                  ⏱️ Estimado: ${rate.deliveryEstimate}
+                </div>
+              </div>
+            </div>
+            <div class="text-right flex-shrink-0">
+              <span class="font-mono text-sm font-bold ${rate.cost === 0 ? 'text-emerald-600' : 'text-warm-dark-wood'}">
+                ${rate.cost === 0 ? 'Gratis' : `$${rate.cost} MXN`}
+              </span>
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+
+    // Listener para selección de cada card
+    shippingOptionsContainer.querySelectorAll('.shipping-rate-card').forEach((card) => {
+      card.addEventListener('click', () => {
+        const idx = parseInt((card as HTMLElement).dataset.rateIdx || '0', 10);
+        selectShippingRate(allOptions[idx]);
+      });
+    });
+  };
+
+  const selectShippingRate = (rate: ShippingRate) => {
+    useCartStore.getState().setShippingRate(rate);
+    renderShippingOptions(currentQuotes, rate);
+    renderItems();
+  };
+
+  const fetchShippingQuotes = async (postalCode: string, state: string) => {
+    if (!/^\d{5}$/.test(postalCode)) {
+      zipIndicator.classList.add('hidden');
+      shippingOptionsContainer.innerHTML = `
+        <div class="rounded-xl border-2 border-dashed border-warm-dark-wood/20 p-4 text-center text-xs text-warm-dark-wood/60">
+          🚚 Ingresa un Código Postal válido (5 dígitos) para ver las tarifas de envío en tiempo real
+        </div>
+      `;
+      useCartStore.getState().setShippingRate(null);
+      renderItems();
+      return;
+    }
+
+    zipIndicator.classList.remove('hidden');
+    shippingOptionsContainer.innerHTML = `
+      <div class="rounded-xl border-2 border-brand-900/10 bg-warm-cream/40 p-4 text-center text-xs text-warm-dark-wood/70 flex items-center justify-center gap-2">
+        <svg class="size-4 animate-spin text-brand-500" viewBox="0 0 24 24" fill="none">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        <span>Cotizando con Envia.com para C.P. <strong>${postalCode}</strong>...</span>
+      </div>
+    `;
+
+    try {
+      const res = await fetch('/api/shipping/quote?tenant=temozonia', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          postalCode,
+          state: state || undefined,
+          packageWeight: 2,
+        }),
+      });
+
+      const data = await res.json();
+      if (data && data.success && data.data && data.data.rates && data.data.rates.length > 0) {
+        currentQuotes = data.data.rates;
+        const currentSelected = useCartStore.getState().shippingRate;
+        const bestRate = currentSelected || currentQuotes[0];
+        selectShippingRate(bestRate);
+      } else {
+        throw new Error(data?.error || 'No rates found');
+      }
+    } catch (err) {
+      console.warn('Error fetching quotes from Envia.com:', err);
+      // Fallback a tarifas estándar simuladas para no bloquear la compra
+      currentQuotes = [
+        {
+          carrier: 'REDPACK',
+          service: 'standard',
+          serviceDescription: 'Redpack EcoExpress Terrestre',
+          deliveryEstimate: '3 a 5 días hábiles',
+          cost: 185,
+          currency: 'MXN',
+          isSimulated: true,
+        },
+        {
+          carrier: 'ESTAFETA',
+          service: 'express',
+          serviceDescription: 'Estafeta Terrestre Nacional',
+          deliveryEstimate: '2 a 3 días hábiles',
+          cost: 205,
+          currency: 'MXN',
+          isSimulated: true,
+        },
+      ];
+      const currentSelected = useCartStore.getState().shippingRate;
+      selectShippingRate(currentSelected || currentQuotes[0]);
+    }
   };
 
   // ============ RENDER PAYMENT PANEL ============
@@ -450,9 +742,16 @@ import { useCustomerAuth } from '@/stores/customerAuth';
     phoneInput.value = customer.phone;
     notesInput.value = customer.notes;
 
-    // Suscribirse al store
+    if (customer.postalCode) {
+      zipInput.value = customer.postalCode;
+      fetchShippingQuotes(customer.postalCode, stateSelect.value);
+    }
+
+    // Suscribirse al store para items, métodos y tarifas
     useCartStore.subscribe((state, prev) => {
-      if (state.items !== prev.items) renderItems();
+      if (state.items !== prev.items || state.shippingRate !== prev.shippingRate) {
+        renderItems();
+      }
       if (state.paymentMethod !== prev.paymentMethod) {
         renderPaymentPanel();
         markActiveMethod();
@@ -481,6 +780,23 @@ import { useCustomerAuth } from '@/stores/customerAuth';
     notesInput.addEventListener('input', (e) =>
       useCartStore.getState().updateCustomer({ notes: (e.target as HTMLTextAreaElement).value })
     );
+
+    // Listener para C.P. con debounce y cotización automática Envia.com
+    zipInput.addEventListener('input', (e) => {
+      const val = (e.target as HTMLInputElement).value.trim();
+      useCartStore.getState().updateCustomer({ postalCode: val });
+      clearTimeout(quoteDebounceTimer);
+      quoteDebounceTimer = setTimeout(() => {
+        fetchShippingQuotes(val, stateSelect.value);
+      }, 350);
+    });
+
+    stateSelect.addEventListener('change', () => {
+      const val = zipInput.value.trim();
+      if (val.length === 5) {
+        fetchShippingQuotes(val, stateSelect.value);
+      }
+    });
 
     // CTA principal
     ctaBtn.addEventListener('click', () => {

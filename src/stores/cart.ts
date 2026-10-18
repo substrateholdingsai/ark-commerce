@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { CartItem, CustomerInfo, PaymentMethod, CartItemWithProduct } from '@/types/cart';
+import type { CartItem, CustomerInfo, PaymentMethod, CartItemWithProduct, ShippingRate } from '@/types/cart';
 import type { Product } from '@/types/product';
 import { getProducts, getProductById as getCachedProduct } from '@/stores/productsCache';
 import { CONFIG } from '@/utils/constants';
@@ -12,6 +12,7 @@ interface CartState {
   isCartOpen: boolean;
   paymentMethod: PaymentMethod;
   customer: CustomerInfo;
+  shippingRate: ShippingRate | null;
   copiedClabe: boolean;
   copiedLightning: boolean;
 
@@ -25,10 +26,13 @@ interface CartState {
 
   // ============ ACCIONES DE CHECKOUT ============
   setPaymentMethod: (method: PaymentMethod) => void;
+  setShippingRate: (rate: ShippingRate | null) => void;
   updateCustomer: (data: Partial<CustomerInfo>) => void;
   resetCustomer: () => void;
 
   // ============ GETTERS / COMPUTED ============
+  getSubtotal: () => number;
+  getShippingCost: () => number;
   getTotal: () => number;
   getItemCount: () => number;
   getProductById: (id: string) => Product | undefined;
@@ -62,6 +66,7 @@ export const useCartStore = create<CartState>()(
       isCartOpen: false,
       paymentMethod: 'transfer',
       customer: { ...DEFAULT_CUSTOMER },
+      shippingRate: null,
       copiedClabe: false,
       copiedLightning: false,
 
@@ -101,7 +106,7 @@ export const useCartStore = create<CartState>()(
       },
 
       clearCart: () => {
-        set({ items: [] });
+        set({ items: [], shippingRate: null });
       },
 
       toggleCart: () => {
@@ -117,6 +122,10 @@ export const useCartStore = create<CartState>()(
         set({ paymentMethod: method });
       },
 
+      setShippingRate: (rate) => {
+        set({ shippingRate: rate });
+      },
+
       updateCustomer: (data) => {
         set((state) => ({
           customer: { ...state.customer, ...data },
@@ -128,12 +137,20 @@ export const useCartStore = create<CartState>()(
       },
 
       // ============ GETTERS ============
-      getTotal: () => {
+      getSubtotal: () => {
         const { items } = get();
         return items.reduce((sum, item) => {
           const product = getProducts().find((p: any) => p.id === item.id);
           return sum + (product ? product.price * item.qty : 0);
         }, 0);
+      },
+
+      getShippingCost: () => {
+        return get().shippingRate?.cost || 0;
+      },
+
+      getTotal: () => {
+        return get().getSubtotal() + get().getShippingCost();
       },
 
       getItemCount: () => {
@@ -203,7 +220,8 @@ export const useCartStore = create<CartState>()(
       },
 
       generateWhatsAppUrl: () => {
-        const { items, paymentMethod, customer, getTotal, getProductById } = get();
+        const { items, paymentMethod, customer, shippingRate, getSubtotal, getTotal, getProductById } = get();
+        const subtotal = getSubtotal();
         const total = getTotal();
 
         const itemsList = items
@@ -215,19 +233,19 @@ export const useCartStore = create<CartState>()(
           .filter((line): line is string => line !== null)
           .join('%0A');
 
-        const header = `Hola Temozonia 🔥%0AQuiero pedir:%0A${itemsList}%0A%0ATotal: $${total} MXN%0APago: ${paymentMethod.toUpperCase()}%0A`;
+        const shippingSection = shippingRate
+          ? `%0A📦 Envío (${shippingRate.carrier.toUpperCase()}): ${shippingRate.serviceDescription} (+$${shippingRate.cost} MXN)%0A⏱️ Entrega estimada: ${shippingRate.deliveryEstimate}%0A`
+          : '%0A📦 Envío: Por acordar / local%0A';
+
+        const header = `Hola Temozonia 🔥%0AQuiero pedir:%0A${itemsList}%0A%0ASubtotal: $${subtotal} MXN${shippingSection}%0ATOTAL: $${total} MXN%0APago: ${paymentMethod.toUpperCase()}%0A`;
 
         const customerInfo =
           `Nombre: ${customer.name || '(por confirmar)'}%0A` +
-          `Dirección: ${customer.address || '(por confirmar)'}%0A` +
+          `Dirección: ${customer.address || '(por confirmar)'}${customer.postalCode ? ' C.P. ' + customer.postalCode : ''}%0A` +
           `Tel: ${customer.phone || ''}%0A` +
           (customer.notes ? `Nota: ${customer.notes}%0A` : '');
 
-        const delivery = customer.address
-          ? `%0ADirección entrega: ${encodeURIComponent(customer.address)}`
-          : '';
-
-        return `https://wa.me/${CONFIG.WHATSAPP}?text=${header}${customerInfo}${delivery}`;
+        return `https://wa.me/${CONFIG.WHATSAPP}?text=${header}${customerInfo}`;
       },
 
       sendWhatsApp: () => {
@@ -249,6 +267,7 @@ export const useCartStore = create<CartState>()(
         items: state.items,
         paymentMethod: state.paymentMethod,
         customer: state.customer,
+        shippingRate: state.shippingRate,
       }),
     }
   )

@@ -13,8 +13,19 @@ export interface CartItemWithProduct extends CartItem {
 export interface CustomerInfo {
   name: string;
   address: string;
+  postalCode?: string;
   phone: string;
   notes?: string;
 }
 
-export type PaymentMethod = 'card' | 'transfer' | 'bitcoin';
+export interface ShippingRate {
+  carrier: string;
+  service: string;
+  serviceDescription: string;
+  deliveryEstimate: string;
+  cost: number;
+  currency: string;
+  isSimulated?: boolean;
+}
+
+export type PaymentMethod = 'transfer' | 'card' | 'lightning' | 'whatsapp';
