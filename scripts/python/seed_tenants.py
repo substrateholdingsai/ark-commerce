@@ -369,7 +369,7 @@ class D1Executor:
                 cmd.append("--remote")
             
             p(f"  ⚡ Ejecutando vía Wrangler ({'--local' if self.cfg.is_local else '--remote'})...", C.D)
-            res = subprocess.run(cmd, capture_output=True, text=True, check=False)
+            res = subprocess.run(cmd, shell=(sys.platform == "win32"), capture_output=True, text=True, check=False)
             if res.returncode != 0:
                 p(f"  ✗ Error Wrangler:\n{res.stderr or res.stdout}", C.R)
                 return False
