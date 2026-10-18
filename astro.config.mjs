@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import cloudflare from "@astrojs/cloudflare";
+import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 import { config } from "./config/config";
 import { fileURLToPath } from "url";
@@ -20,7 +21,7 @@ export default defineConfig({
   build: {
     inlineStylesheets: config.astro.build.inlineStylesheets,
   },
-  integrations: [],
+  integrations: [react()],
   vite: {
     plugins: [tailwindcss()],
     resolve: {

@@ -1,488 +1,152 @@
-# 📁 Project Map — Temozonia
+﻿# 📁 Project Map — Ark Commerce (Multi-Tenant Platform)
 
-## 1. Estructura de Carpetas Completa
+## 1. Arquitectura y Recursos Cloudflare Oficiales
+- **Worker Name**: `ark-commerce`
+- **Base de Datos D1**: `ark-commerce-db` (`874b300a-18f6-4995-a98e-27abd7264662`)
+- **Bucket R2**: `ark-commerce-storage`
+- **Queue**: `ark-commerce-orders` (binding: `ORDER_QUEUE`)
+- **KV Namespaces**: 
+  - `SESSION` (`316c37d5fe864e4bab912a0dbbe6b00a`) - Sesiones de admin
+  - `CACHE` (`90269c9d7ede4252b21463bf9834f64d`) - Caché de tenants
 
-```
+## 2. Tiendas y Tenants (Multi-Tenant)
+1. **Ark Systems** (`ark`): Plataforma y tienda principal por defecto en `/`.
+   - Vende: *Landing Express Kit* (MXN/USD) y *Hosting Cloudflare Worker* (MXN/mes).
+   - Canon de diseño: **ARK PULSE v1.0** (`docs/ark_designsystem.md`)
+   - Tema: Dark arquitectónico con acento Lima (#B4FF00)
+   - Admin: `admin@arksystems.ai` / `admin123`
+
+2. **Temozonia Carnes Ahumadas** (`temozonia`): Cliente hosteado en `/temozonia` o vía subdominio `temozonia.*` / query `?tenant=temozonia`.
+   - Catálogo: 5 productos de carnes ahumadas artesanales (Carne Ahumada 1kg, Costillas BBQ 1kg, Chorizo 500g, Salchichón 300g, Pack Degustación 2.3kg)
+   - Canon de diseño: Smoke & Amber (`docs/designsystem.md`)
+   - Admin: `admin@temozonia.com` / `admin123`
+   - Configuración en D1 incluye dominio: `temozonia.substrateholdingsai.workers.dev`
+
+## 3. Stack Tecnológico
+| Capa | Tecnología | Propósito |
+|---|---|---|
+| **Frontend** | [Astro 5](https://astro.build/) + [React 19](https://react.dev/) | SSG/SSR, Islands interactivos, SEO |
+| **Estilos** | [Tailwind CSS 4](https://tailwindcss.com/) | Diseño tokenizado |
+| **Backend** | [Hono 4.6](https://hono.dev/) | API ligera edge-first compatible con Web Standards |
+| **Estado** | [Zustand 5](https://zustand-demo.pmnd.rs/) | Carrito reactivo con persistencia local |
+| **DB** | [Cloudflare D1](https://developers.cloudflare.com/d1/) | SQLite serverless multi-tenant |
+| **Cache/Sesiones** | [Cloudflare KV](https://developers.cloudflare.com/kv/) | Caché de tenants (1h TTL), sesiones admin (24h TTL) |
+| **Storage** | [Cloudflare R2](https://developers.cloudflare.com/r2/) | Subida y almacenamiento de imágenes |
+| **Colas** | [Cloudflare Queues](https://developers.cloudflare.com/queues/) | Procesamiento asíncrono de órdenes |
+| **Tooling** | TypeScript 5.6, Wrangler 4.149 | Desarrollo y deploy a edge |
+
+## 4. Estructura del Proyecto
+```text
 temozonia/
-├── .github/                          # GitHub workflows (CI/CD) [TODO]
-│   └── workflows/
-│       ├── deploy.yml
-│       └── typecheck.yml
-│
-├── .vscode/                          # Configuración del editor [TODO]
-│   ├── settings.json
-│   └── extensions.json
-│
-├── config/                           # ⚙️ Configuración centralizada
-│   └── config.ts                     # Config principal tipada
-│
-├── docs/                             # 📚 Documentación
-│   ├── designsystem.md               # Design System completo
-│   └── map.md                        # Este archivo (Status y Roadmap)
-│
-├── public/                           # 🖼 Assets estáticos
-│   ├── favicon.svg                   # Favicon
-│   ├── .assetsignore
-│   └── images/                       # [PENDIENTE] Fotos reales de productos
-│       └── products/
-│
-├── src/                              # 🌐 Frontend principal (Astro 5 + Tailwind v4)
+├── astro/                    # Frontend Astro legacy (archivos antiguos)
+├── config/                   # Configuración centralizada (config.ts)
+├── docs/                     # Documentación (map.md, designsystem.md, ark_designsystem.md)
+├── public/                   # Assets estáticos (favicon, imágenes, stores ejemplo)
+├── scripts/
+│   ├── python/               # Generadores de assets (ark_pulse_forge.py, ark_universal_forge.py)
+│   └── sql/                  # Schema D1 (schema.sql, seed.sql, ejemplo_cliente.sql)
+├── src/                      # Código fuente Astro + React
 │   ├── components/
-│   │   ├── checkout/
-│   │   │   ├── CartDrawer.astro      # Panel deslizante del carrito
-│   │   │   └── CheckoutCalculator.astro # Resumen, cálculo y envío WhatsApp
-│   │   ├── layout/
-│   │   │   ├── Header.astro          # Navbar con badge dinámico del carrito
-│   │   │   ├── Hero.astro            # Hero con brasas y humo
-│   │   │   └── Footer.astro          # Directorio y status del ahumador
-│   │   └── product/
-│   │       └── ProductCard.astro     # Card de producto con botón interactivo
-│   ├── data/
-│   │   └── products.ts               # Catálogo local de cortes ahumados
-│   ├── layouts/
-│   │   └── Layout.astro              # Layout base (Header, Footer, CartDrawer, CSS)
-│   ├── pages/
-│   │   ├── index.astro               # Home (Hero + Productos + Checkout)
-│   │   ├── conocenos.astro           # Historia y tradición
-│   │   ├── contacto.astro            # Canales de atención y WhatsApp
-│   │   ├── mayoreo.astro             # B2B / Restaurantes
-│   │   ├── recetas.astro             # Guías y preparación
-│   │   └── test.astro                # Ruta de prueba
-│   ├── stores/
-│   │   └── cart.ts                   # Store Zustand (items, CLABE, Lightning, WhatsApp)
-│   ├── styles/
-│   │   └── globals.css               # Tailwind v4 (@theme tokens + utilidades)
-│   ├── types/
-│   │   ├── cart.ts                   # Tipos de Carrito y Comprador
-│   │   └── product.ts                # Tipos de Producto y Orden
-│   └── utils/
-│       ├── constants.ts              # Configuración WhatsApp, CLABE, Lightning
-│       └── whatsapp.ts               # Generador de mensaje de pedido
-│
-├── worker/                           # ⚡ Backend Cloudflare Worker (Hono)
-│   ├── index.ts                      # Entrypoint con bindings y middleware
-│   └── routes/
-│       ├── health.ts                 # GET /health
-│       └── index.ts                  # Montaje API (stubs pendientes)
-│
-├── scripts/                          # 🛠 Scripts utilitarios y base de datos
-│   ├── python/
-│   │   └── main.py                   # Script de analítica / Workers AI
-│   └── sql/
-│       └── schema.sql                # Esquema D1 (products, orders, order_items)
-│
-├── astro.config.mjs                  # Configuración Astro (@/ y @config aliases)
-├── package.json                      # Scripts de compilación y dependencias
-├── tsconfig.json                     # Paths de TypeScript
-├── wrangler.toml                     # Bindings Cloudflare (D1, KV, R2, Queue)
-└── dist/                             # Build final servido por Cloudflare Assets
-├── worker/                           # ⚡ Cloudflare Worker (Hono)
-│   ├── index.ts                      # Entry point principal (Bindings + Hono app)
-│   └── routes/                       # Rutas API
-│       ├── health.ts                 # GET /health (Activo con check D1)
-│       ├── index.ts                  # Montaje API (Stubs)
-│       ├── products.ts               # [PENDIENTE] CRUD productos (D1)
-│       └── checkout.ts               # [PENDIENTE] Registro pedidos (D1 + Queue)
-│
-├── scripts/                          # 🛠 Scripts utilitarios y base de datos
-│   ├── python/
-│   │   └── main.py                   # Entry point (CLI + Workers AI stub)
-│   └── sql/
-│       └── schema.sql                # Esquema D1 (products, orders, order_items)
-│
-├── config/                           # ⚙️ Configuración centralizada
-│   └── config.ts                     # Config principal tipada
-│
-├── docs/                             # 📚 Documentación
-│   ├── designsystem.md               # Design System completo
-│   └── map.md                        # Este archivo
-│
-├── tests/                            # 🧪 Tests [PENDIENTE]
-├── dist/                             # Build output (generado por astro build)
-├── node_modules/                     # Dependencias (gitignored)
-├── .gitignore
-├── astro.config.mjs                  # Configuración Astro (@/ y @config aliases)
-├── package.json                      # Workspace root + dependencias principales
-├── tsconfig.json                     # Configuración TypeScript
-├── wrangler.toml                     # Bindings Cloudflare (D1, KV, R2, Queue)
-└── README.md
+│   │   ├── admin/            # Panel admin React (AdminApp.tsx)
+│   │   ├── ark/              # Landing Ark Systems (ArkLanding.tsx)
+│   │   ├── checkout/         # Carrito y checkout (CartDrawer.astro, CheckoutCalculator.astro)
+│   │   ├── layout/           # Header, Footer, Hero
+│   │   └── product/          # ProductCard
+│   ├── data/                 # Datos estáticos (products.ts)
+│   ├── layouts/              # Layout principal (Layout.astro)
+│   ├── pages/                # Páginas Astro (index, temozonia, admin, contacto, etc.)
+│   ├── stores/               # Zustand stores (cart, storeConfig, productsCache)
+│   ├── styles/               # CSS global (globals.css)
+│   ├── types/                # Types TypeScript (product.ts, cart.ts)
+│   └── utils/                # Utilidades (constants.ts, whatsapp.ts)
+├── worker/                   # Backend Hono (Cloudflare Workers)
+│   ├── index.ts              # Entry point + resolución multi-tenant
+│   ├── routes/               # Rutas base (health.ts, index.ts)
+│   └── src/
+│       ├── routes/           # Endpoints API (products, checkout, store, admin)
+│       ├── schemas/          # Validación Zod (checkout.ts)
+│       └── types/            # Tipos Env, Tenant (env.d.ts)
+├── astro.config.mjs          # Config Astro + Cloudflare adapter
+├── tailwind.config.ts         # Config Tailwind CSS
+├── wrangler.toml              # Config Cloudflare Workers (bindings, vars)
+├── package.json               # Scripts y dependencias
+└── tsconfig.json              # Config TypeScript
 ```
 
----
-
-## 2. Dependencias Principales
-
-### Root (`package.json`)
-
-| Categoría | Paquete | Versión | Propósito |
-|-----------|---------|---------|-----------|
-| **Runtime** | `hono` | ^4.6 | Framework worker ligero |
-| | `astro` | ^5.0 | Framework sitio estático |
-| | `@astrojs/cloudflare` | ^12.0 | Adapter Cloudflare |
-| | `@tailwindcss/vite` | ^4.0 | Tailwind v4 via Vite |
-| | `tailwindcss` | ^4.0 | Design System |
-| **Cloudflare** | `@cloudflare/workers-types` | ^4.2024 | Types bindings |
-| | `wrangler` | ^3.80 | CLI deploy/dev |
-| **Data** | `@astrojs/db` | ^0.11 | ORM opcional D1 |
-| | `zod` | ^3.23 | Validación schemas |
-| **Estado/UI** | `zustand` | ^4.5 | Estado global cliente |
-| | `lucide-react` | ^0.400 | Iconos |
-| **Python/IA** | (via Workers AI) | - | Pyodide/Llama en edge |
-| **Dev** | `typescript` | ^5.6 | Tipado estático |
-| | `vitest` | ^2.0 | Testing unitario |
-| | `playwright` | ^1.45 | Testing E2E |
-| | `eslint` | ^9.0 | Linting |
-| | `prettier` | ^3.3 | Formateo |
-
-### Astro (`astro/package.json`)
-
-```json
-{
-  "dependencies": {
-    "astro": "^5.0",
-    "@astrojs/cloudflare": "^12.0",
-    "@astrojs/tailwind": "^6.0",
-    "zustand": "^4.5",
-    "lucide-react": "^0.400"
-  },
-  "devDependencies": {
-    "@types/node": "^22.0",
-    "tailwindcss": "^4.0",
-    "@tailwindcss/vite": "^4.0"
-  }
-}
+## 5. Arquitectura (Multi-Tenant)
+```text
+Cliente (Navegador)
+  ↓
+Cloudflare CDN (Assets estáticos dist/)
+  ├─→ Astro Static (Pages: /, /temozonia, /admin, etc.)
+  └─→ Worker API (/api/*, /health)
+       ├─→ D1 (tenants, products, orders, order_items, tenant_users)
+       ├─→ KV (SESSION: sesiones admin 24h, CACHE: tenants por slug/domino 1h)
+       ├─→ R2 (STORAGE: uploads/imagenes por tenant)
+       └─→ Queues (ORDER_QUEUE: procesamiento asíncrono de órdenes checkout)
 ```
 
-### Worker (`worker/` - usa root `package.json`)
+**Resolución de Tenant (worker/index.ts):**
+1. Query param `?tenant=` 
+2. Header `X-Tenant-ID`
+3. Subdominio (ej. `temozonia.dominio.com` → slug `temozonia`)
+4. Fallback → `ark` (Ark Systems)
 
-```json
-{
-  "dependencies": {
-    "hono": "^4.6",
-    "zod": "^3.23"
-  }
-}
-```
+## 6. API REST (Worker)
+Base URL: `/api/*`
 
----
+| Ruta | Método | Auth | Descripción |
+|---|---|---|---|
+| `/health` | GET | Público | Health check |
+| `/api/store/config` | GET | Público | Configuración del tenant actual (nombre, WhatsApp, datos bancarios, BTCPay, etc.) |
+| `/api/products` | GET | Público | Lista productos activos del tenant (ordenados por display_order) |
+| `/api/products/:id` | GET | Público | Producto específico |
+| `/api/checkout` | POST | Público | Crear orden (valida con Zod), guarda en D1, envía a ORDER_QUEUE |
+| `/api/admin/login` | POST | Público | Login admin (hash SHA-256), crea sesión en KV (24h) |
+| `/api/admin/store` | GET/PUT | Bearer token | Leer/actualizar configuración del tenant |
+| `/api/admin/products` | GET | Bearer token | Listar todos productos (activos/inactivos) |
+| `/api/admin/products` | POST | Bearer token | Crear producto |
+| `/api/admin/products/:id` | PUT | Bearer token | Actualizar producto |
+| `/api/admin/upload` | POST | Bearer token | Subir imagen a R2 (`tenants/{tenantId}/{timestamp}-{filename}`) |
+| `/api/admin/files/*` | GET | Público | Servir archivos subidos desde R2 |
+| `/api/admin/orders` | GET | Bearer token | Listar órdenes (filtro opcional `?status=pending|paid|delivered`) |
+| `/api/admin/orders/:id/status` | PUT | Bearer token | Actualizar estado de orden |
 
-## 3. Instrucciones de Build
+## 7. Esquema D1 (Multi-Tenant)
+Tablas: `tenants`, `tenant_users`, `products`, `orders`, `order_items`
+- Relaciones con `ON DELETE CASCADE` entre tenant y entidades hijas
+- Índices optimizados por tenant, estado, fechas
+- Seed data con 2 tenants + usuarios admin + productos
 
-### 3.1 Requisitos Previos
+## 8. Páginas Astro
+| Página | Ruta | Descripción |
+|---|---|---|
+| `index.astro` | `/` | Landing Ark Systems (ArkLanding React client:load). Auto-redirige a `/temozonia` si `?tenant=temozonia` o subdominio |
+| `temozonia.astro` | `/temozonia` | Tienda Temozonia (Layout + Hero + ProductCard grid + CheckoutCalculator) |
+| `admin.astro` | `/admin` | Panel admin multi-tenant (AdminApp React client:only) |
+| `test.astro` | `/test` | Página de pruebas |
+| `contacto.astro` | `/contacto` | Contacto |
+| `conocenos.astro` | `/conocenos` | Nosotros |
+| `mayoreo.astro` | `/mayoreo` | Mayoreo |
+| `recetas.astro` | `/recetas` | Recetas |
+| Otras | Varios | Páginas adicionales del sitio |
 
+## 9. Scripts Disponibles (package.json)
 ```bash
-# Node.js 20+
-node --version  # >= 20.0.0
-
-# pnpm recomendado (o npm/yarn)
-corepack enable
-pnpm --version  # >= 9.0
-
-# Wrangler CLI autenticado
-wrangler login
-wrangler whoami
+pnpm dev          # Desarrollo con Wrangler (worker + assets) - puerto 8787
+pnpm deploy       # Deploy a Cloudflare Workers
+pnpm astro:dev    # Solo Astro dev server (puerto 4321)
+pnpm astro:build  # Build Astro
+pnpm astro:preview # Preview build
+pnpm build        # Build Astro + dry-run deploy Wrangler (verificación)
+pnpm cf-typegen   # Generar tipos Cloudflare Env
 ```
 
-### 3.2 Variables de Entorno
-
-```bash
-# Copiar template
-cp .env.example .env.local
-
-# Editar con tus valores
-# .env.local
-CLOUDFLARE_ACCOUNT_ID=your-account-id
-CLOUDFLARE_API_TOKEN=your-api-token
-DATABASE_ID=your-d1-id
-KV_NAMESPACE_ID=your-kv-id
-R2_BUCKET_NAME=temozonia-storage
-QUEUE_NAME=temozonia-queue
-VECTORIZE_INDEX=temozonia-index
-BTCPAY_URL=https://btcpay.example.com
-BTCPAY_API_KEY=your-key
-MERCADOPAGO_ACCESS_TOKEN=your-token
-SENTRY_DSN=your-dsn (opcional)
-```
-
-### 3.3 Crear Recursos Cloudflare (Una sola vez)
-
-```bash
-# Opción A: Script automatizado
-./scripts/deploy/create-resources.sh
-
-# Opción B: Manual vía wrangler
-# D1 Database
-wrangler d1 create temozonia-db
-# → Copia database_id a wrangler.toml
-
-# KV Namespaces
-wrangler kv namespace create "SESSION"
-wrangler kv namespace create "CACHE"
-# → Copia ids a wrangler.toml
-
-# R2 Bucket
-wrangler r2 bucket create temozonia-storage
-
-# Queues
-wrangler queues create temozonia-queue
-wrangler queues create temozonia-dlq
-
-# Vectorize
-wrangler vectorize create temozonia-index --dimensions=768 --metric=cosine
-
-# Durable Objects (migración)
-wrangler deploy --dry-run  # Crea la migración DO
-wrangler d1 migrations apply temozonia-db --remote
-```
-
-### 3.4 Desarrollo Local
-
-```bash
-# Terminal 1: Worker + Astro dev (con proxy)
-npm run dev
-# → Worker en http://localhost:8787
-# → Astro en http://localhost:4321 (proxy a worker)
-
-# Terminal 2: Solo Astro (más rápido para UI)
-npm run astro:dev
-
-# Terminal 3: Solo Worker (API testing)
-npm run worker:dev
-
-# Ver logs combinados
-npm run logs
-```
-
-### 3.5 Build de Producción
-
-```bash
-# Build completo (Astro + Worker typecheck)
-npm run build
-
-# Solo sitio estático
-npm run astro:build
-
-# Solo typecheck worker
-npm run cf-typegen
-
-# Preview build local
-npm run astro:preview
-# → Sirve dist/ en puerto 4321
-```
-
-### 3.6 Deploy
-
-```bash
-# Deploy a Cloudflare (staging/production)
-npm run deploy
-
-# Deploy solo worker
-wrangler deploy --env production
-
-# Deploy solo sitio (Assets)
-wrangler pages deploy ./dist --project-name=temozonia
-
-# Verificar deploy
-curl https://temozonia.example.com/health
-curl https://temozonia.example.com/api/config
-```
-
----
-
-## 4. Herramientas Disponibles
-
-### 4.1 Scripts NPM Principales
-
-| Comando | Descripción |
-|---------|-------------|
-| `npm run dev` | Inicia worker + astro dev con proxy |
-| `npm run astro:dev` | Solo Astro dev server |
-| `npm run worker:dev` | Solo worker dev (wrangler dev) |
-| `npm run build` | Build completo + typecheck |
-| `npm run astro:build` | Build solo sitio Astro |
-| `npm run deploy` | Deploy a Cloudflare |
-| `npm run cf-typegen` | Genera `CloudflareEnv` types |
-| `npm run typecheck` | TypeScript strict check |
-| `npm run lint` | ESLint + Prettier check |
-| `npm run format` | Prettier write |
-| `npm run test` | Vitest unit tests |
-| `npm run test:e2e` | Playwright E2E tests |
-| `npm run db:push` | Push schema D1 local |
-| `npm run db:seed` | Poblar D1 con datos demo |
-| `npm run python:test` | Test scripts Python local |
-
-### 4.2 Wrangler Commands Útiles
-
-```bash
-# Logs en vivo
-wrangler tail --format=pretty
-
-# Ver bindings configurados
-wrangler bindings list
-
-# D1: Ejecutar SQL
-wrangler d1 execute temozonia-db --command="SELECT * FROM products LIMIT 5"
-wrangler d1 execute temozonia-db --local --command="..."
-
-# KV: Inspeccionar
-wrangler kv key list --binding=KV
-wrangler kv key get "cart:user123" --binding=KV
-
-# R2: Subir/descargar
-wrangler r2 object put temozonia-storage/products/img.jpg --file=./img.jpg
-wrangler r2 object get temozonia-storage/products/img.jpg --file=./out.jpg
-
-# Queues: Enviar mensaje test
-wrangler queues send temozonia-queue --message='{"type":"order.created","data":{...}}'
-
-# Durable Objects: Ver estado
-wrangler durable-objects list
-```
-
-### 4.3 Python Scripts (Workers AI)
-
-```bash
-# Test local (requiere Python 3.11+)
-cd scripts/python
-python main.py process_product_data
-python main.py calculate_shipping 75 national 2.5
-
-# Via Worker API (después de deploy)
-curl "https://temozonia.example.com/api/python/execute?code=print('hello')"
-
-# En código worker (services/ai.ts)
-const result = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
-  messages: [{ role: "user", content: pythonCode }]
-});
-```
-
-### 4.4 VS Code Tasks (`.vscode/tasks.json`)
-
-```json
-{
-  "tasks": [
-    { "label": "Start All", "command": "npm run dev", "group": "build" },
-    { "label": "Build & Deploy", "command": "npm run build && npm run deploy", "group": "build" },
-    { "label": "Typecheck", "command": "npm run typecheck", "problemMatcher": "$tsc" },
-    { "label": "Test", "command": "npm run test", "group": "test" }
-  ]
-}
-```
-
-### 4.5 Extensiones VS Code Recomendadas
-
-```json
-// .vscode/extensions.json
-[
-  "astro-build.astro-vscode",
-  "bradlc.vscode-tailwindcss",
-  "dbaeumer.vscode-eslint",
-  "esbenp.prettier-vscode",
-  "cloudflare.workers",
-  "ms-python.python",
-  "usernamehw.errorlens"
-]
-```
-
----
-
-## 5. Flujo de Datos Clave
-
-```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Browser   │────▶│ Cloudflare   │────▶│  Worker     │
-│  (Astro)    │     │  CDN/Edge    │     │  (Hono)     │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                          │                     │
-              ┌───────────┼───────────┐         │
-              ▼           ▼           ▼         ▼
-           ┌──────┐   ┌───────┐   ┌────────┐ ┌────────┐
-           │  KV  │   │  R2   │   │   D1   │ │ Queue  │
-           │Session│   │Assets │   │ Products│ │ Orders │
-           └──────┘   └───────┘   └────────┘ └────────┘
-              │                        │           │
-              │                        ▼           ▼
-              │                  ┌──────────┐ ┌──────────┐
-              │                  │ Vectorize│ │Durable   │
-              └─────────────────▶│ Search   │ │ Objects  │
-                                 └──────────┘ │(Cart/    │
-                                              │ Session) │
-                                              └──────────┘
-```
-
----
-
-## 6. Referencias Rápidas
-
-| Archivo | Propósito |
-|---------|-----------|
-| `config/config.ts` | **Fuente de verdad** - Configuración tipada del proyecto |
-| `wrangler.toml` | Bindings Cloudflare reales (D1: `temozonia-db`, KV: `SESSION`/`CACHE`, R2, Queues) |
-| `src/styles/globals.css` | Design System Tailwind v4 (`@theme`, colores brand, gold, glass, utilidades) |
-| `src/stores/cart.ts` | Estado del carrito (Zustand con persistencia localStorage y checkout WhatsApp/SPEI/Lightning) |
-| `src/data/products.ts` | Catálogo de cortes de carne y precios base |
-| `worker/index.ts` | Entrypoint Hono en Cloudflare Workers |
-| `scripts/sql/schema.sql` | Esquema D1 (`products`, `orders`, `order_items`) |
-
----
-
-## 7. Estado Actual del Proyecto (Actualizado: Octubre 2026)
-
-### ✅ Completado e Integrado
-- **Frontend Astro 5 + Tailwind v4**:
-  - Unificación completa: `src/` contiene todas las páginas y componentes del flujo de compra.
-  - Vistas activas: `index.astro` (Hero, Grilla de Productos, Checkout Calculator), `conocenos.astro`, `contacto.astro`, `mayoreo.astro`, `recetas.astro`.
-  - Navegación global compartida: `Header.astro` con badge reactivo del carrito, `CartDrawer.astro` lateral interactivo, y `Footer.astro`.
-  - Animaciones y tokens de identidad: Efecto de humo y brasas, botones *heritage* y *liquid glass*, divisores dorados.
-- **Flujo de Carrito & Checkout**:
-  - Store Zustand con persistencia en cliente.
-  - Cálculo de subtotales, totales, equivalencia en Satoshis (Bitcoin Lightning).
-  - Formulario de checkout directo con generación de pedido estructurado para WhatsApp.
-  - Copia rápida de CLABE interbancaria al portapapeles.
-- **Infraestructura Cloudflare**:
-  - Bindings configurados y aprovisionados en `wrangler.toml`.
-  - Build verificado y compatible con `@astrojs/cloudflare` adapter y Cloudflare Assets.
-
----
-
-## 8. Check List de Lo Que Falta (Pending / Missing Roadmap)
-
-### 🔴 Prioridad Alta (Esencial para Operación y Producción)
-- [ ] **Rutas API en Backend (`worker/routes/`)**:
-  - [ ] Implementar `GET /api/products` (obtener catálogo desde D1 en lugar de estático).
-  - [ ] Implementar `POST /api/checkout` (persistir órdenes en tabla `orders` y `order_items` de D1 y encolar en `ORDER_QUEUE`).
-  - [ ] Implementar `GET /api/orders/:id` para consulta de estado de pedido.
-- [ ] **Sembrado de Base de Datos D1**:
-  - [ ] Crear script o migraciones `INSERT` en `scripts/sql/` para poblar la tabla `products` en D1 (local y remote).
-- [ ] **Assets de Imágenes Reales**:
-  - [ ] Agregar fotografías de productos en `public/images/products/` (`carne-ahumada.jpg`, `costillas-bbq.jpg`, `chorizo.jpg`, `salchichón.jpg`, `pack-degustacion.jpg`).
-- [ ] **Datos Bancarios Reales**:
-  - [ ] Reemplazar la CLABE ficticia (`123456789012345678`) y nombre de titular en `src/utils/constants.ts` y `wrangler.toml` con los datos reales de la cuenta comercial.
-- [ ] **Limpieza de carpeta `astro/`**:
-  - [ ] Remover de forma segura la subcarpeta residual `astro/` para evitar redundancias de código.
-
-### 🟠 Prioridad Media (Experiencia de Usuario y Robustez)
-- [ ] **Páginas de Producto Individuales**:
-  - [ ] Implementar ruta dinámica `src/pages/products/[slug].astro` o modal de detalle con ingredientes y sugerencias de maridaje.
-- [ ] **Tasa Dinámica de Satoshis**:
-  - [ ] Sustituir la constante fija `SATS_RATE` por consulta a API de precio BTC/MXN en tiempo real.
-- [ ] **Middleware en Worker**:
-  - [ ] Configurar autenticación JWT o API Key para endpoints administrativos.
-  - [ ] Implementar rate limiting en endpoints de checkout usando Cloudflare KV.
-- [ ] **Página 404 y Mantenimiento**:
-  - [ ] Crear `src/pages/404.astro` adaptada al diseño cálido y rústico.
-- [ ] **SEO y Metadatos**:
-  - [ ] Crear `public/robots.txt` y `public/sitemap.xml`.
-  - [ ] Configurar Open Graph tags e imágenes para previews en redes y WhatsApp.
-
-### 🟡 Prioridad Baja / Mejoras Futuras
-- [ ] **Automatización CI/CD**:
-  - [ ] Configurar GitHub Actions (`.github/workflows/deploy.yml`) para despliegue automatizado en `main`.
-- [ ] **Analítica & Monitoreo**:
-  - [ ] Integrar Sentry u OpenTelemetry para monitoreo de errores en el Worker.
-  - [ ] Activar Cloudflare Web Analytics.
-- [ ] **Internacionalización (i18n)**:
-  - [ ] Soporte para catálogo en inglés para clientes turísticos / expatriados en Mérida.
-- [ ] **Tests Automatizados**:
-  - [ ] Tests unitarios para el store del carrito (`vitest`).
-  - [ ] Test end-to-end del flujo de compra y checkout (`playwright`).
+## 10. Estado de Verificación
+- **Build**: `pnpm run build` ejecuta `astro build && wrangler deploy --dry-run` → exit code 0 con 63 assets
+- **D1**: `ark-commerce-db` provisionada local/remoto con esquema multi-tenant completo (tenants, users, products, orders, order_items)
+- **Infraestructura Cloudflare**: Worker, D1, KV (SESSION+CACHE), R2, Queues configurados en `wrangler.toml`
+- **Multi-tenant**: Resolución por slug/subdominio/query param + caché KV funcionando
+- **API**: Endpoints CRUD completos para products, checkout, store, admin con auth JWT-like (Bearer + sesiones KV)
+- **Admin Panel**: React app funcional con login, gestión productos, tienda, pedidos + subida R2
+- **Frontend**: Dos experiencias (Ark Systems landing + Temozonia storefront) completamente funcionales

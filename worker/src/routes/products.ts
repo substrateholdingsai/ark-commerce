@@ -1,57 +1,42 @@
-import { Hono } from 'hono';
+﻿import { Hono } from 'hono';
 import type { Env } from '../types/env';
 
-const products = new Hono<{ Bindings: Env }>();
+const products = new Hono<{ Bindings: Env; Variables: { tenant: any; tenantId: string | null } }>();
 
 products.get('/', async (c) => {
+  const tenantId = c.get('tenantId');
+  if (!tenantId) return c.json({ success: false, error: 'Tenant not found' }, 404);
   try {
     const { results } = await c.env.DB.prepare(
-      `SELECT id, name, weight, price, "desc", image, badge, stock
+      `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order
        FROM products
-       WHERE active = 1
+       WHERE tenant_id = ? AND active = 1
        ORDER BY display_order, name`
-    ).all();
+    ).bind(tenantId).all();
 
-    return c.json({
-      success: true,
-      data: results,
-      count: results.length,
-    });
+    return c.json({ success: true, data: results, count: results.length });
   } catch (error) {
     console.error('Error fetching products:', error);
-    return c.json(
-      { success: false, error: 'Failed to fetch products' },
-      500
-    );
+    return c.json({ success: false, error: 'Failed to fetch products' }, 500);
   }
 });
 
 products.get('/:id', async (c) => {
   const id = c.req.param('id');
-
+  const tenantId = c.get('tenantId');
+  if (!tenantId) return c.json({ success: false, error: 'Tenant not found' }, 404);
   try {
     const product = await c.env.DB.prepare(
-      `SELECT id, name, weight, price, "desc", image, badge, stock
+      `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order
        FROM products
-       WHERE id = ? AND active = 1`
-    )
-      .bind(id)
-      .first();
+       WHERE id = ? AND tenant_id = ? AND active = 1`
+    ).bind(id, tenantId).first();
 
-    if (!product) {
-      return c.json(
-        { success: false, error: 'Product not found' },
-        404
-      );
-    }
-
+    if (!product) return c.json({ success: false, error: 'Product not found' }, 404);
     return c.json({ success: true, data: product });
   } catch (error) {
     console.error('Error fetching product:', error);
-    return c.json(
-      { success: false, error: 'Failed to fetch product' },
-      500
-    );
+    return c.json({ success: false, error: 'Failed to fetch product' }, 500);
   }
 });
 

@@ -1,29 +1,28 @@
-name = "temozonia"
+name = "ark-commerce"
 main = "worker/index.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# ✅ NUEVA CONFIGURACIÓN DE ASSETS (Reemplaza la antigua [site])
+# Assets estáticos (Astro dist)
 [assets]
 directory = "./dist"
-not_found_handling = "single-page-application" # Sirve index.html si la ruta no es un archivo estático
+not_found_handling = "single-page-application"
 
 [vars]
-SITE_NAME = "Temozonia Carnes Ahumadas"
-# URL actual del sitio desplegado en Workers
-SITE_URL = "https://temozonia.substrateholdingsai.workers.dev/"
+SITE_NAME = "Ark Systems"
+SITE_URL = "https://ark-commerce.substrateholdingsai.workers.dev/"
 WHATSAPP_NUMBER = "529994918221"
-BTCPAY_POS_URL = "https://btcpay.temozonia.com"
-CLABE = "123456789012345678"
+BTCPAY_POS_URL = "https://btcpay.arksystems.ai"
+CLABE = "012180012345678901"
 BANK = "BBVA"
-CLABE_HOLDER = "Temozonia Carnes Ahumadas"
+CLABE_HOLDER = "Ark Systems"
 SATS_RATE = "2.5"
 
-# D1 Database
+# D1 Database Multi-Tenant
 [[d1_databases]]
 binding = "DB"
-database_name = "temozonia-db"
-database_id = "dff6d6dc-fa6c-4ec8-9180-d88d4912a9e7"
+database_name = "ark-commerce-db"
+database_id = "874b300a-18f6-4995-a98e-27abd7264662"
 
 # KV Namespaces
 [[kv_namespaces]]
@@ -37,9 +36,9 @@ id = "90269c9d7ede4252b21463bf9834f64d"
 # R2 Bucket
 [[r2_buckets]]
 binding = "STORAGE"
-bucket_name = "temozonia-storage"
+bucket_name = "ark-commerce-storage"
 
 # Queues
 [[queues.producers]]
 binding = "ORDER_QUEUE"
-queue = "temozonia-orders"
+queue = "ark-commerce-orders"

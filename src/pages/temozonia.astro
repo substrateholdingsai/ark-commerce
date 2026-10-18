@@ -1,0 +1,38 @@
+---
+// src/pages/temozonia.astro — Tienda de Cliente: Temozonia Carnes Ahumadas
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/layout/Hero.astro';
+import ProductCard from '../components/product/ProductCard.astro';
+import CheckoutCalculator from '../components/checkout/CheckoutCalculator.astro';
+import { PRODUCTS } from '../data/products';
+---
+
+<Layout title="Temozonia | Carnes Ahumadas Artesanales" description="Carnes ahumadas artesanales, pedidos directos y atención premium en Mérida.">
+
+  <!-- 1. Hero -->
+  <Hero />
+
+  <!-- 2. Grid de Productos -->
+  <section id="productos" class="max-w-[1160px] mx-auto px-4 pt-12 pb-6">
+    <div class="flex items-end justify-between gap-4 mb-6">
+      <div>
+        <h2 class="font-display font-black text-[24px] sm:text-[30px] tracking-tight" style="color:#2B0E0A">
+          Elige tu ahumado
+        </h2>
+        <p class="text-sm mt-1 font-body" style="color:rgba(126,29,15,0.6)">
+          {PRODUCTS.length} cortes · Listos para calentar y disfrutar
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {PRODUCTS.map((product) => (
+        <ProductCard product={product} />
+      ))}
+    </div>
+  </section>
+
+  <!-- 3. Checkout Calculator -->
+  <CheckoutCalculator />
+
+</Layout>

@@ -2,8 +2,9 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { CartItem, CustomerInfo, PaymentMethod, CartItemWithProduct } from '@/types/cart';
 import type { Product } from '@/types/product';
-import { PRODUCTS } from '@/data/products';
+import { getProducts, getProductById as getCachedProduct } from '@/stores/productsCache';
 import { CONFIG } from '@/utils/constants';
+import { getStoreConfig } from '@/stores/storeConfig';
 
 interface CartState {
   // ============ ESTADO ============
@@ -130,7 +131,7 @@ export const useCartStore = create<CartState>()(
       getTotal: () => {
         const { items } = get();
         return items.reduce((sum, item) => {
-          const product = PRODUCTS.find((p) => p.id === item.id);
+          const product = getProducts().find((p: any) => p.id === item.id);
           return sum + (product ? product.price * item.qty : 0);
         }, 0);
       },
@@ -140,14 +141,14 @@ export const useCartStore = create<CartState>()(
       },
 
       getProductById: (id) => {
-        return PRODUCTS.find((p) => p.id === id);
+        return getCachedProduct(id);
       },
 
       getItemsWithProducts: () => {
         const { items } = get();
         return items
           .map((item) => {
-            const product = PRODUCTS.find((p) => p.id === item.id);
+            const product = getProducts().find((p: any) => p.id === item.id);
             if (!product) return null;
             return {
               ...item,
@@ -160,16 +161,16 @@ export const useCartStore = create<CartState>()(
 
       getSatsAmount: () => {
         const total = get().getTotal();
-        return Math.round(total * CONFIG.SATS_RATE * 100);
+        return Math.round(total * getStoreConfig().sats_rate * 100);
       },
 
       // ============ ACCIONES DE PAGO ============
       copyClabe: async () => {
         try {
-          await navigator.clipboard.writeText(CONFIG.CLABE);
+          await navigator.clipboard.writeText(getStoreConfig().clabe);
         } catch {
           const textarea = document.createElement('textarea');
-          textarea.value = CONFIG.CLABE;
+          textarea.value = getStoreConfig().clabe;
           document.body.appendChild(textarea);
           textarea.select();
           document.execCommand('copy');
