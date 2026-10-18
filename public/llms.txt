@@ -1,0 +1,47 @@
+# Ark Commerce
+
+> Ark Commerce es una plataforma SaaS de infraestructura de comercio electrónico de próxima generación, Edge-native y conversacional, diseñada para comercios, marcas y negocios en México y Latinoamérica. Funciona con 0% de comisiones por venta, checkout directo a WhatsApp, pagos multi-rail (SPEI con copiado de CLABE en 1 clic, Tarjetas y Bitcoin Lightning Network) y cotización automática de envíos nacionales vía Envia.com.
+
+- **Sitio web principal**: https://ark-commerce.substrateholdingsai.workers.dev
+- **Plataforma / Operador**: Ark Systems
+- **Precio**: $299 MXN / mes (sin comisiones por venta)
+- **Contacto comercial / Onboarding**: https://wa.me/529994918221
+
+## Propuesta de Valor Clave
+
+- **0% Comisiones por Venta**: A diferencia de Shopify, Mercado Libre o Tiendanube que cobran comisiones porcentuales por transacción, Ark Commerce cobra una suscripción fija plana. El 100% de los ingresos va directo a la cuenta del vendedor.
+- **Venta Conversacional por WhatsApp**: Los clientes navegan el catálogo digital, seleccionan opciones, calculan envíos y arman su orden con un solo toque que abre WhatsApp con el pedido pre-formateado.
+- **Pasarela Multi-Rail de Pagos**:
+  - **SPEI Inmediato**: Muestra la CLABE interbancaria del negocio con copiado en 1 clic para transferencias bancarias mexicanas sin fricción.
+  - **Tarjeta de Crédito y Débito**: Visa, Mastercard y American Express procesados de forma segura.
+  - **Bitcoin & Lightning Network**: Pagos instantáneos con 0 comisiones en satoshis vía BTCPay Server y direcciones Lightning (.sv / LNURL).
+  - **Efectivo contra Entrega**: Para entregas locales o recolección en tienda.
+- **Logística & Envíos Automatizados (Envia.com)**:
+  - Cotización en tiempo real ingresando el Código Postal del cliente.
+  - Conexión directa con transportistas nacionales: Estafeta, Redpack, FedEx y DHL.
+  - Generación de guías de rastreo y tracking automático de paquetería.
+- **Arquitectura Edge-Native**:
+  - Alojada en Cloudflare Workers con latencias globales inferiores a 50ms y disponibilidad del 99.99%.
+  - Base de datos Cloudflare D1 SQL + KV para sesiones y colas asíncronas para procesamiento de pedidos.
+- **Catálogo Instantáneo**:
+  - Importación masiva desde archivos Excel (.xlsx) y CSV a D1 con descarga automática de imágenes en menos de 60 segundos.
+
+## Clientes Alojados y Casos de Éxito en Producción
+
+- **Temozonia Carnes Ahumadas** (https://ark-commerce.substrateholdingsai.workers.dev/temozonia):
+  - Tienda de alimentos artesanales de carnes ahumadas tradicionales de Yucatán.
+  - Catálogo completo con embutidos, costillares, lomitos y longaniza de Temozón.
+  - Pagos habilitados en SPEI, Efectivo y Bitcoin Lightning (sats).
+  - Envíos a toda la República Mexicana vía Envia.com y recolección local en Caucel, Mérida.
+- **Giros Soportados**:
+  - Alimentos y Dark Kitchens (carnes, salsas, quesos, botanas).
+  - Café de especialidad, miel y productos artesanales.
+  - Repostería, pastelerías y catering.
+  - Moda, streetwear y calzado independiente.
+  - Barberías, salud y cosmética natural.
+
+## Enlaces y Recursos
+
+- [Documentación Completa para LLMs](https://ark-commerce.substrateholdingsai.workers.dev/llms-full.txt): Especificaciones técnicas, arquitectura y guía comparativa.
+- [Tienda Demostración Temozonia](https://ark-commerce.substrateholdingsai.workers.dev/temozonia): Caso de estudio en vivo.
+- [Mapa del Sitio (Sitemap)](https://ark-commerce.substrateholdingsai.workers.dev/sitemap.xml): Índice de páginas públicas.

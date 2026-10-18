@@ -2,6 +2,11 @@
 // src/pages/index.astro — Plataforma Principal: Ark Commerce ($299/mes)
 import '../styles/globals.css';
 import ArkLanding from '../components/ark/ArkLanding';
+
+const siteUrl = 'https://ark-commerce.substrateholdingsai.workers.dev';
+const title = 'Ark Commerce · Plataforma de E-commerce, Pagos y Envíos por WhatsApp | $299/mes';
+const description = 'Plataforma mexicana de e-commerce sin comisiones (0%). Tienda online lista en 5 minutos, cobro por SPEI, tarjeta y Bitcoin Lightning, envíos automáticos con Envia.com y pedidos directos a tu WhatsApp.';
+const ogImage = `${siteUrl}/images/ark/ark_promo_banner.png`;
 ---
 
 <!doctype html>
@@ -9,15 +14,145 @@ import ArkLanding from '../components/ark/ArkLanding';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ark Commerce · Tu tienda que vende y cobra por WhatsApp | $299/mes</title>
-    <meta
-      name="description"
-      content="En México no se compra con carritos lentos en dólares. Ark te da tu tienda online lista en 5 minutos: catálogo con fotos, tu CLABE copiable en 1 clic y pedidos directos a tu WhatsApp. 0% comisiones."
-    />
+    
+    <!-- Metadatos de Autoridad y SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content="plataforma ecommerce mexico, tienda online whatsapp, pagos spei clabe, bitcoin lightning ecommerce, envia com guias de envio, sin comisiones shopify, ark commerce, software ecommerce edge" />
+    <meta name="author" content="Ark Systems" />
+    <link rel="canonical" href={`${siteUrl}/`} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta property="og:title" content="Ark Commerce · Tu tienda que vende y cobra por WhatsApp | $299/mes" />
-    <meta property="og:description" content="Sin Shopify, 0% comisiones. El dinero cae directo a tu banco. Te la entregamos lista en 5 minutos." />
+    <meta name="theme-color" content="#B4FF00" />
+
+    <!-- Open Graph / Redes Sociales y WhatsApp Unfurl -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={`${siteUrl}/`} />
+    <meta property="og:site_name" content="Ark Commerce" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1600" />
+    <meta property="og:image:height" content="500" />
+    <meta property="og:locale" content="es_MX" />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- AI & LLM Discovery Links -->
+    <link rel="help" type="text/plain" href="/llms.txt" title="Ark Commerce LLM Summary" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+
+    <!-- Schemas Estructurados JSON-LD (SoftwareApplication + Organization + FAQPage) -->
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://ark-commerce.substrateholdingsai.workers.dev/#software",
+            "name": "Ark Commerce",
+            "url": "https://ark-commerce.substrateholdingsai.workers.dev",
+            "description": "Plataforma de e-commerce conversacional para México. Tienda online lista en 5 minutos, cobro por SPEI, tarjeta y Bitcoin Lightning, envíos Envia.com y 0% de comisiones por venta.",
+            "applicationCategory": "BusinessApplication, eCommerceApplication",
+            "operatingSystem": "Cloud Edge Platform (Cloudflare Workers)",
+            "offers": {
+              "@type": "Offer",
+              "price": "299",
+              "priceCurrency": "MXN",
+              "priceSpecification": {
+                "@type": "UnitPriceSpecification",
+                "price": "299",
+                "priceCurrency": "MXN",
+                "unitText": "MONTH"
+              },
+              "description": "Suscripción plana mensual de $299 MXN sin comisiones por transacción"
+            },
+            "featureList": [
+              "0% comisiones por venta",
+              "Checkout directo a WhatsApp con pedidos pre-armados",
+              "Cobro por SPEI con CLABE copiable en 1 clic",
+              "Cobro con tarjeta de crédito y débito",
+              "Cobro con Bitcoin y Lightning Network (0 comisiones)",
+              "Cotización y envíos automatizados con Envia.com (Estafeta, Redpack, FedEx, DHL)",
+              "Importador universal de catálogos desde Excel y CSV",
+              "Hosting ultrarrápido en el Edge con Cloudflare Workers (<50ms)"
+            ],
+            "creator": {
+              "@type": "Organization",
+              "@id": "https://ark-commerce.substrateholdingsai.workers.dev/#organization",
+              "name": "Ark Systems",
+              "url": "https://ark-commerce.substrateholdingsai.workers.dev",
+              "logo": "https://ark-commerce.substrateholdingsai.workers.dev/images/ark/ark_logo.png",
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+529994918221",
+                "contactType": "sales",
+                "areaServed": "MX",
+                "availableLanguage": ["es"]
+              }
+            },
+            "customer": [
+              {
+                "@type": "Organization",
+                "name": "Temozonia Carnes Ahumadas",
+                "url": "https://ark-commerce.substrateholdingsai.workers.dev/temozonia",
+                "description": "Tienda en producción alojada en Ark Commerce para carnes artesanales con envíos nacionales y pagos Lightning"
+              }
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://ark-commerce.substrateholdingsai.workers.dev/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "¿Cuánto cobra Ark Commerce de comisión por venta?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "0%. A diferencia de Shopify o Mercado Libre, Ark Commerce no cobra comisión por venta ni por transacción. El 100% de tus ingresos cae directamente a tu cuenta bancaria o wallet."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Cómo pagan los clientes en una tienda creada con Ark Commerce?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Soportamos múltiples rieles de pago: Transferencia SPEI con botón para copiar la CLABE interbancaria en 1 clic, pago con tarjeta de crédito/débito, Bitcoin instantáneo vía Lightning Network (0 comisiones) y pago en efectivo al recibir."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Cómo funcionan los envíos de paquetería en Ark Commerce?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Ark Commerce está integrado de forma nativa con Envia.com. Al ingresar su Código Postal, el cliente cotiza en tiempo real tarifas con Redpack, Estafeta, FedEx y DHL, desglosando el costo en el ticket y generando la guía de rastreo."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "¿En cuánto tiempo entregan una tienda online lista?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "En menos de 5 minutos. Con nuestro importador inteligente cargamos tu catálogo completo de productos, fotos y precios desde un archivo Excel o CSV directamente a la base de datos distribuida."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Qué tipo de tiendas ya usan Ark Commerce?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Negocios de alimentos artesanales como Temozonia Carnes Ahumadas, marcas de café de especialidad, dark kitchens, reposterías, marcas de ropa y streetwear, y retail independiente."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
     <script is:inline>
       // Si la petición viene dirigida a Temozonia por subdominio o parámetro, redirigir a su tienda
       (function() {
