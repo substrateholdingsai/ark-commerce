@@ -13,6 +13,8 @@ export type Env = {
   CLABE_HOLDER?: string;
   WHATSAPP_NUMBER?: string;
   SATS_RATE?: string;
+  ENVIA_API_KEY?: string;
+  ENVIA_SANDBOX?: string; // 'true' | 'false'
 };
 
 export type Tenant = {
@@ -28,6 +30,14 @@ export type Tenant = {
   sats_rate: number | null;
   logo_url: string | null;
   theme_color: string | null;
+  origin_street?: string | null;
+  origin_number?: string | null;
+  origin_district?: string | null;
+  origin_city?: string | null;
+  origin_state?: string | null;
+  origin_postal_code?: string | null;
+  origin_country?: string | null;
+  envia_api_key?: string | null;
 };
 
 export type CheckoutMessage = {

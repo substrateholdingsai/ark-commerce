@@ -1,4 +1,4 @@
-﻿# 📁 Project Map — Ark Commerce (Multi-Tenant Platform)
+# 📁 Project Map — Ark Commerce (Multi-Tenant Platform)
 
 ## 1. Arquitectura y Recursos Cloudflare Oficiales
 - **Worker Name**: `ark-commerce`
@@ -133,6 +133,9 @@ Base URL: `/api/*`
 | `/api/admin/files/*` | GET | Público | Servir archivos subidos desde R2 |
 | `/api/admin/orders` | GET | Bearer token | Listar órdenes (filtro opcional `?status=pending|paid|delivered`) |
 | `/api/admin/orders/:id/status` | PUT | Bearer token | Actualizar estado de orden |
+| `/api/shipping/quote` | POST | Público | Cotizaciones de envío en tiempo real vía Envia.com (Redpack, Estafeta, FedEx, etc.) |
+| `/api/shipping/label` | POST | Público / Admin | Genera guía de envío PDF y tracking number, actualiza orden a 'shipped' |
+| `/api/shipping/track/:carrier/:trackingNumber` | GET | Público | Rastreo de paquete en tiempo real con historial de checkpoints |
 
 ## 7. Esquema D1 (Multi-Tenant)
 Tablas: `tenants`, `tenant_users`, `customers`, `carts`, `store_sessions`, `action_tokens`, `customer_addresses`, `products`, `orders`, `order_items`
