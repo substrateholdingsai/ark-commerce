@@ -1,0 +1,26 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Taco al Pastor",
+      "weight": "1 pieza",
+      "price": 25,
+      "desc": "Trompo tradicional con piña y cilantro.",
+      "badge": "MÁS VENDIDO",
+      "stock": 999,
+      "accent": "from-[#FEF3C7] to-[#FBBF24]",
+      "icon": "utensils"
+    },
+    {
+      "id": 2,
+      "name": "Orden de 5 tacos",
+      "weight": "5 piezas",
+      "price": 110,
+      "desc": "Surtido a elegir con salsa verde o roja.",
+      "badge": "AHORRO",
+      "stock": 999,
+      "accent": "from-[#FECACA] to-[#F87171]",
+      "icon": "beef"
+    }
+  ]
+}
