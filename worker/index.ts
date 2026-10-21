@@ -22,6 +22,46 @@ app.use('/api/*', async (c, next) => {
 app.route('/health', healthRoute);
 app.route('/api', apiRoutes);
 
+// Endpoint PWA Web App Manifest dinámico por Tenant
+app.get('/manifest.json', async (c) => {
+  const tenant = await resolveTenant(c.env, c.req);
+  const slug = tenant?.slug || 'ark';
+  const name = tenant?.name || 'Ark Systems';
+  const shortName = name.split('—')[0].trim().split(' ')[0] || name;
+  const themeColor = tenant?.theme_color || '#071A30';
+  const logoUrl = tenant?.logo_url || `/images/${slug}/favicon.svg`;
+
+  // Determinamos start_url de acuerdo al tenant
+  let startUrl = `/`;
+  if (slug === 'contagram') startUrl = `/stores/contagram.html`;
+  else if (slug === 'temozonia') startUrl = `/temozonia`;
+  else if (slug !== 'ark') startUrl = `/stores/${slug}.html`;
+
+  const manifest = {
+    name: name,
+    short_name: shortName,
+    description: `Catálogo de servicios y pedidos directos de ${name}`,
+    start_url: startUrl,
+    display: 'standalone',
+    orientation: 'portrait',
+    background_color: themeColor === '#C9A227' ? '#040F1D' : '#FFFFFF',
+    theme_color: themeColor,
+    icons: [
+      {
+        src: logoUrl,
+        sizes: '192x192 512x512',
+        type: 'image/svg+xml',
+        purpose: 'any maskable'
+      }
+    ]
+  };
+
+  return c.json(manifest, 200, {
+    'Content-Type': 'application/manifest+json; charset=utf-8',
+    'Cache-Control': 'public, max-age=3600'
+  });
+});
+
 app.notFound((c) => {
   if (c.req.path === '/api' || c.req.path.startsWith('/api/')) {
     return c.json({ error: 'API Endpoint Not Found' }, 404);
