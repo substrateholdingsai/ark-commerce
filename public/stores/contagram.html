@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CONTAGRAM · Propuesta de Servicios</title>
+<title>Contagram — Despacho de Contabilidad · Isfahan Ledger</title>
 <link rel="icon" type="image/svg+xml" href="/images/contagram/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -89,6 +89,169 @@ body {
   border-radius: 2px;
   border: 1px solid;
 }
+
+/* ==========================================================
+   WIDGET CALCULADORA VINTAGE (ISFAHAN EDITION)
+   ========================================================== */
+#calc-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 15, 29, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  padding: 16px;
+}
+#calc-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.ark-calc-widget {
+  width: 330px;
+  max-width: 100%;
+  animation: calcPop 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes calcPop {
+  0% { transform: scale(0.92) translateY(12px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.ark-calc-body {
+  background: linear-gradient(180deg, #0C2440 0%, #071A30 100%);
+  border-radius: 20px;
+  padding: 18px 18px 14px;
+  box-shadow: 
+    0 24px 60px rgba(0,0,0,0.8),
+    0 0 0 1px rgba(201,162,39,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+  border: 1px solid var(--lapis-700);
+}
+.calc-lcd-display {
+  background: linear-gradient(180deg, #102A45 0%, #143353 100%);
+  border: 2px solid var(--gold-500);
+  border-radius: 10px;
+  box-shadow: 
+    inset 0 4px 12px rgba(0,0,0,0.6),
+    inset 0 -1px 4px rgba(255,255,255,0.1),
+    0 2px 6px rgba(0,0,0,0.4);
+  position: relative;
+  overflow: hidden;
+  padding: 10px 12px 8px;
+  margin-bottom: 14px;
+}
+.calc-lcd-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: var(--gold-400);
+  margin-bottom: 2px;
+}
+.calc-lcd-text {
+  font-family: 'IBM Plex Mono', monospace;
+  color: #FBF9F4;
+  letter-spacing: 0.05em;
+  font-size: 26px;
+  font-weight: 600;
+  text-align: right;
+  line-height: 1.1;
+  text-shadow: 0 0 8px rgba(227, 194, 116, 0.3);
+}
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.calc-btn {
+  position: relative;
+  background: linear-gradient(180deg, #143353 0%, #0C2440 100%);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  box-shadow: 
+    0 3px 0 #040F1D,
+    0 4px 6px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  cursor: pointer;
+  height: 46px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.08s ease;
+  user-select: none;
+}
+.calc-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #040F1D, inset 0 2px 4px rgba(0,0,0,0.4);
+}
+.calc-btn-gold {
+  background: linear-gradient(180deg, var(--gold-400) 0%, var(--gold-500) 100%);
+  border-color: var(--gold-300);
+  box-shadow: 0 3px 0 var(--gold-700), 0 4px 8px rgba(0,0,0,0.4);
+}
+.calc-btn-gold .calc-btn-label {
+  color: var(--lapis-950) !important;
+  font-weight: 700;
+}
+.calc-btn-red {
+  background: linear-gradient(180deg, #C24134 0%, #9B3A2E 100%);
+  border-color: #E26D60;
+  box-shadow: 0 3px 0 #5E1F18, 0 4px 8px rgba(0,0,0,0.4);
+}
+.calc-btn-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  font-size: 16px;
+  color: #DCE6F2;
+}
+.calc-btn-op {
+  color: var(--gold-300) !important;
+}
+.calc-brand {
+  text-align: center;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.calc-brand-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  font-weight: 600;
+  color: var(--gold-300);
+  line-height: 1;
+}
+.calc-brand-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #8FAAC6;
+  margin-top: 3px;
+}
+
+/* BOTÓN FLOTANTE TRIGGER */
+.calc-floating-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--lapis-900);
+  border: 1px solid var(--gold-400);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,162,39,0.25);
+  border-radius: 9999px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  z-index: 50;
+  transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.calc-floating-btn:hover {
+  background: var(--lapis-800);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(201,162,39,0.3);
+}
 </style>
 </head>
 <body class="selection:bg-[#C9A227] selection:text-[#040F1D]">
@@ -107,6 +270,10 @@ body {
         <span class="text-[11px] font-mono text-[#8FAAC6]">ATENCIÓN INMEDIATA</span>
         <span class="text-xs font-mono font-medium text-[#E3C274]">+52 56 5706 2511</span>
       </div>
+      <button onclick="openCalculator()" class="hidden sm:inline-flex items-center gap-2 border border-[#143353] hover:border-[#C9A227] px-3.5 py-2 rounded text-xs font-mono text-[#E3C274] transition-all bg-[#040F1D]/50">
+        <span>🧮</span>
+        <span>Calculadora Fiscal</span>
+      </button>
       <a href="#propuesta" class="btn-gold px-5 py-2.5 rounded text-xs tracking-wider uppercase font-mono">Cotizador</a>
     </div>
   </div>
@@ -124,7 +291,9 @@ body {
         <span class="italic text-[#E3C274] font-normal">en riguroso equilibrio.</span>
       </h1>
       <div class="w-24 h-0.5 bg-[#C9A227] my-8 opacity-80"></div>
-      <p class="text-[#DCE6F2] text-lg leading-relaxed font-light max-w-2xl">Contagram no vende miedo fiscal. Entrega certeza matemática: el estado financiero como una pieza bien construida, donde cada cifra está en su lugar.</p>
+      <p class="text-[#DCE6F2] text-lg leading-relaxed font-light max-w-2xl">
+        Contagram no vende miedo fiscal. Entrega certeza matemática: el estado financiero como una pieza bien construida, donde cada cifra está en su lugar.
+      </p>
     </div>
 
     <div class="lg:col-span-5" id="propuesta">
@@ -194,8 +363,68 @@ body {
   </section>
 </main>
 
+<!-- BOTÓN FLOTANTE EASTER EGG -->
+<div class="calc-floating-btn" onclick="openCalculator()">
+  <span class="text-base">🧮</span>
+  <span class="font-mono text-xs font-medium text-[#E3C274]">Calculadora Fiscal</span>
+</div>
+
+<!-- MODAL CALCULADORA VINTAGE ISFAHAN -->
+<div id="calc-modal" onclick="handleModalBgClick(event)">
+  <div class="ark-calc-widget">
+    <div class="ark-calc-body">
+      <!-- LCD DISPLAY -->
+      <div class="calc-lcd-display">
+        <div class="flex justify-between items-center mb-1">
+          <div class="calc-lcd-label">CALCULADORA DE AUDITORÍA</div>
+          <button onclick="closeCalculator()" class="text-xs text-[#8FAAC6] hover:text-[#FBF9F4] font-mono">✕</button>
+        </div>
+        <div id="calc-display" class="calc-lcd-text">$0.00</div>
+      </div>
+
+      <!-- BOTONES VINTAGE -->
+      <div class="calc-grid">
+        <button class="calc-btn calc-btn-red" onclick="calcClear()"><span class="calc-btn-label" style="font-size:15px;color:#fff">AC</span></button>
+        <button class="calc-btn" onclick="calcOp('CE')"><span class="calc-btn-label" style="font-size:14px">CE</span></button>
+        <button class="calc-btn" onclick="calcOp('%')"><span class="calc-btn-label calc-btn-op">%</span></button>
+        <button class="calc-btn" onclick="calcOp('÷')"><span class="calc-btn-label calc-btn-op">÷</span></button>
+
+        <button class="calc-btn" onclick="calcNum('7')"><span class="calc-btn-label">7</span></button>
+        <button class="calc-btn" onclick="calcNum('8')"><span class="calc-btn-label">8</span></button>
+        <button class="calc-btn" onclick="calcNum('9')"><span class="calc-btn-label">9</span></button>
+        <button class="calc-btn" onclick="calcOp('×')"><span class="calc-btn-label calc-btn-op">×</span></button>
+
+        <button class="calc-btn" onclick="calcNum('4')"><span class="calc-btn-label">4</span></button>
+        <button class="calc-btn" onclick="calcNum('5')"><span class="calc-btn-label">5</span></button>
+        <button class="calc-btn" onclick="calcNum('6')"><span class="calc-btn-label">6</span></button>
+        <button class="calc-btn" onclick="calcOp('-')"><span class="calc-btn-label calc-btn-op">−</span></button>
+
+        <button class="calc-btn" onclick="calcNum('1')"><span class="calc-btn-label">1</span></button>
+        <button class="calc-btn" onclick="calcNum('2')"><span class="calc-btn-label">2</span></button>
+        <button class="calc-btn" onclick="calcNum('3')"><span class="calc-btn-label">3</span></button>
+        <button class="calc-btn" onclick="calcOp('+')"><span class="calc-btn-label calc-btn-op">+</span></button>
+
+        <button class="calc-btn" style="grid-column: span 2;" onclick="calcNum('0')"><span class="calc-btn-label">0</span></button>
+        <button class="calc-btn" onclick="calcNum('.')"><span class="calc-btn-label">.</span></button>
+        <button class="calc-btn calc-btn-gold" onclick="calcEquals()"><span class="calc-btn-label" style="font-size:22px">=</span></button>
+      </div>
+
+      <!-- BRANDING DEL DESPACHO -->
+      <div class="calc-brand">
+        <div class="calc-brand-title">CONTAGRAM</div>
+        <div class="calc-brand-sub">DESPACHO DE CONTABILIDAD & ESTRATEGIA FISCAL</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-const SERVICIOS = [{"id": "cont-gen", "nombre": "Contabilidad General y Balanza Mensual", "periodo": "Honorario Mensual", "alcance": "Hasta 60 pólizas analíticas", "base": 2800.0, "badge": "BASE · RECURRENTE", "desc": "Registro analítico de operaciones, conciliación bancaria exhaustiva, balanza de comprobación mensual y emisión de estados financieros.", "entregables": ["Balanza de Comprobación", "Estado de Resultados", "Conciliación"]}, {"id": "cumpl-fisc", "nombre": "Cumplimiento Tributario y Declaraciones", "periodo": "Por Ejercicio / Mensual", "alcance": "ISR, IVA, Retenciones y DIOT", "base": 3500.0, "badge": "OBLIGATORIO SAT", "desc": "Cálculo matemático exacto de contribuciones federales y atención inmediata a requerimientos para asegurar Opinión 32-D Positiva.", "entregables": ["Acuses SAT", "Línea de Captura", "Opinión 32-D"]}, {"id": "nomina-imss", "nombre": "Gestión de Nómina y Seguridad Social", "periodo": "Emisión Quincenal", "alcance": "Hasta 10 colaboradores", "base": 1950.0, "badge": "OPERATIVO", "desc": "Dispersión, timbrado de recibos CFDI 4.0 de nómina, cálculo de liquidaciones, finiquitos y control riguroso de movimientos IDSE/SUA.", "entregables": ["CFDI XML/PDF", "Cédula SUA", "Emisiones IMSS"]}, {"id": "auditoria-diag", "nombre": "Auditoría Financiera y Blindaje EFOS", "periodo": "Por Dictamen / Proyecto", "alcance": "Auditoría integral profunda", "base": 8500.0, "badge": "ALTO TICKET · BLINDAJE", "desc": "Inspección forense de CFDI emitidos vs recibidos, prevención de discrepancia fiscal y validación automática contra listas negras Art. 69-B CFF.", "entregables": ["Dictamen de Riesgos", "Matriz Proveedores", "Plan de Acción"]}];
+const SERVICIOS = [
+  {"id": "cont-gen", "nombre": "Contabilidad General y Balanza Mensual", "periodo": "Honorario Mensual", "alcance": "Hasta 60 pólizas analíticas", "base": 2800.0, "badge": "BASE · RECURRENTE", "desc": "Registro analítico de operaciones, conciliación bancaria exhaustiva, balanza de comprobación mensual y emisión de estados financieros.", "entregables": ["Balanza de Comprobación", "Estado de Resultados", "Conciliación"]},
+  {"id": "cumpl-fisc", "nombre": "Cumplimiento Tributario y Declaraciones", "periodo": "Por Ejercicio / Mensual", "alcance": "ISR, IVA, Retenciones y DIOT", "base": 3500.0, "badge": "OBLIGATORIO SAT", "desc": "Cálculo matemático exacto de contribuciones federales y atención inmediata a requerimientos para asegurar Opinión 32-D Positiva.", "entregables": ["Acuses SAT", "Línea de Captura", "Opinión 32-D"]},
+  {"id": "nomina-imss", "nombre": "Gestión de Nómina y Seguridad Social", "periodo": "Emisión Quincenal", "alcance": "Hasta 10 colaboradores", "base": 1950.0, "badge": "OPERATIVO", "desc": "Dispersión, timbrado de recibos CFDI 4.0 de nómina, cálculo de liquidaciones, finiquitos y control riguroso de movimientos IDSE/SUA.", "entregables": ["CFDI XML/PDF", "Cédula SUA", "Emisiones IMSS"]},
+  {"id": "auditoria-diag", "nombre": "Auditoría Financiera y Blindaje EFOS", "periodo": "Por Dictamen / Proyecto", "alcance": "Auditoría integral profunda", "base": 8500.0, "badge": "ALTO TICKET · BLINDAJE", "desc": "Inspección forense de CFDI emitidos vs recibidos, prevención de discrepancia fiscal y validación automática contra listas negras Art. 69-B CFF.", "entregables": ["Dictamen de Riesgos", "Matriz Proveedores", "Plan de Acción"]}
+];
 const WA_PHONE = "525657062511";
 const FIRM_NAME = "CONTAGRAM";
 const BANK_NAME = "Banco Azteca";
@@ -289,8 +518,74 @@ function formalizarWhatsApp() {
   window.open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(mensaje)}`, "_blank");
 }
 
+/* ================= LÓGICA CALCULADORA VINTAGE ================= */
+let calcValue = '0';
+let calcPrev = null;
+let calcOperator = null;
+let calcWaiting = false;
+
+function openCalculator() {
+  document.getElementById("calc-modal").classList.add("open");
+}
+function closeCalculator() {
+  document.getElementById("calc-modal").classList.remove("open");
+}
+function handleModalBgClick(e) {
+  if (e.target.id === 'calc-modal') closeCalculator();
+}
+
+function updateDisplay(){
+  const el = document.getElementById('calc-display');
+  const num = parseFloat(calcValue);
+  if(isNaN(num)) { el.textContent = '$0.00'; return; }
+  el.textContent = '$' + num.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+function calcNum(n){
+  if(calcWaiting){
+    calcValue = n === '.' ? '0.' : n;
+    calcWaiting = false;
+  } else {
+    if(n === '.' && calcValue.includes('.')) return;
+    calcValue = calcValue === '0' && n !== '.' ? n : calcValue + n;
+  }
+  updateDisplay();
+}
+function calcOp(op){
+  if(op === 'CE'){ calcValue='0'; updateDisplay(); return; }
+  const cur = parseFloat(calcValue);
+  if(calcOperator && !calcWaiting){
+    calcValue = String(calculate(calcPrev, cur, calcOperator));
+    updateDisplay();
+  }
+  calcPrev = cur;
+  calcOperator = op;
+  calcWaiting = true;
+}
+function calcEquals(){
+  if(!calcOperator || calcPrev===null) return;
+  const cur = parseFloat(calcValue);
+  calcValue = String(calculate(calcPrev, cur, calcOperator));
+  calcOperator=null; calcPrev=null; calcWaiting=true;
+  updateDisplay();
+}
+function calcClear(){
+  calcValue='0'; calcPrev=null; calcOperator=null; calcWaiting=false;
+  updateDisplay();
+}
+function calculate(a,b,op){
+  switch(op){
+    case '+': return a+b;
+    case '-': return a-b;
+    case '×': return a*b;
+    case '÷': return b!==0 ? a/b : 0;
+    case '%': return a * (b/100);
+    default: return b;
+  }
+}
+
 renderServicios();
 actualizarLibroMayor();
+updateDisplay();
 </script>
 </body>
 </html>
