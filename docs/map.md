@@ -33,6 +33,13 @@
    - Paleta: Lapislázuli (`#071A30`), Oro Zarrin (`#C9A227`), Cal (`#FBF9F4`)
    - Cobro: Transferencia SPEI Banco Azteca (`1271 8000 1844 7214 31`) y WhatsApp Business (`+52 56 5706 2511`)
 
+4. **Baakal — Plomería & Gas** (`baakal`): Huésped oficial de Servicios Técnicos & Oficios de Campo en `/baakal`.
+   - Servicios: Destape con video boroscópico, Instalación de boiler/calentador, Fugas de gas LP, Hidroneumáticos & cisternas
+   - Canon de diseño: **BAAKAL v1.0** (`docs/baakal_designsystem.md`)
+   - Modelo UX: Arquetipo B de Campo (Tarifario transparente, tarjeta con filete de cobre, urgencia 24h, presupuesto formal)
+   - Paleta: Verde Selva (`#1A2F2A`), Agua Turquesa (`#2A7F9E`), Cobre (`#B87333`), Terracota (`#C86B4A`), Cal (`#F5F1E8`)
+   - Cobro: Pago en sitio o Transferencia SPEI BBVA (`0121 8000 9988 7766 55`) y WhatsApp (`+52 999 123 4567`)
+
 ## 3. Stack Tecnológico
 | Capa | Tecnología | Propósito |
 |---|---|---|

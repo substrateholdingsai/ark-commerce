@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BAAKAL — Plomería & Gas · Sureste Mexicano</title>
+<link rel="icon" type="image/svg+xml" href="/images/baakal/favicon.svg">
+<link rel="manifest" href="/manifest.json?tenant=baakal">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Baakal">
+<meta name="theme-color" content="#1A2F2A">
+
+<!-- Tríada Tipográfica Baakal: Outfit + Inter + JetBrains Mono -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+:root {
+  --bg-canvas:     #F5F1E8;
+  --bg-primary:    #1A2F2A;
+  --bg-surface:    #FFFFFF;
+  --bg-surface-alt:#E8E2D4;
+  --accent-500:    #2A7F9E;
+  --accent-400:    #35A0C4;
+  --accent-600:    #1E5F76;
+  --copper-500:    #B87333;
+  --terracotta-500:#C86B4A;
+  --jade-500:      #2E7D6F;
+  --border-line:   #D6CEBC;
+  --border-strong: #B8A88A;
+  --text-primary:  #1A2F2A;
+  --text-secondary:#5A6B63;
+  --text-inverse:  #F5F1E8;
+}
+
+* { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background-color: var(--bg-canvas);
+  background-image: url("/images/baakal/girih-seamless.svg");
+  background-size: 480px 480px;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+}
+
+.font-display { font-family: 'Outfit', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+/* Ley de las Cifras Baakal */
+.cifra {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums lining-nums;
+  text-align: right;
+}
+
+/* Tarjeta de Servicio con filete inferior de cobre */
+.service-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-line);
+  border-bottom: 3px solid var(--copper-500);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 4px 16px rgba(26, 47, 42, 0.04);
+}
+.service-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  border-bottom-color: var(--copper-500);
+  box-shadow: 0 12px 30px rgba(26, 47, 42, 0.08);
+}
+.service-card.selected {
+  border: 1px solid var(--accent-500);
+  border-bottom: 3px solid var(--copper-500);
+  background: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(42, 127, 158, 0.16);
+}
+
+/* Botón Primario: Turquesa Agua con texto BLANCO estricto (WCAG AA) */
+.btn-baakal {
+  background: var(--accent-500);
+  color: #FFFFFF !important;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(42, 127, 158, 0.35);
+}
+.btn-baakal:hover:not(:disabled) {
+  background: var(--accent-400);
+  transform: translateY(-1px);
+}
+.btn-baakal:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Panel de Propuesta de Presupuesto */
+.proposal-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(26, 47, 42, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+.proposal-panel::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--copper-500), var(--accent-500));
+}
+
+/* Urgency Badge */
+.urgency-badge {
+  background: var(--terracotta-500);
+  color: #FFFFFF;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER PRINCIPAL -->
+<header class="border-b border-[#D6CEBC] bg-white/90 backdrop-blur-md sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <!-- Logotipo Baakal -->
+    <div class="flex items-center gap-4">
+      <img src="/images/baakal/favicon.svg" alt="Baakal Sello" class="w-10 h-10">
+      <div class="border-l border-[#D6CEBC] pl-4">
+        <div class="font-display text-2xl font-bold tracking-tight text-[#1A2F2A]">BAAKAL</div>
+        <div class="text-[10px] font-mono tracking-[0.2em] text-[#B87333] uppercase">Plomería & Gas · Sureste</div>
+      </div>
+    </div>
+
+    <!-- Contacto Rápido de Emergencia -->
+    <div class="flex items-center gap-5">
+      <div class="hidden md:flex flex-col text-right">
+        <span class="text-[10px] font-mono text-[#5A6B63] uppercase tracking-wider">Guardia de Urgencia 24h</span>
+        <span class="text-xs font-mono font-bold text-[#1A2F2A]">+52 999 123 4567</span>
+      </div>
+      <a href="#propuesta" class="btn-baakal px-5 py-2.5 text-xs font-mono tracking-wider uppercase">
+        Cotizar Servicio
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO: LA INGENIERÍA DEL AGUA -->
+<section class="bg-[#1A2F2A] text-[#F5F1E8] py-16 md:py-20 border-b border-[#B87333]">
+  <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-10 items-center">
+    <div class="lg:col-span-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-mono tracking-wider mb-6">
+        <span class="w-2 h-2 rounded-full bg-[#35A0C4] animate-pulse"></span>
+        DISPONIBILIDAD INMEDIATA EN MÉRIDA & SURESTE
+      </div>
+      <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+        Donde el agua fluye,<br>
+        <span class="text-[#35A0C4] font-medium">la vida permanece.</span>
+      </h1>
+      <p class="mt-5 text-[#F5F1E8]/80 text-base md:text-lg max-w-2xl font-light leading-relaxed">
+        Técnicos certificados en instalaciones hidráulicas y gas LP. Sin cobros ocultos ni rodeos: cotizamos en línea con precio transparente y resolvemos el problema el mismo día.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4 text-xs font-mono text-[#F5F1E8]/70">
+        <span class="flex items-center gap-1.5"><strong class="text-[#B87333]">✓</strong> Tubería Cobre & Termofusión</span>
+        <span class="flex items-center gap-1.5"><strong class="text-[#B87333]">✓</strong> Detección con Video Boroscópico</span>
+        <span class="flex items-center gap-1.5"><strong class="text-[#B87333]">✓</strong> Facturación con CFDI 4.0</span>
+      </div>
+    </div>
+    <div class="lg:col-span-4 text-center lg:text-right hidden lg:block">
+      <img src="/images/baakal/monogram.svg" alt="Baakal Monograma" class="w-48 h-48 mx-auto lg:ml-auto opacity-80">
+    </div>
+  </div>
+</section>
+
+<!-- CONTENIDO: PROPUESTA Y CATÁLOGO -->
+<main class="max-w-7xl mx-auto px-6 py-14">
+  <div class="grid lg:grid-cols-12 gap-10 items-start">
+    
+    <!-- COLUMNA IZQUIERDA: SERVICIOS TÉCNICOS -->
+    <div class="lg:col-span-7">
+      <div class="mb-8">
+        <div class="text-[11px] font-mono tracking-[0.2em] text-[#B87333] uppercase">Tarifario Transparente</div>
+        <h2 class="font-display text-3xl font-bold text-[#1A2F2A] mt-1">Servicios de Plomería & Gas</h2>
+        <p class="text-sm text-[#5A6B63] mt-1">Elige los trabajos requeridos en tu domicilio o negocio para generar tu presupuesto formal.</p>
+      </div>
+
+      <div class="space-y-4" id="servicesContainer">
+        <!-- Renderizado por JS -->
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: LA PROPUESTA (PRESUPUESTO FORMAL) -->
+    <div class="lg:col-span-5" id="propuesta">
+      <div class="proposal-panel p-6 lg:sticky lg:top-28">
+        
+        <div class="flex justify-between items-start pb-4 border-b border-[#D6CEBC]">
+          <div>
+            <div class="text-[11px] font-mono tracking-[0.16em] text-[#B87333] uppercase font-bold">PROPUESTA DE SERVICIO</div>
+            <div class="text-xs font-mono text-[#5A6B63] mt-0.5">FOLIO: #PLM-2026-0847</div>
+          </div>
+          <span class="px-2.5 py-1 rounded bg-[#2E7D6F]/10 text-[#2E7D6F] font-mono text-[10px] font-bold">TARIFA CERRADA</span>
+        </div>
+
+        <!-- TOTAL A PAGAR -->
+        <div class="py-5 border-b border-[#D6CEBC]">
+          <div class="text-xs font-mono text-[#5A6B63] uppercase tracking-wider">Total a Pagar (Neto)</div>
+          <div class="cifra text-4xl sm:text-5xl font-bold text-[#1A2F2A] mt-1" id="totalDisplay">$0.00</div>
+          <div class="text-xs font-mono text-[#5A6B63] mt-1" id="countDisplay">0 SERVICIOS INTEGRADOS</div>
+        </div>
+
+        <!-- LISTA DE SERVICIOS INTEGRADOS -->
+        <div class="py-4 space-y-2 min-h-[120px]" id="proposalItems"></div>
+
+        <!-- DESGLOSE FISCAL -->
+        <div class="pt-4 border-t border-[#D6CEBC] space-y-2 text-xs font-mono">
+          <div class="flex justify-between text-[#5A6B63]">
+            <span>BASE IMPONIBLE:</span>
+            <span class="cifra text-[#1A2F2A]" id="baseDisplay">$0.00</span>
+          </div>
+          <div class="flex justify-between text-[#5A6B63]">
+            <span>IVA TRASLADADO (16%):</span>
+            <span class="cifra text-[#1A2F2A]" id="ivaDisplay">$0.00</span>
+          </div>
+          <div class="flex justify-between font-bold text-[#1A2F2A] pt-2 border-t border-[#D6CEBC]">
+            <span>TOTAL ESTIMADO:</span>
+            <span class="cifra" id="totalFooterDisplay">$0.00</span>
+          </div>
+        </div>
+
+        <!-- FORMULARIO DE DOMICILIO Y ATENCIÓN -->
+        <div class="mt-6 pt-5 border-t border-[#D6CEBC] space-y-3">
+          <div>
+            <label class="block text-[10px] font-mono uppercase text-[#5A6B63] mb-1 font-bold">Dirección / Colonia del Servicio</label>
+            <input type="text" id="direccionInput" placeholder="Ej: Calle 60 x 45, Centro / Las Américas" class="w-full bg-[#F5F1E8] border border-[#D6CEBC] rounded px-3 py-2 text-xs font-mono text-[#1A2F2A] focus:border-[#2A7F9E] focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[10px] font-mono uppercase text-[#5A6B63] mb-1 font-bold">Nombre o Contacto</label>
+            <input type="text" id="clienteInput" placeholder="¿A quién dirigimos el presupuesto?" class="w-full bg-[#F5F1E8] border border-[#D6CEBC] rounded px-3 py-2 text-xs font-mono text-[#1A2F2A] focus:border-[#2A7F9E] focus:outline-none">
+          </div>
+        </div>
+
+        <!-- BOTÓN FORMALIZAR POR WHATSAPP -->
+        <div class="mt-6">
+          <button onclick="enviarWhatsApp()" id="formalizarBtn" disabled class="btn-baakal w-full py-3.5 text-xs font-mono uppercase tracking-[0.14em]">
+            Formalizar por WhatsApp
+          </button>
+          <div class="text-center mt-3 text-[10px] font-mono text-[#5A6B63]">
+            Pago en sitio al finalizar: <strong class="text-[#1A2F2A]">Efectivo o Transferencia SPEI (BBVA)</strong>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="border-t border-[#D6CEBC] bg-white py-10 mt-20 text-xs font-mono text-[#5A6B63]">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <div class="flex items-center gap-3">
+      <img src="/images/baakal/favicon.svg" alt="Baakal" class="w-5 h-5">
+      <span>BAAKAL © 2026 · Soluciones Hidráulicas & Gas · Sureste Mexicano</span>
+    </div>
+    <div class="text-[#B87333]">
+      "Donde el agua fluye, la vida permanece."
+    </div>
+  </div>
+</footer>
+
+<script>
+const SERVICIOS = [
+  {
+    id: "baakal-p1",
+    nombre: "Destape de Drenaje & Inspección con Video",
+    alcance: "Tuberías de 2 a 4 pulgadas · Garantía 30 días",
+    base: 850.0,
+    badge: "MÁS SOLICITADO",
+    desc: "Sondeo mecánico eléctrico con gusano de acero y revisión visual con cámara boroscópica para ubicar obstrucciones severas o colapso."
+  },
+  {
+    id: "baakal-p2",
+    nombre: "Instalación de Calentador / Boiler (Gas o Solar)",
+    alcance: "Incluye prueba hermética de presión",
+    base: 1250.0,
+    badge: "CERTIFICADO",
+    desc: "Montaje nivelado, interconexión de agua fría/caliente en cobre o termofusión, válvula de alivio y calibración de termostato."
+  },
+  {
+    id: "baakal-p3",
+    nombre: "Detección & Reparación de Fuga de Gas LP",
+    alcance: "Atención inmediata de urgencia técnica",
+    base: 1450.0,
+    badge: "EMERGENCIA 24H",
+    isUrgent: true,
+    desc: "Búsqueda forense con sensor ultrasónico y manómetro en líneas ocultas, reposición de mangueras trenzadas y llaves de esfera."
+  },
+  {
+    id: "baakal-p4",
+    nombre: "Mantenimiento a Cisterna & Sistema Hidroneumático",
+    alcance: "Lavado y presurización de línea",
+    base: 1800.0,
+    badge: "INTEGRAL",
+    desc: "Desinfección de paredes con hipoclorito grado alimenticio, extracción de sedimentos con bomba sumergible y calibración de membrana."
+  }
+];
+
+let seleccionados = new Set(["baakal-p1"]);
+
+function renderServicios() {
+  const container = document.getElementById("servicesContainer");
+  container.innerHTML = SERVICIOS.map(s => {
+    const isSelected = seleccionados.has(s.id);
+    return `
+      <div onclick="toggleServicio('${s.id}')" class="service-card ${isSelected ? 'selected' : ''} cursor-pointer">
+        <div class="flex justify-between items-start gap-4">
+          <div>
+            ${s.isUrgent 
+              ? `<span class="urgency-badge mb-2">🔥 ${s.badge}</span>` 
+              : `<span class="text-[10px] font-mono font-bold tracking-wider text-[#2A7F9E] bg-[#2A7F9E]/10 px-2.5 py-0.5 rounded">${s.badge}</span>`}
+            <h3 class="font-display text-xl font-bold text-[#1A2F2A] mt-2">${s.nombre}</h3>
+            <div class="text-xs font-mono text-[#5A6B63] mt-0.5">${s.alcance}</div>
+          </div>
+          <div class="cifra text-2xl font-bold text-[#1A2F2A] whitespace-nowrap">
+            $${s.base.toFixed(2)}
+          </div>
+        </div>
+        <p class="text-sm text-[#5A6B63] mt-3 leading-relaxed">${s.desc}</p>
+        <div class="mt-4 pt-3 border-t border-[#D6CEBC] flex justify-between items-center text-xs font-mono">
+          <span class="text-[#B87333] font-medium">Técnico matriculado</span>
+          <button class="px-3 py-1 rounded font-bold ${isSelected ? 'bg-[#2A7F9E] text-white' : 'border border-[#D6CEBC] text-[#1A2F2A]'}">
+            ${isSelected ? '✓ Integrado' : '+ Integrar a propuesta'}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function toggleServicio(id) {
+  if (seleccionados.has(id)) seleccionados.delete(id);
+  else seleccionados.add(id);
+  actualizarPropuesta();
+  renderServicios();
+}
+
+function actualizarPropuesta() {
+  const items = SERVICIOS.filter(s => seleccionados.has(s.id));
+  const base = items.reduce((acc, s) => acc + s.base, 0);
+  const iva = base * 0.16;
+  const total = base + iva;
+
+  document.getElementById("totalDisplay").textContent = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById("totalFooterDisplay").textContent = "$" + total.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById("baseDisplay").textContent = "$" + base.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById("ivaDisplay").textContent = "$" + iva.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById("countDisplay").textContent = `${items.length} SERVICIO${items.length === 1 ? '' : 'S'} INTEGRADO${items.length === 1 ? '' : 'S'}`;
+  
+  document.getElementById("formalizarBtn").disabled = items.length === 0;
+
+  const listContainer = document.getElementById("proposalItems");
+  if (items.length === 0) {
+    listContainer.innerHTML = `<div class="text-center py-6 text-xs font-mono text-[#5A6B63]">[ Selecciona al menos un servicio del catálogo ]</div>`;
+  } else {
+    listContainer.innerHTML = items.map(it => `
+      <div class="flex justify-between items-center text-xs font-mono py-1 border-b border-[#D6CEBC]/50">
+        <span class="truncate pr-2">• ${it.nombre}</span>
+        <span class="cifra font-bold text-[#1A2F2A]">$${it.base.toFixed(2)}</span>
+      </div>
+    `).join("");
+  }
+}
+
+function enviarWhatsApp() {
+  const items = SERVICIOS.filter(s => seleccionados.has(s.id));
+  if (items.length === 0) return;
+  const base = items.reduce((acc, s) => acc + s.base, 0);
+  const iva = base * 0.16;
+  const total = base + iva;
+  const direccion = document.getElementById("direccionInput").value.trim() || "(Por confirmar)";
+  const cliente = document.getElementById("clienteInput").value.trim() || "(Por confirmar)";
+
+  const msg = 
+`🔧 *BAAKAL — Plomería & Gas*
+_Solicitud Formal de Presupuesto #PLM-2026-0847_
+
+*SERVICIOS REQUERIDOS:*
+${items.map(s => `• *${s.nombre}*\n  Monto: $${s.base.toFixed(2)} MXN`).join("\n")}
+
+--------------------------------------
+*Base Imponible:* $${base.toFixed(2)} MXN
+*IVA (16%):* $${iva.toFixed(2)} MXN
+*TOTAL A PAGAR:* $${total.toFixed(2)} MXN
+--------------------------------------
+*Cliente:* ${cliente}
+*Ubicación / Domicilio:* ${direccion}
+
+_Solicito visita técnica para formalizar y realizar el trabajo._`;
+
+  window.open(`https://wa.me/529991234567?text=${encodeURIComponent(msg)}`, "_blank");
+}
+
+renderServicios();
+actualizarPropuesta();
+</script>
+</body>
+</html>

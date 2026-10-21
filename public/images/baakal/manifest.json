@@ -1,0 +1,30 @@
+{
+  "system": "Baakal",
+  "client": "Baakal Plomería & Gas",
+  "assets": [
+    {
+      "file": "favicon.svg",
+      "kb": 0.28
+    },
+    {
+      "file": "logo-lockup.svg",
+      "kb": 0.59
+    },
+    {
+      "file": "girih-seamless.svg",
+      "kb": 1.9
+    },
+    {
+      "file": "monogram.svg",
+      "kb": 0.36
+    },
+    {
+      "file": "divider-cobre.svg",
+      "kb": 0.41
+    },
+    {
+      "file": "icons-sprite.svg",
+      "kb": 1.98
+    }
+  ]
+}
