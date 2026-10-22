@@ -4,6 +4,7 @@ export type Env = {
   CACHE: KVNamespace;
   STORAGE: R2Bucket;
   ORDER_QUEUE: Queue<CheckoutMessage>;
+  AI?: any;
   RESEND_API_KEY?: string;
   EMAIL_FROM?: string;
   ENVIRONMENT?: string;

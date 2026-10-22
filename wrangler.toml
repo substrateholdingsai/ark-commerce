@@ -46,3 +46,7 @@ bucket_name = "ark-commerce-storage"
 [[queues.producers]]
 binding = "ORDER_QUEUE"
 queue = "ark-commerce-orders"
+
+# Cloudflare Workers AI Binding
+[ai]
+binding = "AI"

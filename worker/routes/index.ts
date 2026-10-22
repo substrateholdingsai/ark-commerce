@@ -6,6 +6,7 @@ import adminRoute from '../src/routes/admin';
 import authRoute from '../src/routes/auth';
 import cartRoute from '../src/routes/cart';
 import shippingRoute from '../src/routes/shipping';
+import assistantRoute from '../src/routes/assistant';
 
 export const apiRoutes = new Hono();
 
@@ -16,3 +17,4 @@ apiRoutes.route('/admin', adminRoute);
 apiRoutes.route('/auth', authRoute);
 apiRoutes.route('/cart', cartRoute);
 apiRoutes.route('/shipping', shippingRoute);
+apiRoutes.route('/assistant', assistantRoute);
