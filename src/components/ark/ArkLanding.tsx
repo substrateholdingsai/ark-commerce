@@ -3,76 +3,63 @@ import AiSearchConcierge from './AiSearchConcierge';
 
 const WHATSAPP_NUMBER = '529994918221';
 
-const RETAIL_CATEGORIES = [
+const TRADE_CATEGORIES = [
   {
-    id: 'gastro',
-    icon: '🥩',
-    title: 'Alimentos & Empacados',
-    subtitle: 'Carnes, salsas, quesos y botanas',
-    sampleStore: 'ahumadosdelnorte.ark.mx',
-    products: [
-      { name: 'Brisket Ahumado 1kg', price: '$420', desc: 'Ahumado 10h con leña de mezquite' },
-      { name: 'Costillas BBQ 1kg', price: '$380', desc: 'Glaseado artesanal de la casa' },
-      { name: 'Salsa Habanera Tatemada', price: '$95', desc: 'Frasco 250ml sin conservadores' },
+    id: 'plomeria',
+    icon: '🔧',
+    title: 'Plomería & Drenajes',
+    subtitle: 'Fugas de agua, tinacos y bombas',
+    sampleStore: 'baakal.ark.mx',
+    services: [
+      { name: 'Destape de Drenaje con Sonda Eléctrica', price: '$850', desc: 'Desazolve sin romper pisos ni tuberías' },
+      { name: 'Detección y Reparación de Fuga de Agua', price: '$650', desc: 'Diagnóstico en tubería de cobre y PPR' },
+      { name: 'Instalación de Tinaco / Bomba Presurizadora', price: '$1,400', desc: 'Conexión hidráulica y prueba de presión' },
     ],
-    whatsappPreview: 'Hola! Quiero pedir 1x Brisket 1kg + 1x Salsa Tatemada. Total: $515 MXN. Ya te transferí por SPEI.',
+    whatsappPreview: 'Hola Baakal! Solicito técnico para Destape de Drenaje con Sonda. Tarifa base: $850 MXN. Ubicación: Col. García Ginerés.',
   },
   {
-    id: 'cafe',
-    icon: '☕',
-    title: 'Café & Artesanales',
-    subtitle: 'Café de especialidad, miel y mezcal',
-    sampleStore: 'cafedealtura.ark.mx',
-    products: [
-      { name: 'Café Chiapas Tostado 500g', price: '$210', desc: 'Notas a chocolate amargo y avellana' },
-      { name: 'Miel Virgen de Flor 350g', price: '$140', desc: '100% pura de apiario artesanal' },
-      { name: 'Mezcal Espadín 750ml', price: '$490', desc: 'Artesanal 45° de Oaxaca' },
+    id: 'gas',
+    icon: '🔥',
+    title: 'Gas LP & Boilers',
+    subtitle: 'Líneas de gas, calentadores y fugas',
+    sampleStore: 'baakal.ark.mx',
+    services: [
+      { name: 'Instalación de Boiler (Gas o Solar)', price: '$1,250', desc: 'Montaje con prueba de hermeticidad' },
+      { name: 'Prueba de Hermeticidad y Fuga de Gas', price: '$950', desc: 'Detección con manómetro y equipo certificado' },
+      { name: 'Cambio de Válvulas y Regulador de Tanque', price: '$750', desc: 'Regulador de alta y baja presión' },
     ],
-    whatsappPreview: 'Hola! Quiero 2x Café Chiapas 500g. Total: $420 MXN. Copié tu CLABE para transferir.',
+    whatsappPreview: 'Hola Baakal! Requiero instalación de Boiler con prueba de hermeticidad. Total: $1,250 MXN. ¿Tienen disponibilidad hoy?',
   },
   {
-    id: 'postres',
-    icon: '🧁',
-    title: 'Repostería & Eventos',
-    subtitle: 'Pasteles, galletas y mesas dulces',
-    sampleStore: 'dulcecanela.ark.mx',
-    products: [
-      { name: 'Pastel Red Velvet 10 pax', price: '$480', desc: 'Betún de queso crema artesanal' },
-      { name: 'Caja 12 Galletas Chispas', price: '$220', desc: 'Rellenas de chocolate belga' },
-      { name: 'Crumble de Manzana', price: '$340', desc: 'Horneado al día con canela de varita' },
+    id: 'climas',
+    icon: '❄️',
+    title: 'Climas & Minisplits (HVAC)',
+    subtitle: 'Mantenimiento, lavado y recarga de gas',
+    sampleStore: 'climasdeleste.ark.mx',
+    services: [
+      { name: 'Lavado Profundo de Minisplit', price: '$550', desc: 'Desinfección de turbina y serpentín' },
+      { name: 'Recarga de Gas Refrigerante R410A', price: '$850', desc: 'Carga completa con vacío previo' },
+      { name: 'Instalación Completa Minisplit Inverter', price: '$1,450', desc: 'Incluye kit de tubería y fijación de ménsulas' },
     ],
-    whatsappPreview: 'Hola! Quiero encargar 1x Pastel Red Velvet para el sábado. Total: $480 MXN.',
+    whatsappPreview: 'Hola! Quiero agendar servicio de lavado profundo para 2 minisplits. Total: $1,100 MXN. Paso mi dirección.',
   },
   {
-    id: 'moda',
-    icon: '🧢',
-    title: 'Streetwear & Moda',
-    subtitle: 'Gorras, sneakers y marcas de autor',
-    sampleStore: 'nortehype.ark.mx',
-    products: [
-      { name: 'Gorra Trucker Edición Limitada', price: '$550', desc: 'Bordado 3D de alta densidad' },
-      { name: 'Heavyweight Tee Black', price: '$450', desc: 'Algodón peinado 240g corte boxy' },
-      { name: 'Cadena Plata .925 Cubana', price: '$890', desc: 'Eslabón cerrado hecha en Taxco' },
+    id: 'electricidad',
+    icon: '⚡',
+    title: 'Electricidad & Cuadros de Carga',
+    subtitle: 'Cortocircuitos, cableado y centros de carga',
+    sampleStore: 'voltia.ark.mx',
+    services: [
+      { name: 'Reparación de Cortocircuito y Falla Eléctrica', price: '$750', desc: 'Aislamiento de circuito y cambio de pastilla' },
+      { name: 'Instalación de Centro de Carga (2 a 4 pastillas)', price: '$1,350', desc: 'Norma técnica con tierra física' },
+      { name: 'Cableado y Balanceo de Cargas', price: '$1,800', desc: 'Para evitar sobrecalentamiento y caídas de voltaje' },
     ],
-    whatsappPreview: 'Hola! Me interesa la Gorra Trucker y la Tee Talla L. Total: $1,000 MXN. Pago con tarjeta.',
-  },
-  {
-    id: 'belleza',
-    icon: '💈',
-    title: 'Belleza & Barber Supply',
-    subtitle: 'Pomadas, aceites y kits de cuidado',
-    sampleStore: 'barberiasupreme.ark.mx',
-    products: [
-      { name: 'Pomada Matte Clay 100g', price: '$220', desc: 'Fijación alta sin brillo' },
-      { name: 'Aceite para Barba Bergamota', price: '$190', desc: 'Hidratación con jojoba y argán' },
-      { name: 'Kit Cuidado Completo', price: '$499', desc: 'Shampoo + Aceite + Cera moldeadora' },
-    ],
-    whatsappPreview: 'Hola! Quiero el Kit Cuidado Completo. Total: $499 MXN. Paso por él a la sucursal.',
+    whatsappPreview: 'Hola! Tengo una falla en el centro de carga principal de mi casa. Solicito electricista urgente.',
   },
 ];
 
 export default function ArkLanding() {
-  const [selectedCat, setSelectedCat] = useState(RETAIL_CATEGORIES[0]);
+  const [selectedCat, setSelectedCat] = useState(TRADE_CATEGORIES[0]);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [copiedClabe, setCopiedClabe] = useState(false);
 
@@ -118,30 +105,30 @@ export default function ArkLanding() {
             </div>
             <div>
               <span className="font-display font-black text-lg tracking-tight text-white">
-                ARK<span className="text-[#B4FF00]">COMMERCE</span>
+                ARK<span className="text-[#B4FF00]">OFICIOS</span>
               </span>
               <span className="hidden sm:inline-block ml-3 font-mono text-[11px] tracking-widest text-[#B4FF00] bg-[#B4FF00]/10 px-2 py-0.5 rounded border border-[#B4FF00]/20">
-                $299/MES · 0% COMISIÓN
+                RED DE MANTENIMIENTO CON IA
               </span>
             </div>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-[#A7AEB8]">
-            <button onClick={() => scrollTo('rubros')} className="hover:text-white transition">Giros de negocio</button>
-            <button onClick={() => scrollTo('comparativa')} className="hover:text-white transition">Comparativa</button>
-            <button onClick={() => scrollTo('pagos')} className="hover:text-white transition">Métodos de pago</button>
+            <button onClick={() => scrollTo('ai-concierge')} className="hover:text-white transition">Cotizador IA</button>
+            <button onClick={() => scrollTo('servicios')} className="hover:text-white transition">Especialidades</button>
+            <button onClick={() => scrollTo('comparativa')} className="hover:text-white transition">Garantía Ark</button>
             <button onClick={() => scrollTo('como-funciona')} className="hover:text-white transition">Cómo funciona</button>
-            <button onClick={() => scrollTo('faq')} className="hover:text-white transition">Preguntas</button>
+            <button onClick={() => scrollTo('proveedores')} className="hover:text-white transition">Para Técnicos</button>
           </nav>
 
           <div className="flex items-center gap-3">
             <a
-              href={getWaLink('Hola Ark! Quiero pedir mi tienda en línea de $299/mes para mi negocio.')}
+              href={getWaLink('Hola Ark! Tengo una emergencia de mantenimiento en mi hogar/negocio.')}
               target="_blank"
               rel="noopener noreferrer"
               className="h-10 rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] px-5 flex items-center font-display text-[13px] font-bold text-[#0B0C0E] transition lima-glow active:scale-[0.98]"
             >
-              Pedir por WhatsApp →
+              Pedir Técnico por WhatsApp →
             </a>
           </div>
         </div>
@@ -159,57 +146,57 @@ export default function ArkLanding() {
             {/* Copy Principal */}
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-[#B4FF00]/30 bg-[#B4FF00]/10 px-3.5 py-1 text-xs font-mono font-bold text-[#B4FF00] mb-6">
-                <span>🇲🇽</span> HECHO EN MÉXICO PARA COBRAR EN MÉXICO
+                <span>🇲🇽</span> TÉCNICOS VERIFICADOS EN EL SURESTE · EMERGENCIAS Y MANTENIMIENTO
               </div>
 
-              <h1 className="font-display text-4xl sm:text-6xl lg:text-[64px] font-black tracking-tight leading-[1.02]">
-                Tu tienda que vende y cobra por WhatsApp.{' '}
-                <span className="text-[#B4FF00] block mt-1">$299 al mes.</span>
+              <h1 className="font-display text-4xl sm:text-6xl lg:text-[60px] font-black tracking-tight leading-[1.04]">
+                El técnico que necesitas en tu casa o negocio.{' '}
+                <span className="text-[#B4FF00] block mt-1">Cotizado al instante por IA.</span>
               </h1>
 
               <p className="font-body mt-6 text-[16px] sm:text-[18px] leading-[1.65] text-[#A7AEB8] max-w-xl">
-                En México no se compra con carritos lentos en dólares. Se vende por Instagram y se cobra por <strong className="text-white">SPEI directo a tu banco</strong>.
-                Ark te entrega tu tienda online lista en 5 minutos con tu catálogo, tus fotos y tus pedidos ordenados en tu WhatsApp.
+                Olvídate de buscar números en postes o esperar horas sin saber cuánto te van a cobrar.
+                Describe tu problema en lenguaje natural; nuestra IA te entrega la cotización real y te conecta de inmediato con un técnico certificado en plomería, gas, climas o electricidad.
               </p>
 
-              {/* Badges de nocaut */}
+              {/* Badges de servicio */}
               <div className="mt-6 flex flex-wrap gap-2 text-xs font-mono font-semibold text-zinc-300">
                 <span className="bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-                  <span className="text-[#B4FF00]">✓</span> 0% Comisiones por venta
+                  <span className="text-[#B4FF00]">✓</span> Precios cerrados por catálogo
                 </span>
                 <span className="bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-                  <span className="text-[#B4FF00]">✓</span> Tu dinero directo a tu CLABE
+                  <span className="text-[#B4FF00]">✓</span> Folio de servicio formal con garantía
                 </span>
                 <span className="bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-                  <span className="text-[#B4FF00]">✓</span> Lista hoy en 5 minutos
+                  <span className="text-[#B4FF00]">✓</span> Pago directo por SPEI a tu banco
                 </span>
               </div>
 
               {/* Botones de acción */}
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                <a
-                  href={getWaLink('Hola Ark! Quiero activar mi tienda online por $299/mes.')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="h-14 px-8 rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] flex items-center justify-center font-display text-base font-bold text-[#0B0C0E] transition lima-glow active:scale-[0.98]"
-                >
-                  🚀 Quiero mi tienda por $299/mes
-                </a>
                 <button
                   onClick={() => scrollTo('ai-concierge')}
+                  className="h-14 px-8 rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] flex items-center justify-center font-display text-base font-bold text-[#0B0C0E] transition lima-glow active:scale-[0.98]"
+                >
+                  🤖 Cotizar mi reparación con IA ↓
+                </button>
+                <a
+                  href={getWaLink('Hola Ark! Soy técnico/contratista y me interesa unirme a la red de proveedores.')}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="h-14 px-6 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/30 flex items-center justify-center font-display text-sm font-semibold text-white transition gap-2"
                 >
-                  <span>🤖 Probar Asistente IA</span>
-                  <span>↓</span>
-                </button>
+                  <span>👨‍🔧 ¿Eres técnico? Únete a la red</span>
+                  <span>→</span>
+                </a>
               </div>
 
               <p className="mt-4 text-xs text-[#7C8590] font-mono">
-                Sin contratos forzosos · Cancela cuando quieras · Soporte directo por WhatsApp
+                Atención en Mérida, Cancún, Playa del Carmen y Sureste · Técnicos certificados
               </p>
             </div>
 
-            {/* Mockup Interactivo de la Tienda */}
+            {/* Mockup Interactivo: Orden de Servicio Baakal */}
             <div className="relative">
               <div className="relative rounded-2xl border border-white/15 bg-[#121417] p-5 sm:p-6 shadow-2xl overflow-hidden">
                 <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
@@ -218,48 +205,48 @@ export default function ArkLanding() {
                     <span className="w-3 h-3 rounded-full bg-yellow-500/80 inline-block" />
                     <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block" />
                     <span className="ml-2 font-mono text-xs text-zinc-400 bg-white/[0.04] px-2.5 py-0.5 rounded border border-white/5">
-                      tunegocio.ark.mx
+                      baakal.ark.mx · Folio #PLM-2026-0847
                     </span>
                   </div>
                   <span className="font-mono text-[11px] font-bold text-[#B4FF00] bg-[#B4FF00]/10 px-2 py-0.5 rounded">
-                    EN LÍNEA
+                    TÉCNICO DISPONIBLE
                   </span>
                 </div>
 
-                {/* Tienda simulada */}
+                {/* Servicios de la orden técnica */}
                 <div className="space-y-3">
                   <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3.5 flex items-center justify-between">
                     <div>
-                      <div className="font-display font-bold text-sm text-white">Carne Ahumada al Vacío 1kg</div>
-                      <div className="text-xs text-[#7C8590]">Empacado listo para calentar</div>
+                      <div className="font-display font-bold text-sm text-white">Instalación de Boiler / Calentador</div>
+                      <div className="text-xs text-[#7C8590]">Incluye prueba de hermeticidad y sellado de gas</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-mono font-bold text-[#B4FF00] text-sm">$380 MXN</div>
-                      <span className="text-[10px] text-zinc-400 bg-white/[0.05] px-1.5 py-0.5 rounded">1 pza</span>
+                      <div className="font-mono font-bold text-[#B4FF00] text-sm">$1,250 MXN</div>
+                      <span className="text-[10px] text-zinc-400 bg-white/[0.05] px-1.5 py-0.5 rounded">Servicio</span>
                     </div>
                   </div>
 
                   <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3.5 flex items-center justify-between">
                     <div>
-                      <div className="font-display font-bold text-sm text-white">Costillas BBQ Ahumadas 1kg</div>
-                      <div className="text-xs text-[#7C8590]">Cocción lenta de 6 horas</div>
+                      <div className="font-display font-bold text-sm text-white">Prueba de Presión Hidráulica</div>
+                      <div className="text-xs text-[#7C8590]">Verificación con manómetro calibrado</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-mono font-bold text-[#B4FF00] text-sm">$420 MXN</div>
-                      <span className="text-[10px] text-zinc-400 bg-white/[0.05] px-1.5 py-0.5 rounded">1 pza</span>
+                      <div className="font-mono font-bold text-[#B4FF00] text-sm">$450 MXN</div>
+                      <span className="text-[10px] text-zinc-400 bg-white/[0.05] px-1.5 py-0.5 rounded">Diagnóstico</span>
                     </div>
                   </div>
 
-                  {/* Caja de Checkout SPEI en 1 Clic */}
+                  {/* Caja de Formalización SPEI en 1 Clic */}
                   <div className="rounded-xl border border-[#B4FF00]/30 bg-[#B4FF00]/[0.03] p-4 space-y-3">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-[#A7AEB8] font-mono">TOTAL PEDIDO:</span>
-                      <span className="font-mono font-black text-lg text-[#B4FF00]">$800 MXN</span>
+                      <span className="text-[#A7AEB8] font-mono">TOTAL ESTIMADO ORDEN:</span>
+                      <span className="font-mono font-black text-lg text-[#B4FF00]">$1,700 MXN</span>
                     </div>
 
                     <div className="bg-[#0B0C0E] border border-white/10 rounded-lg p-2.5 flex items-center justify-between text-xs">
                       <div className="truncate pr-2">
-                        <span className="text-zinc-500 block text-[10px]">CLABE SPEI (BBVA):</span>
+                        <span className="text-zinc-500 block text-[10px]">CLABE SPEI (BBVA Oficial):</span>
                         <span className="font-mono text-zinc-200">0121 8001 2345 6789 01</span>
                       </div>
                       <button
@@ -271,12 +258,12 @@ export default function ArkLanding() {
                     </div>
 
                     <a
-                      href={getWaLink('Hola! Hice un pedido de $800 MXN en tunegocio.ark.mx. Ya copié tu CLABE para transferir.')}
+                      href={getWaLink('Hola Baakal! Solicito formalizar la orden técnica #PLM-2026-0847 por $1,700 MXN. Ya tengo mi ubicación lista.')}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full h-11 rounded-lg bg-[#25D366] hover:bg-[#22bf5b] font-bold text-white text-xs flex items-center justify-center gap-2 shadow-md transition"
                     >
-                      <span>💬</span> Enviar Pedido a WhatsApp
+                      <span>💬</span> Formalizar Visita por WhatsApp
                     </a>
                   </div>
                 </div>
@@ -297,79 +284,79 @@ export default function ArkLanding() {
       </section>
 
       {/* =========================================================================
-          EL DOLOR DEL PDF (Por qué pierdes ventas)
+          EL DOLOR DEL TÉCNICO INFORMAL
          ========================================================================= */}
       <section className="py-16 sm:py-24 border-b border-white/10 bg-[#0E1013]">
         <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
-              La fuga silenciosa de clientes
+              La pesadilla de las reparaciones
             </span>
             <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
-              Deja de mandar el catálogo en PDF.
+              Deja de contratar técnicos del poste o de grupos de Facebook.
             </h2>
             <p className="mt-4 text-[#A7AEB8] text-sm sm:text-base">
-              El 70% de las ventas por Instagram se caen en el momento en que obligas al cliente a descargar un archivo pesado o le mandas 8 fotos sueltas.
+              El 80% de los fraudes y malas reparaciones en el hogar ocurren por técnicos sin verificación que inventan precios sobre la marcha y desaparecen sin garantía.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {/* Como se hace hoy */}
+            {/* El técnico informal */}
             <div className="rounded-2xl border border-red-500/20 bg-red-950/[0.1] p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-4 text-red-400 font-display font-bold">
                 <span className="text-2xl">❌</span>
-                <span>Como vendes hoy sin Ark:</span>
+                <span>Con el técnico informal tradicional:</span>
               </div>
               <ul className="space-y-3.5 text-sm text-[#A7AEB8]">
                 <li className="flex items-start gap-2">
                   <span className="text-red-400 mt-0.5">•</span>
-                  <span>El cliente te pide el menú por DM o WhatsApp.</span>
+                  <span>Te dice "llego en 20 minutos" y aparece 4 horas después (o nunca).</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-400 mt-0.5">•</span>
-                  <span>Le mandas un PDF de 25 MB que tarda en abrir o fotos borrosas.</span>
+                  <span>No te da precio cerrado hasta que ya desarmó tu pared o tubería.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-400 mt-0.5">•</span>
-                  <span>Al cliente le da flojera hacer cuentas mentales del total.</span>
+                  <span>Usa piezas de segunda mano o pegamento improvisado.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-400 mt-0.5">•</span>
-                  <span>Tienes que dictarle tu CLABE por mensaje (y a veces se equivocan).</span>
+                  <span>Si la fuga regresa al día siguiente, bloquea tu número.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-400 mt-0.5">•</span>
-                  <strong className="text-red-300">Resultado: Te dejan en visto y compran en otro lado.</strong>
+                  <strong className="text-red-300">Resultado: Pagas doble y tu casa se sigue inundando.</strong>
                 </li>
               </ul>
             </div>
 
-            {/* Con Ark */}
+            {/* Con Ark Oficios */}
             <div className="rounded-2xl border border-[#B4FF00]/30 bg-[#B4FF00]/[0.03] p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-4 text-[#B4FF00] font-display font-bold">
                 <span className="text-2xl">⚡</span>
-                <span>Con tu tienda Ark ($299/mes):</span>
+                <span>Con la Red Ark Oficios:</span>
               </div>
               <ul className="space-y-3.5 text-sm text-zinc-200">
                 <li className="flex items-start gap-2">
                   <span className="text-[#B4FF00] mt-0.5">✓</span>
-                  <span>Le mandas tu link <code className="text-[#B4FF00] bg-white/5 px-1 py-0.5 rounded">tunegocio.ark.mx</code>.</span>
+                  <span>Nuestra IA te da el <strong>precio oficial de catálogo</strong> antes de que salga la unidad.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#B4FF00] mt-0.5">✓</span>
-                  <span>Abre en 0.2 segundos desde cualquier teléfono sin descargar nada.</span>
+                  <span>Técnico con herramienta especializada (detector de gas, cámara de video y sonda).</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#B4FF00] mt-0.5">✓</span>
-                  <span>Selecciona sus productos y la pantalla calcula el total exacto.</span>
+                  <span>Folio de servicio formal numerado (#PLM-2026-...) con orden por WhatsApp.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#B4FF00] mt-0.5">✓</span>
-                  <span>Copia tu CLABE con un solo toque y te manda el comprobante.</span>
+                  <span>Pagas por SPEI con CLABE bancaria verificada o terminal al terminar.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#B4FF00] mt-0.5">✓</span>
-                  <strong className="text-[#B4FF00]">Resultado: Pedido cerrado y pagado en menos de 2 minutos.</strong>
+                  <strong className="text-[#B4FF00]">Resultado: Fuga o avería solucionada con garantía por escrito.</strong>
                 </li>
               </ul>
             </div>
@@ -378,25 +365,25 @@ export default function ArkLanding() {
       </section>
 
       {/* =========================================================================
-          SHOWCASE DE GIROS (Comercio al Menudeo)
+          SHOWCASE DE ESPECIALIDADES TÉCNICAS
          ========================================================================= */}
-      <section id="rubros" className="py-16 sm:py-24 border-b border-white/10">
+      <section id="servicios" className="py-16 sm:py-24 border-b border-white/10">
         <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
-              Adaptable a tu negocio
+              Catálogo de Especialidades
             </span>
             <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
-              Hecho para cualquier comercio al menudeo.
+              Especialistas en mantenimiento para casa y empresa.
             </h2>
             <p className="mt-4 text-[#A7AEB8] text-sm sm:text-base">
-              Si vendes un producto físico y cobras por transferencia o entrega, Ark está diseñado exactamente para ti.
+              Cada especialidad cuenta con estándares técnicos rigurosos, tarifas transparentes y herramientas industriales.
             </p>
           </div>
 
-          {/* Selector de Rubros */}
+          {/* Selector de Especialidades */}
           <div className="flex flex-wrap justify-center gap-2 mb-10">
-            {RETAIL_CATEGORIES.map((cat) => (
+            {TRADE_CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCat(cat)}
@@ -412,7 +399,7 @@ export default function ArkLanding() {
             ))}
           </div>
 
-          {/* Tarjeta del rubro activo */}
+          {/* Tarjeta de la especialidad activa */}
           <div className="max-w-4xl mx-auto rounded-2xl border border-white/15 bg-[#121417] p-6 sm:p-10 shadow-2xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/10 pb-6 mb-6 gap-4">
               <div>
@@ -425,13 +412,13 @@ export default function ArkLanding() {
                 </div>
               </div>
               <div className="font-mono text-xs text-[#B4FF00] bg-[#B4FF00]/10 px-3 py-1.5 rounded-lg border border-[#B4FF00]/20 self-start sm:self-auto">
-                Ejemplo: {selectedCat.sampleStore}
+                Proveedor Insignia: {selectedCat.sampleStore}
               </div>
             </div>
 
-            {/* Lista de productos de ejemplo */}
+            {/* Lista de servicios con tarifas */}
             <div className="grid sm:grid-cols-3 gap-4 mb-6">
-              {selectedCat.products.map((p, i) => (
+              {selectedCat.services.map((p, i) => (
                 <div key={i} className="rounded-xl border border-white/10 bg-white/[0.02] p-4 flex flex-col justify-between">
                   <div>
                     <div className="font-display font-bold text-sm text-white">{p.name}</div>
@@ -442,12 +429,12 @@ export default function ArkLanding() {
               ))}
             </div>
 
-            {/* Mensaje que llega a WhatsApp */}
+            {/* Mensaje de orden técnica */}
             <div className="rounded-xl border border-emerald-500/20 bg-emerald-950/20 p-4 flex items-start gap-3">
               <span className="text-xl">💬</span>
               <div>
                 <div className="text-[11px] font-mono text-emerald-400 font-bold uppercase tracking-wider">
-                  Así te llega el mensaje a tu WhatsApp:
+                  Así se formaliza la visita por WhatsApp:
                 </div>
                 <div className="text-sm text-zinc-200 mt-1 italic">
                   "{selectedCat.whatsappPreview}"
@@ -459,167 +446,17 @@ export default function ArkLanding() {
       </section>
 
       {/* =========================================================================
-          COMPATIBILIDAD DE PAGOS (Cobra como tú quieras)
-         ========================================================================= */}
-      <section id="pagos" className="py-16 sm:py-24 border-b border-white/10 bg-[#0E1013]">
-        <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
-              Flexibilidad Financiera
-            </span>
-            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
-              Compatible con todo lo que ya usas hoy.
-            </h2>
-            <p className="mt-4 text-[#A7AEB8] text-sm sm:text-base">
-              No te obligamos a abrir cuentas nuevas ni a firmar contratos con bancos. Tu tienda se adapta a tu forma actual de cobrar.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* SPEI */}
-            <div className="rounded-2xl border border-white/10 bg-[#121417] p-6 flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-2xl mb-4">
-                  🏦
-                </div>
-                <h3 className="font-display font-bold text-lg text-white">SPEI (Cualquier Banco)</h3>
-                <p className="text-xs text-[#A7AEB8] mt-2 leading-relaxed">
-                  BBVA, Nu, Banorte, Santander, Hey Banco, Mercado Pago, Citibanamex, HSBC o Banco Azteca.
-                </p>
-              </div>
-              <div className="mt-4 pt-4 border-t border-white/5 font-mono text-[11px] text-[#B4FF00]">
-                ✓ Copia tu CLABE en 1 clic
-              </div>
-            </div>
-
-            {/* Tarjetas */}
-            <div className="rounded-2xl border border-white/10 bg-[#121417] p-6 flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-2xl mb-4">
-                  💳
-                </div>
-                <h3 className="font-display font-bold text-lg text-white">Tarjetas con tu Terminal</h3>
-                <p className="text-xs text-[#A7AEB8] mt-2 leading-relaxed">
-                  ¿Ya tienes cuenta en Clip, Mercado Pago, Stripe o PayPal? Pegamos tu link de pago directo a tu botón.
-                </p>
-              </div>
-              <div className="mt-4 pt-4 border-t border-white/5 font-mono text-[11px] text-[#B4FF00]">
-                ✓ Cero comisiones de Ark
-              </div>
-            </div>
-
-            {/* Efectivo */}
-            <div className="rounded-2xl border border-white/10 bg-[#121417] p-6 flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-2xl mb-4">
-                  🏪
-                </div>
-                <h3 className="font-display font-bold text-lg text-white">Efectivo & Contra Entrega</h3>
-                <p className="text-xs text-[#A7AEB8] mt-2 leading-relaxed">
-                  Ideal para entregas a domicilio locales donde el cliente paga al recibir o mediante depósito en OXXO / 7-Eleven.
-                </p>
-              </div>
-              <div className="mt-4 pt-4 border-t border-white/5 font-mono text-[11px] text-[#B4FF00]">
-                ✓ Desglose listo para entregar
-              </div>
-            </div>
-
-            {/* Pagos Digitales / Lightning */}
-            <div className="rounded-2xl border border-white/10 bg-[#121417] p-6 flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-2xl mb-4">
-                  ⚡
-                </div>
-                <h3 className="font-display font-bold text-lg text-white">Bitcoin & Lightning (Blink)</h3>
-                <p className="text-xs text-[#A7AEB8] mt-2 leading-relaxed">
-                  Cobros instantáneos opcionales vía Lightning Network directo a tu billetera con QR dinámico.
-                </p>
-              </div>
-              <div className="mt-4 pt-4 border-t border-white/5 font-mono text-[11px] text-[#B4FF00]">
-                ✓ Liquidación en segundos
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          TABLA COMPARATIVA (Nocaut)
-         ========================================================================= */}
-      <section id="comparativa" className="py-16 sm:py-24 border-b border-white/10">
-        <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
-              Comparativa Implacable
-            </span>
-            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
-              ¿Por qué pagar en dólares por cosas que no necesitas?
-            </h2>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[620px]">
-              <thead>
-                <tr className="border-b border-white/10 text-xs font-mono uppercase text-[#7C8590]">
-                  <th className="py-4 px-4">Opción</th>
-                  <th className="py-4 px-4">Costo Mensual</th>
-                  <th className="py-4 px-4">Comisiones por Venta</th>
-                  <th className="py-4 px-4">Enfoque México (SPEI/WhatsApp)</th>
-                  <th className="py-4 px-4">Tiempo de Entrega</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5 text-sm">
-                <tr className="hover:bg-white/[0.02]">
-                  <td className="py-4 px-4 font-bold text-zinc-300">Shopify</td>
-                  <td className="py-4 px-4 font-mono">$599+ MXN/mes</td>
-                  <td className="py-4 px-4 text-red-400 font-mono">Hasta 2% extra</td>
-                  <td className="py-4 px-4 text-zinc-400">Poco adaptado a SPEI</td>
-                  <td className="py-4 px-4 text-zinc-400">Tú lo configuras solo</td>
-                </tr>
-                <tr className="hover:bg-white/[0.02]">
-                  <td className="py-4 px-4 font-bold text-zinc-300">Wix / Tiendanube</td>
-                  <td className="py-4 px-4 font-mono">$350–$500 MXN/mes</td>
-                  <td className="py-4 px-4 text-zinc-400 font-mono">Comisiones según pasarela</td>
-                  <td className="py-4 px-4 text-zinc-400">Carritos lentos y pesados</td>
-                  <td className="py-4 px-4 text-zinc-400">Días de diseño</td>
-                </tr>
-                <tr className="hover:bg-white/[0.02]">
-                  <td className="py-4 px-4 font-bold text-zinc-300">Agencia Web Tradicional</td>
-                  <td className="py-4 px-4 font-mono">$10,000 inicial + $500/mes</td>
-                  <td className="py-4 px-4 text-zinc-400 font-mono">Depende de pasarela</td>
-                  <td className="py-4 px-4 text-zinc-400">WordPress lento</td>
-                  <td className="py-4 px-4 text-zinc-400">3 a 6 semanas</td>
-                </tr>
-                <tr className="bg-[#B4FF00]/[0.05] border-y-2 border-[#B4FF00]/40 font-bold">
-                  <td className="py-5 px-4 font-display text-[#B4FF00] text-base flex items-center gap-2">
-                    <span>▲</span> ARK COMMERCE
-                  </td>
-                  <td className="py-5 px-4 font-mono text-[#B4FF00] text-base">$299 MXN/mes</td>
-                  <td className="py-5 px-4 text-emerald-400 font-mono">0% COMISIÓN</td>
-                  <td className="py-5 px-4 text-white">SPEI, CLABE en 1 clic y WhatsApp</td>
-                  <td className="py-5 px-4 text-[#B4FF00]">Te la entregamos en 5 min</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================================
-          CÓMO FUNCIONA (3 pasos)
+          CÓMO FUNCIONA EL SERVICIO
          ========================================================================= */}
       <section id="como-funciona" className="py-16 sm:py-24 border-b border-white/10 bg-[#0E1013]">
         <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
-              Esfuerzo Cero de tu Parte
+              Proceso Transparente
             </span>
             <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
-              Nosotros hacemos la talacha.
+              Cómo resolvemos tu emergencia técnica en 3 pasos.
             </h2>
-            <p className="mt-4 text-[#A7AEB8] text-sm sm:text-base">
-              No tienes que aprender a programar ni pelearte con plantillas complejas.
-            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -627,9 +464,9 @@ export default function ArkLanding() {
               <div className="w-14 h-14 rounded-2xl bg-[#B4FF00]/10 border border-[#B4FF00]/30 text-[#B4FF00] font-display font-black text-2xl flex items-center justify-center mx-auto mb-6">
                 1
               </div>
-              <h3 className="font-display font-bold text-lg text-white">Nos mandas tu información</h3>
+              <h3 className="font-display font-bold text-lg text-white">Describes tu síntoma a la IA</h3>
               <p className="text-xs text-[#A7AEB8] mt-3 leading-relaxed">
-                Nos pasas por WhatsApp tu logo, tus fotos de producto, tus precios y tu cuenta CLABE para transferencias.
+                Escribe: <em>"Huele a gas en el calentador"</em> o <em>"el agua no baja en la tarja"</em>. Nuestra IA calcula la tarifa estimada según el catálogo oficial.
               </p>
             </div>
 
@@ -637,9 +474,9 @@ export default function ArkLanding() {
               <div className="w-14 h-14 rounded-2xl bg-[#B4FF00]/10 border border-[#B4FF00]/30 text-[#B4FF00] font-display font-black text-2xl flex items-center justify-center mx-auto mb-6">
                 2
               </div>
-              <h3 className="font-display font-bold text-lg text-white">Montamos tu tienda en 5 min</h3>
+              <h3 className="font-display font-bold text-lg text-white">Coordinas visita en WhatsApp</h3>
               <p className="text-xs text-[#A7AEB8] mt-3 leading-relaxed">
-                Te entregamos tu link oficial <span className="text-[#B4FF00] font-mono">tunegocio.ark.mx</span> con tu catálogo ordenado y listo para cobrar.
+                El sistema te genera tu folio de servicio y abre el chat directo con el técnico certificado asignado para acordar hora de llegada.
               </p>
             </div>
 
@@ -647,9 +484,9 @@ export default function ArkLanding() {
               <div className="w-14 h-14 rounded-2xl bg-[#B4FF00]/10 border border-[#B4FF00]/30 text-[#B4FF00] font-display font-black text-2xl flex items-center justify-center mx-auto mb-6">
                 3
               </div>
-              <h3 className="font-display font-bold text-lg text-white">Lo pegas en tu Instagram</h3>
+              <h3 className="font-display font-bold text-lg text-white">Trabajo con garantía & SPEI</h3>
               <p className="text-xs text-[#A7AEB8] mt-3 leading-relaxed">
-                Lo pones en el link de tu biografía y en tus historias. Tus clientes eligen, pagan y el pedido te cae listo a WhatsApp.
+                El técnico realiza el trabajo con herramienta profesional. Pagas por SPEI o tarjeta y recibes tu garantía por escrito.
               </p>
             </div>
           </div>
@@ -657,65 +494,61 @@ export default function ArkLanding() {
       </section>
 
       {/* =========================================================================
-          PRICING SECTION ($299/mes)
+          PARA TÉCNICOS Y CONTRATISTAS ($299/mes)
          ========================================================================= */}
-      <section className="py-16 sm:py-24 border-b border-white/10">
+      <section id="proveedores" className="py-16 sm:py-24 border-b border-white/10">
         <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
           <div className="max-w-xl mx-auto rounded-3xl border-2 border-[#B4FF00] bg-gradient-to-b from-[#161a14] to-[#121417] p-8 sm:p-12 text-center shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 bg-[#B4FF00] text-[#0B0C0E] font-display font-bold text-[11px] px-4 py-1 rounded-bl-xl tracking-wider uppercase">
-              PLAN TODO INCLUIDO
+              PARA TÉCNICOS & CONTRATISTAS
             </div>
 
             <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
-              Acceso Completo
+              Únete a la Red Ark
             </span>
             <h2 className="font-display text-4xl sm:text-5xl font-black text-white mt-2">
               $299 <span className="text-base sm:text-lg font-normal text-[#A7AEB8]">MXN / mes</span>
             </h2>
-            <p className="mt-2 text-xs text-zinc-400 font-mono">Sin plazos forzosos · Cancela cuando quieras</p>
+            <p className="mt-2 text-xs text-zinc-400 font-mono">Deja de perder trabajos por no contestar el WhatsApp mientras estás en una escalera</p>
 
             <div className="my-8 border-t border-white/10 pt-8 text-left space-y-3.5 text-sm">
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Tu link propio:</strong> <code className="text-[#B4FF00] font-mono">tunegocio.ark.mx</code></span>
+                <span className="text-zinc-200"><strong>Tu web profesional con diseño de autor</strong> (como Baakal)</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Catálogo ilimitado</strong> con fotos en alta velocidad</span>
+                <span className="text-zinc-200"><strong>Asistente IA 24/7</strong> que atiende y cotiza a tus clientes automáticamente</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Copia tu CLABE SPEI</strong> en 1 clic sin errores</span>
+                <span className="text-zinc-200"><strong>Presencia en el buscador Ark Concierge</strong> para recibir nuevos clientes</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Pedidos organizados</strong> directos a tu WhatsApp</span>
+                <span className="text-zinc-200"><strong>Folios formales de cotización</strong> con desglose de IVA y materiales</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Panel de control móvil:</strong> cambia precios y stock desde tu celular</span>
+                <span className="text-zinc-200"><strong>Cobro directo a tu banco por SPEI</strong> (0% de comisiones)</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Cero comisiones:</strong> Si vendes $10,000 o $100,000, los $299 son fijos</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Hosting Cloudflare Edge</strong> que abre al instante y no se cae</span>
+                <span className="text-zinc-200"><strong>Panel de control móvil:</strong> edita tus precios y servicios en segundos</span>
               </div>
             </div>
 
             <a
-              href={getWaLink('Hola Ark! Quiero activar mi tienda online por $299/mes.')}
+              href={getWaLink('Hola Ark! Soy técnico independiente/empresa de mantenimiento y quiero unirme a la red por $299/mes.')}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full h-14 rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] font-display font-bold text-base text-[#0B0C0E] flex items-center justify-center gap-2 transition lima-glow active:scale-[0.98]"
             >
-              👉 Activar Mi Tienda por $299 al Mes
+              👉 Quiero Unirme como Técnico Verificado
             </a>
 
             <p className="mt-4 text-[11px] text-[#7C8590] font-mono">
-              Nos mandas tus fotos y te la entregamos funcionando hoy mismo.
+              Validamos tu experiencia y te entregamos tu perfil activo hoy mismo.
             </p>
           </div>
         </div>
@@ -728,34 +561,34 @@ export default function ArkLanding() {
         <div className="mx-auto max-w-[800px] px-4 sm:px-8">
           <div className="text-center mb-12">
             <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
-              Dudas Comunes
+              Dudas Frecuentes
             </span>
             <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mt-2">
-              Preguntas Frecuentes
+              Preguntas Frecuentes de Clientes y Técnicos
             </h2>
           </div>
 
           <div className="space-y-3">
             {[
               {
-                q: '¿Por qué no cobran comisión por venta?',
-                a: 'Porque nosotros cobramos una suscripción fija de software ($299 MXN al mes) por darte la plataforma y el hosting. No somos intermediarios de tus pagos ni tocamos tu dinero; las transferencias de tus clientes van directas a tu banco.',
+                q: '¿Cómo garantizan que el precio no cambiará al llegar el técnico?',
+                a: 'Nuestra IA y catálogo manejan tarifas oficiales fijas para diagnósticos y reparaciones estándar. Antes de iniciar cualquier trabajo mayor, el técnico te entrega un folio formal con el desglose exacto de mano de obra y refacciones, requiriendo tu autorización.',
               },
               {
-                q: '¿Tengo que saber programar o diseñar?',
-                a: 'Para nada. Tú solo nos mandas tus fotos, nombres de productos y precios por WhatsApp. Nosotros configuramos tu tienda y te entregamos tu link listo en 5 minutos.',
+                q: '¿En cuánto tiempo llega un técnico para una emergencia de gas o agua?',
+                a: 'En las zonas principales de cobertura (Mérida, Cancún y Sureste), las unidades de emergencia tienen un tiempo de respuesta promedio de 45 a 90 minutos según la disponibilidad.',
               },
               {
-                q: '¿Cómo cambio precios o productos después?',
-                a: 'Te damos acceso a un panel administrativo súper sencillo que puedes abrir desde tu celular. En 10 segundos cambias un precio, subes un producto nuevo o marcas uno como agotado.',
+                q: '¿Qué garantía tienen los trabajos realizados?',
+                a: 'Todos los servicios de la Red Ark cuentan con garantía por escrito de 30 a 90 días en mano de obra. Si la avería reincide por una mala instalación, el técnico regresa sin costo adicional.',
               },
               {
-                q: '¿Puedo usar mi propio dominio personalizado (ej. mitienda.com)?',
-                a: 'Sí. De fábrica te damos tunegocio.ark.mx sin costo adicional, pero si ya compraste tu propio dominio .com o .mx, lo conectamos a tu tienda fácilmente.',
+                q: '¿Cómo puedo pagar el servicio?',
+                a: 'Aceptamos transferencias inmediatas por SPEI (BBVA o cualquier banco), tarjetas de débito/crédito mediante terminal física del técnico, o efectivo contra entrega de comprobante.',
               },
               {
-                q: '¿Qué pasa si quiero cancelar?',
-                a: 'No hay plazos forzosos. Si un mes no quieres renovar, simplemente nos avisas por WhatsApp y cancelas sin penalizaciones ni letras chiquitas.',
+                q: '¿Cómo me uno a la red si soy plomero, electricista o técnico en climas?',
+                a: 'Envíanos un mensaje por WhatsApp. Revisamos tu experiencia, herramientas de trabajo y comprobante de domicilio. Al ser aprobado, activamos tu perfil profesional en Ark por $299 MXN al mes.',
               },
             ].map((item, i) => (
               <div key={i} className="rounded-xl border border-white/10 bg-[#121417] overflow-hidden">
@@ -783,20 +616,20 @@ export default function ArkLanding() {
       <footer className="py-12 bg-[#0B0C0E] text-zinc-500 text-xs">
         <div className="mx-auto max-w-[1240px] px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-display font-black text-white">ARK<span className="text-[#B4FF00]">COMMERCE</span></span>
-            <span>· Hecho en México con tecnología Cloudflare</span>
+            <span className="font-display font-black text-white">ARK<span className="text-[#B4FF00]">OFICIOS</span></span>
+            <span>· Red de Mantenimiento & Servicios Técnicos en México</span>
           </div>
           <div className="flex items-center gap-4">
             <a
-              href={getWaLink('Hola Ark! Tengo una duda sobre el servicio de $299/mes.')}
+              href={getWaLink('Hola Ark! Tengo una duda sobre los servicios técnicos de mantenimiento.')}
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#B4FF00] hover:underline"
             >
-              Contacto por WhatsApp
+              Contacto Urgencias WhatsApp
             </a>
             <span>·</span>
-            <a href="/admin" className="hover:text-white transition">Acceso Admin Tiendas</a>
+            <a href="/admin/leads.html" className="hover:text-white transition">Panel de Leads</a>
           </div>
         </div>
       </footer>
