@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AiSearchConcierge from './AiSearchConcierge';
 
 const WHATSAPP_NUMBER = '529994918221';
 
@@ -195,10 +196,11 @@ export default function ArkLanding() {
                   🚀 Quiero mi tienda por $299/mes
                 </a>
                 <button
-                  onClick={() => scrollTo('rubros')}
-                  className="h-14 px-6 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/30 flex items-center justify-center font-display text-sm font-semibold text-white transition"
+                  onClick={() => scrollTo('ai-concierge')}
+                  className="h-14 px-6 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/30 flex items-center justify-center font-display text-sm font-semibold text-white transition gap-2"
                 >
-                  Ver tiendas activas ↓
+                  <span>🤖 Probar Asistente IA</span>
+                  <span>↓</span>
                 </button>
               </div>
 
@@ -282,6 +284,15 @@ export default function ArkLanding() {
             </div>
 
           </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECCIÓN DEL ASISTENTE AGÉNTICO IA (ARK CONCIERGE)
+         ========================================================================= */}
+      <section id="ai-concierge" className="py-16 sm:py-20 border-b border-white/10 bg-[#0E1013] relative overflow-hidden">
+        <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
+          <AiSearchConcierge />
         </div>
       </section>
 
