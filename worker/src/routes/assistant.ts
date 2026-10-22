@@ -174,4 +174,165 @@ INSTRUCCIONES CLAVE:
   }
 });
 
+// =========================================================================
+// POST /api/assistant/chat — Asistente Conversacional para Tenant Específico (Widget)
+// =========================================================================
+interface ChatRequest {
+  tenant: string;
+  message: string;
+  history?: Array<{ role: 'user' | 'assistant'; content: string }>;
+}
+
+assistantRoute.post('/chat', async (c) => {
+  try {
+    const body = await c.req.json<ChatRequest>();
+    const tenantSlug = body.tenant?.trim().toLowerCase();
+    const message = body.message?.trim();
+    const history = body.history || [];
+
+    if (!tenantSlug || !message) {
+      return c.json({ error: 'Tenant y mensaje son requeridos.' }, 400);
+    }
+
+    // 1. Obtener datos del Tenant en D1
+    const { results: tenantRows } = await c.env.DB.prepare(`
+      SELECT id, name, slug, whatsapp, theme_color
+      FROM tenants
+      WHERE slug = ? OR id = ?
+      LIMIT 1
+    `).bind(tenantSlug, tenantSlug).all();
+
+    if (!tenantRows || tenantRows.length === 0) {
+      return c.json({ error: `Tenant '${tenantSlug}' no encontrado.` }, 404);
+    }
+
+    const tenant = tenantRows[0] as any;
+
+    // 2. Obtener catálogo y servicios activos del tenant
+    const { results: productRows } = await c.env.DB.prepare(`
+      SELECT id, name, price, weight as scope, desc, badge
+      FROM products
+      WHERE tenant_id = ? AND active = 1
+      ORDER BY display_order ASC
+    `).bind(tenant.id).all();
+
+    const services = (productRows || []) as any[];
+
+    // 3. Formatear catálogo para el LLM
+    const catalogSummary = services.map(s => 
+      `- [ID: ${s.id}] ${s.name}: $${s.price} MXN. Descripción: ${s.desc || 'Servicio profesional'}. Alcance: ${s.scope || 'Estándar'}`
+    ).join('\n');
+
+    let reply = '';
+    let matchedServiceIds: string[] = [];
+    let estimatedTotal = 0;
+    let whatsappMessage = `Hola ${tenant.name}, vengo del asistente web y me interesa consultar sobre: "${message}"`;
+
+    // 4. Intentar Workers AI si el binding está presente
+    if (c.env.AI) {
+      try {
+        const systemPrompt = `Eres el asistente agéntico de ventas oficial de "${tenant.name}" (${tenant.slug}).
+Tu misión es atender dudas de clientes en México, entender su problema o necesidad y cotizar con precisión según los servicios o productos disponibles.
+
+CATÁLOGO OFICIAL Y PRECIOS:
+${catalogSummary}
+
+REGLAS DE ATENCIÓN:
+1. Responde en español (México) de manera concisa, educada y profesional.
+2. Identifica cuál de los servicios del catálogo soluciona el problema y menciona el precio en pesos mexicanos ($... MXN).
+3. Invita al cliente a formalizar por WhatsApp.
+4. Devuelve ÚNICAMENTE un objeto JSON válido (sin código markdown ni explicaciones adicionales) con el siguiente formato:
+{
+  "reply": "Tu respuesta conversacional directa al cliente...",
+  "matched_service_ids": ["ID1"],
+  "estimated_total": 1200,
+  "whatsapp_message": "Hola ${tenant.name}! Me interesa agendar el servicio X..."
+}`;
+
+        const messages: Array<{ role: string; content: string }> = [
+          { role: 'system', content: systemPrompt }
+        ];
+
+        // Añadir historial previo si existe
+        for (const h of history.slice(-4)) {
+          messages.push({ role: h.role, content: h.content });
+        }
+
+        messages.push({ role: 'user', content: message });
+
+        const aiResponse: any = await c.env.AI.run('@cf/meta/llama-3.3-70b-instruct', {
+          messages,
+          temperature: 0.3,
+          max_tokens: 512
+        });
+
+        const rawText = aiResponse?.response || (typeof aiResponse === 'string' ? aiResponse : JSON.stringify(aiResponse));
+        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const parsed = JSON.parse(jsonMatch[0]);
+          reply = parsed.reply || '';
+          matchedServiceIds = parsed.matched_service_ids || [];
+          estimatedTotal = Number(parsed.estimated_total || 0);
+          if (parsed.whatsapp_message) {
+            whatsappMessage = parsed.whatsapp_message;
+          }
+        }
+      } catch (aiErr: any) {
+        console.warn('Fallback en Workers AI chat:', aiErr?.message);
+      }
+    }
+
+    // 5. Fallback Heurístico si AI no devolvió respuesta
+    if (!reply) {
+      const lowerMsg = message.toLowerCase();
+      let matched = services.find(s => 
+        lowerMsg.includes(s.name.toLowerCase()) || 
+        (s.desc && lowerMsg.split(' ').some((w: string) => w.length > 3 && s.desc.toLowerCase().includes(w)))
+      );
+
+      if (!matched && services.length > 0) {
+        matched = services[0];
+      }
+
+      if (matched) {
+        reply = `Con gusto te asesoramos en ${tenant.name}. Para lo que describes te recomendamos "${matched.name}" con una tarifa de $${matched.price.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN. ¿Te gustaría formalizar la cita o pedido por WhatsApp?`;
+        matchedServiceIds = [matched.id];
+        estimatedTotal = matched.price;
+        whatsappMessage = `Hola ${tenant.name}, me interesa contratar: ${matched.name} ($${matched.price} MXN). Vengo del asistente virtual.`;
+      } else {
+        reply = `Gracias por escribir a ${tenant.name}. Podemos apoyarte de inmediato. ¿Deseas que un asesor te contacte directamente por WhatsApp?`;
+      }
+    }
+
+    // 6. Obtener lista de servicios sugeridos con detalles
+    const matchedServices = services.filter(s => matchedServiceIds.includes(s.id));
+    if (matchedServices.length > 0 && estimatedTotal === 0) {
+      estimatedTotal = matchedServices.reduce((sum, s) => sum + (s.price || 0), 0);
+    }
+
+    const cleanWhatsapp = (tenant.whatsapp || '529994918221').replace(/\D/g, '');
+    const whatsappUrl = `https://wa.me/${cleanWhatsapp}?text=${encodeURIComponent(whatsappMessage)}`;
+
+    return c.json({
+      success: true,
+      reply,
+      tenant: {
+        id: tenant.id,
+        name: tenant.name,
+        slug: tenant.slug,
+        whatsapp: tenant.whatsapp,
+        theme_color: tenant.theme_color
+      },
+      suggested_services: matchedServices,
+      estimated_total: estimatedTotal,
+      whatsapp_message: whatsappMessage,
+      whatsapp_url: whatsappUrl
+    });
+
+  } catch (err: any) {
+    console.error('Error en assistant/chat:', err);
+    return c.json({ error: 'Error procesando mensaje.', details: err.message }, 500);
+  }
+});
+
 export default assistantRoute;
