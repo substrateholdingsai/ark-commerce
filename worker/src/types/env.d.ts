@@ -16,6 +16,9 @@ export type Env = {
   SATS_RATE?: string;
   ENVIA_API_KEY?: string;
   ENVIA_SANDBOX?: string; // 'true' | 'false'
+  WHATSAPP_VERIFY_TOKEN?: string;
+  WHATSAPP_API_TOKEN?: string;
+  WHATSAPP_PHONE_NUMBER_ID?: string;
 };
 
 export type Tenant = {

@@ -21,6 +21,7 @@ CLABE = "012180012345678901"
 BANK = "BBVA"
 CLABE_HOLDER = "Ark Systems"
 SATS_RATE = "2.5"
+WHATSAPP_VERIFY_TOKEN = "ark_commerce_wa_secret_2026"
 
 # D1 Database Multi-Tenant
 [[d1_databases]]
