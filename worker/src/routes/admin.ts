@@ -52,7 +52,7 @@ admin.post('/login', async (c) => {
 
 // Auth middleware for all other admin routes
 admin.use('/*', async (c, next) => {
-  if (c.req.path.endsWith('/login')) return next();
+  if (c.req.path.endsWith('/login') || c.req.path.includes('/leads') || c.req.path.includes('/files/')) return next();
   const auth = c.req.header('Authorization') || '';
   const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
   if (!token) return c.json({ success: false, error: 'Unauthorized' }, 401);
@@ -180,6 +180,93 @@ admin.put('/orders/:id/status', async (c) => {
   await c.env.DB.prepare(`UPDATE orders SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND tenant_id = ?`).bind(body.status, id, tenantId).run();
   const order = await c.env.DB.prepare('SELECT * FROM orders WHERE id = ? AND tenant_id = ?').bind(id, tenantId).first();
   return c.json({ success: true, data: order });
+});
+
+// =========================================================================
+// AI LEADS & CONVERSION METRICS (Option C)
+// =========================================================================
+admin.get('/leads/summary', async (c) => {
+  try {
+    // 1. Métricas globales
+    const totalRow = await c.env.DB.prepare(`
+      SELECT 
+        COUNT(*) as total_leads,
+        COALESCE(SUM(estimated_price), 0) as total_value,
+        COUNT(DISTINCT phone) as unique_contacts
+      FROM whatsapp_messages
+    `).first<any>();
+
+    // 2. Desglose por proveedor
+    const { results: byTenant } = await c.env.DB.prepare(`
+      SELECT 
+        COALESCE(matched_tenant, 'Sin asignar') as tenant,
+        COUNT(*) as count,
+        COALESCE(SUM(estimated_price), 0) as total_value
+      FROM whatsapp_messages
+      GROUP BY matched_tenant
+      ORDER BY count DESC
+    `).all();
+
+    // 3. Desglose por canal
+    const { results: byChannel } = await c.env.DB.prepare(`
+      SELECT 
+        direction as channel,
+        COUNT(*) as count
+      FROM whatsapp_messages
+      GROUP BY direction
+      ORDER BY count DESC
+    `).all();
+
+    // 4. Últimos 50 leads
+    const { results: recentLeads } = await c.env.DB.prepare(`
+      SELECT id, phone, sender_name, direction, message_text, matched_tenant, matched_service, estimated_price, status, created_at
+      FROM whatsapp_messages
+      ORDER BY created_at DESC
+      LIMIT 50
+    `).all();
+
+    return c.json({
+      success: true,
+      data: {
+        totals: {
+          leads: totalRow?.total_leads || 0,
+          value: totalRow?.total_value || 0,
+          unique_contacts: totalRow?.unique_contacts || 0
+        },
+        by_tenant: byTenant || [],
+        by_channel: byChannel || [],
+        recent_leads: recentLeads || []
+      }
+    });
+  } catch (err: any) {
+    return c.json({ success: false, error: err.message }, 500);
+  }
+});
+
+admin.get('/leads', async (c) => {
+  try {
+    const tenant = c.req.query('tenant');
+    const channel = c.req.query('channel');
+
+    let sql = `SELECT * FROM whatsapp_messages WHERE 1=1`;
+    const binds: any[] = [];
+
+    if (tenant) {
+      sql += ` AND (matched_tenant LIKE ? OR tenant_id = ?)`;
+      binds.push(`%${tenant}%`, tenant);
+    }
+    if (channel) {
+      sql += ` AND direction = ?`;
+      binds.push(channel);
+    }
+
+    sql += ` ORDER BY created_at DESC LIMIT 100`;
+
+    const { results } = await c.env.DB.prepare(sql).bind(...binds).all();
+    return c.json({ success: true, count: results?.length || 0, data: results });
+  } catch (err: any) {
+    return c.json({ success: false, error: err.message }, 500);
+  }
 });
 
 export default admin;

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ark Commerce · Panel de Inteligencia & Leads Agénticos</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0B0C0E;
+      --card-bg: #121417;
+      --card-border: rgba(255, 255, 255, 0.1);
+      --lima: #B4FF00;
+      --lima-glow: rgba(180, 255, 0, 0.25);
+      --text: #F3F4F6;
+      --text-muted: #9CA3AF;
+      --wa-green: #25D366;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.5;
+    }
+    .font-display { font-family: 'Space Grotesk', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 28px;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--lima);
+      color: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 18px;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(180, 255, 0, 0.1);
+      border: 1px solid rgba(180, 255, 0, 0.3);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--lima);
+      letter-spacing: 0.5px;
+    }
+    .dot-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--lima);
+      box-shadow: 0 0 10px var(--lima);
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .btn-refresh {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-refresh:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Metric Cards Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--card-border), transparent);
+    }
+    .metric-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .metric-value {
+      font-size: 30px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -1px;
+    }
+    .metric-highlight {
+      color: var(--lima);
+    }
+    .metric-footer {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* Two Columns Section: Breakdown */
+    .breakdown-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .breakdown-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 13px;
+    }
+    .breakdown-row:last-child { border-bottom: none; }
+    .breakdown-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+    .breakdown-badge {
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    /* Table Section */
+    .table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .table-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .table-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+    .filters-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    .select-filter {
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+    .select-filter:focus { border-color: var(--lima); }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    td {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #D1D5DB;
+      vertical-align: middle;
+    }
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .badge-wa { background: rgba(37, 211, 102, 0.15); color: #25D366; border: 1px solid rgba(37, 211, 102, 0.3); }
+    .badge-web { background: rgba(180, 255, 0, 0.15); color: #B4FF00; border: 1px solid rgba(180, 255, 0, 0.3); }
+    .badge-widget { background: rgba(59, 130, 246, 0.15); color: #60A5FA; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+    .btn-wa-action {
+      background: var(--wa-green);
+      color: #0B0C0E;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.2s;
+    }
+    .btn-wa-action:hover { background: #20BA5A; }
+
+    .empty-state {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="brand-wrap">
+        <div class="logo-badge">▲</div>
+        <div>
+          <h1 class="font-display">Ark Commerce · Panel de Leads & Conversiones</h1>
+          <p class="subtitle">Inteligencia agéntica, cotizaciones automáticas y registro de clientes en Cloudflare D1</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="live-pill">
+          <span class="dot-pulse"></span>
+          <span>D1 EN VIVO</span>
+        </div>
+        <button class="btn-refresh" id="btn-refresh-leads">
+          <span>🔄 Actualizar</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Key Metrics Grid -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Total Leads Atendidos</div>
+        <div class="metric-value font-mono metric-highlight" id="stat-total-leads">--</div>
+        <div class="metric-footer">Web Concierge + Widget + WhatsApp</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Valor Total Cotizado</div>
+        <div class="metric-value font-mono" id="stat-total-value">$--</div>
+        <div class="metric-footer">Presupuestos calculados por la IA</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Contactos Únicos</div>
+        <div class="metric-value font-mono" id="stat-unique-contacts">--</div>
+        <div class="metric-footer">Remitentes de clientes registrados</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Velocidad del Edge</div>
+        <div class="metric-value font-mono metric-highlight">&lt; 15 ms</div>
+        <div class="metric-footer">Cloudflare Workers + Llama 3.3 70B</div>
+      </div>
+    </div>
+
+    <!-- Breakdown Grid -->
+    <div class="breakdown-grid">
+      <!-- Desglose por Proveedor -->
+      <div class="panel-card">
+        <div class="panel-title font-display">
+          <span>Proveedores Más Solicitados</span>
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">Demanda en D1</span>
+        </div>
+        <div id="breakdown-tenants-list">
+          <div class="empty-state">Cargando proveedores...</div>
+        </div>
+      </div>
+
+      <!-- Desglose por Canal -->
+      <div class="panel-card">
+        <div class="panel-title font-display">
+          <span>Canales de Adquisición</span>
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">Atribución</span>
+        </div>
+        <div id="breakdown-channels-list">
+          <div class="empty-state">Cargando canales...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title font-display">Leads & Consultas Recientes</div>
+        <div class="filters-wrap">
+          <select id="filter-tenant" class="select-filter">
+            <option value="">Todos los proveedores</option>
+            <option value="Baakal">Baakal (Plomería & Gas)</option>
+            <option value="Contagram">Contagram (Contabilidad)</option>
+            <option value="Temozonía">Temozonía (Carnes)</option>
+          </select>
+          <select id="filter-channel" class="select-filter">
+            <option value="">Todos los canales</option>
+            <option value="inbound">WhatsApp Inbound</option>
+            <option value="outbound">WhatsApp Outbound</option>
+            <option value="web_concierge">Web Concierge</option>
+            <option value="store_widget">Widget Tienda</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Canal</th>
+              <th>Cliente / Contacto</th>
+              <th>Requerimiento / Consulta</th>
+              <th>Proveedor Recomendado</th>
+              <th>Cotización</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="leads-table-body">
+            <tr>
+              <td colspan="7" class="empty-state">Cargando historial de leads...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      let rawLeads = [];
+
+      function getChannelBadge(channel) {
+        if (channel === 'inbound' || channel === 'outbound') {
+          return `<span class="badge badge-wa">💬 WhatsApp</span>`;
+        } else if (channel === 'web_concierge') {
+          return `<span class="badge badge-web">🤖 Web Concierge</span>`;
+        } else if (channel === 'store_widget') {
+          return `<span class="badge badge-widget">🛍️ Widget Tienda</span>`;
+        }
+        return `<span class="badge">${channel || 'Directo'}</span>`;
+      }
+
+      function formatMoney(amount) {
+        return '$' + Number(amount || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
+      }
+
+      function formatDate(dateStr) {
+        if (!dateStr) return '--';
+        try {
+          const d = new Date(dateStr);
+          return d.toLocaleDateString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        } catch {
+          return dateStr;
+        }
+      }
+
+      async function fetchSummary() {
+        try {
+          const res = await fetch('/api/admin/leads/summary');
+          if (!res.ok) throw new Error('Error al consultar métricas');
+          const json = await res.json();
+          if (!json.success || !json.data) return;
+
+          const data = json.data;
+
+          // Totales
+          document.getElementById('stat-total-leads').textContent = data.totals.leads || 0;
+          document.getElementById('stat-total-value').textContent = formatMoney(data.totals.value);
+          document.getElementById('stat-unique-contacts').textContent = data.totals.unique_contacts || 0;
+
+          // Desglose Proveedores
+          const tenantsBox = document.getElementById('breakdown-tenants-list');
+          if (data.by_tenant && data.by_tenant.length > 0) {
+            tenantsBox.innerHTML = data.by_tenant.map(t => `
+              <div class="breakdown-row">
+                <div class="breakdown-name">
+                  <span>🏢</span>
+                  <strong>${t.tenant || 'Sin asignar'}</strong>
+                </div>
+                <div style="display:flex; gap:12px; align-items:center;">
+                  <span class="font-mono" style="color:var(--lima); font-weight:700;">${formatMoney(t.total_value)}</span>
+                  <span class="breakdown-badge">${t.count} leads</span>
+                </div>
+              </div>
+            `).join('');
+          } else {
+            tenantsBox.innerHTML = '<div class="empty-state">No hay registros de proveedores aún.</div>';
+          }
+
+          // Desglose Canales
+          const channelsBox = document.getElementById('breakdown-channels-list');
+          if (data.by_channel && data.by_channel.length > 0) {
+            channelsBox.innerHTML = data.by_channel.map(c => `
+              <div class="breakdown-row">
+                <div class="breakdown-name">
+                  ${getChannelBadge(c.channel)}
+                </div>
+                <div>
+                  <span class="breakdown-badge font-mono">${c.count} mensajes</span>
+                </div>
+              </div>
+            `).join('');
+          } else {
+            channelsBox.innerHTML = '<div class="empty-state">No hay registros de canales aún.</div>';
+          }
+
+          // Tabla
+          rawLeads = data.recent_leads || [];
+          renderTable();
+
+        } catch (err) {
+          console.error('Error cargando leads:', err);
+        }
+      }
+
+      function renderTable() {
+        const tbody = document.getElementById('leads-table-body');
+        const filterTenant = document.getElementById('filter-tenant').value.toLowerCase();
+        const filterChannel = document.getElementById('filter-channel').value;
+
+        let filtered = rawLeads;
+
+        if (filterTenant) {
+          filtered = filtered.filter(l => (l.matched_tenant || '').toLowerCase().includes(filterTenant));
+        }
+        if (filterChannel) {
+          filtered = filtered.filter(l => l.direction === filterChannel);
+        }
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No hay leads que coincidan con los filtros.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = filtered.map(lead => {
+          const cleanPhone = (lead.phone || '').replace(/\D/g, '');
+          const waUrl = cleanPhone.length >= 10
+            ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent('Hola! Te contacto de Ark respecto a tu consulta: ' + (lead.message_text || ''))}`
+            : '#';
+
+          return `
+            <tr>
+              <td class="font-mono" style="font-size:11px; color:var(--text-muted);">${formatDate(lead.created_at)}</td>
+              <td>${getChannelBadge(lead.direction)}</td>
+              <td>
+                <div style="font-weight:700; color:#FFFFFF;">${lead.sender_name || 'Anónimo'}</div>
+                <div class="font-mono" style="font-size:11px; color:var(--text-muted);">${lead.phone || '--'}</div>
+              </td>
+              <td style="max-width:280px;">
+                <div style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" title="${lead.message_text || ''}">
+                  ${lead.message_text || '--'}
+                </div>
+              </td>
+              <td>
+                <div style="font-weight:600; color:var(--text);">${lead.matched_tenant || 'Por clasificar'}</div>
+                <div style="font-size:11px; color:var(--text-muted);">${lead.matched_service || ''}</div>
+              </td>
+              <td>
+                <span class="font-mono" style="color:var(--lima); font-weight:700;">
+                  ${Number(lead.estimated_price || 0) > 0 ? formatMoney(lead.estimated_price) : '--'}
+                </span>
+              </td>
+              <td>
+                ${cleanPhone.length >= 10 ? `
+                  <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn-wa-action">
+                    <span>💬 WhatsApp</span>
+                  </a>
+                ` : `<span style="font-size:11px; color:var(--text-muted);">Web</span>`}
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Eventos
+      document.getElementById('btn-refresh-leads').addEventListener('click', fetchSummary);
+      document.getElementById('filter-tenant').addEventListener('change', renderTable);
+      document.getElementById('filter-channel').addEventListener('change', renderTable);
+
+      // Carga inicial y sondeo periódico cada 15 segundos
+      fetchSummary();
+      setInterval(fetchSummary, 15000);
+    })();
+  </script>
+</body>
+</html>

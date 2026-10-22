@@ -147,6 +147,26 @@ INSTRUCCIONES CLAVE:
 
     const matchedTenant = providersMap.get(bestTenantSlug) || providersList[0];
     const firstService = matchedTenant.services[0];
+    const estimatedTotal = firstService ? firstService.price : 0;
+
+    // Registrar lead en D1 (canal: web_concierge)
+    try {
+      const leadId = `web_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+      await c.env.DB.prepare(`
+        INSERT INTO whatsapp_messages (id, tenant_id, phone, sender_name, direction, message_text, matched_tenant, matched_service, estimated_price, status)
+        VALUES (?, ?, ?, 'Visitante Web', 'web_concierge', ?, ?, ?, ?, 'lead')
+      `).bind(
+        leadId,
+        matchedTenant.id,
+        matchedTenant.whatsapp || 'Web Lead',
+        query,
+        matchedTenant.name,
+        firstService?.name || 'Servicio recomendado',
+        estimatedTotal
+      ).run();
+    } catch (logErr) {
+      console.warn('No se pudo registrar lead web en D1:', logErr);
+    }
 
     return c.json({
       success: true,
@@ -164,7 +184,7 @@ INSTRUCCIONES CLAVE:
             price: firstService.price
           }
         ],
-        estimated_total: firstService.price
+        estimated_total: estimatedTotal
       }
     });
 
@@ -312,6 +332,25 @@ REGLAS DE ATENCIÓN:
 
     const cleanWhatsapp = (tenant.whatsapp || '529994918221').replace(/\D/g, '');
     const whatsappUrl = `https://wa.me/${cleanWhatsapp}?text=${encodeURIComponent(whatsappMessage)}`;
+
+    // Registrar lead en D1 (canal: store_widget)
+    try {
+      const widgetLeadId = `widget_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+      await c.env.DB.prepare(`
+        INSERT INTO whatsapp_messages (id, tenant_id, phone, sender_name, direction, message_text, matched_tenant, matched_service, estimated_price, status)
+        VALUES (?, ?, ?, 'Visitante Tienda', 'store_widget', ?, ?, ?, ?, 'lead')
+      `).bind(
+        widgetLeadId,
+        tenant.id,
+        cleanWhatsapp,
+        message,
+        tenant.name,
+        matchedServices[0]?.name || 'Consulta en tienda',
+        estimatedTotal
+      ).run();
+    } catch (logErr) {
+      console.warn('No se pudo registrar lead widget en D1:', logErr);
+    }
 
     return c.json({
       success: true,
