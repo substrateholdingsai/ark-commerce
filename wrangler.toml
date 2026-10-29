@@ -22,6 +22,8 @@ BANK = "BBVA"
 CLABE_HOLDER = "Ark Systems"
 SATS_RATE = "2.5"
 WHATSAPP_VERIFY_TOKEN = "ark_commerce_wa_secret_2026"
+ARKANGEL_ADMIN_TOKEN = "tu_admin_token_secreto"
+ARKANGEL_URL = "https://arkangel.arksystems.site"
 
 # D1 Database Multi-Tenant
 [[d1_databases]]
@@ -51,3 +53,8 @@ queue = "ark-commerce-orders"
 # Cloudflare Workers AI Binding
 [ai]
 binding = "AI"
+
+# Service binding Arkangel
+[[services]]
+binding = "ARKANGEL"
+service = "arkangel-cobranza"

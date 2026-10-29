@@ -4,6 +4,7 @@ import { CheckoutSchema } from '../schemas/checkout';
 import { getUnixTime, sha256Hex } from '../lib/crypto';
 import type { Env, CheckoutMessage } from '../types/env';
 import type { CustomerSessionData } from '../types/auth';
+import { notificarArkangel } from '../lib/arkangel';
 
 type ProductRow = { id: string; name: string; price: number };
 
@@ -82,6 +83,23 @@ checkout.post('/', async (c) => {
     await c.env.DB.batch(statements);
     const message: CheckoutMessage = { orderId, customerName, customerEmail, total, items: orderItems };
     await c.env.ORDER_QUEUE.send(message);
+    const tenant = c.get('tenant');
+    if (customerPhone) {
+      const p = notificarArkangel(c.env, {
+        tenant_id: tenant?.slug ?? tenantId,
+        to: customerPhone,
+        channel: 'whatsapp',
+        tipo: 'order_confirmation',
+        order_id: orderId,
+        body: `¡Hola ${customerName}! Tu pedido #${orderId} en ${tenant?.name ?? ''} ha sido confirmado por un total de $${total}. Te notificaremos en cuanto vaya en camino.`,
+        variables: {
+          nombre: customerName,
+          orden: orderId,
+          total: `$${total} MXN`,
+        },
+      });
+      if (c.executionCtx?.waitUntil) c.executionCtx.waitUntil(p); else await p;
+    }
     if (customerId) {
       const now = getUnixTime();
       await c.env.DB.prepare('UPDATE carts SET items = ?, updated_at = ? WHERE tenant_id = ? AND customer_id = ?').bind('[]', now, tenantId, customerId).run();

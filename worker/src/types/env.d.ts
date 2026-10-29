@@ -19,6 +19,9 @@ export type Env = {
   WHATSAPP_VERIFY_TOKEN?: string;
   WHATSAPP_API_TOKEN?: string;
   WHATSAPP_PHONE_NUMBER_ID?: string;
+  ARKANGEL_ADMIN_TOKEN?: string;
+  ARKANGEL_URL?: string;
+  ARKANGEL?: { fetch: (input: RequestInfo, init?: RequestInit) => Promise<Response> };
 };
 
 export type Tenant = {

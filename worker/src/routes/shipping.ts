@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { EnviaService } from '../lib/envia';
+import { notificarArkangel } from '../lib/arkangel';
 import type { Env, Tenant } from '../types/env';
 
 const shipping = new Hono<{ Bindings: Env; Variables: { tenant: Tenant | null; tenantId: string | null } }>();
@@ -186,6 +187,23 @@ shipping.post('/label', async (c) => {
         order.id
       )
       .run();
+
+    if (order.customer_phone) {
+      const p = notificarArkangel(c.env, {
+        tenant_id: tenant?.slug ?? tenant.id,
+        to: order.customer_phone,
+        channel: 'whatsapp',
+        tipo: 'shipping_update',
+        order_id: order.id,
+        body: `¡Hola ${order.customer_name}! Tu pedido #${order.id} de ${tenant?.name ?? ''} ha sido enviado por ${labelResult.carrier}. Rastrea tu paquete aquí: ${labelResult.trackingUrl}`,
+        metadata: {
+          tracking_number: labelResult.trackingNumber,
+          carrier: labelResult.carrier,
+          tracking_url: labelResult.trackingUrl,
+        },
+      });
+      if (c.executionCtx?.waitUntil) c.executionCtx.waitUntil(p); else await p;
+    }
 
     return c.json({
       success: true,

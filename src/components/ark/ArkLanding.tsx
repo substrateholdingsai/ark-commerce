@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AiSearchConcierge from './AiSearchConcierge';
+import ServiceCarousel from './ServiceCarousel';
 
 const WHATSAPP_NUMBER = '529994918221';
 
@@ -196,79 +197,7 @@ export default function ArkLanding() {
               </p>
             </div>
 
-            {/* Mockup Interactivo: Orden de Servicio Baakal */}
-            <div className="relative">
-              <div className="relative rounded-2xl border border-white/15 bg-[#121417] p-5 sm:p-6 shadow-2xl overflow-hidden">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-red-500/80 inline-block" />
-                    <span className="w-3 h-3 rounded-full bg-yellow-500/80 inline-block" />
-                    <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block" />
-                    <span className="ml-2 font-mono text-xs text-zinc-400 bg-white/[0.04] px-2.5 py-0.5 rounded border border-white/5">
-                      baakal.ark.mx · Folio #PLM-2026-0847
-                    </span>
-                  </div>
-                  <span className="font-mono text-[11px] font-bold text-[#B4FF00] bg-[#B4FF00]/10 px-2 py-0.5 rounded">
-                    TÉCNICO DISPONIBLE
-                  </span>
-                </div>
-
-                {/* Servicios de la orden técnica */}
-                <div className="space-y-3">
-                  <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3.5 flex items-center justify-between">
-                    <div>
-                      <div className="font-display font-bold text-sm text-white">Instalación de Boiler / Calentador</div>
-                      <div className="text-xs text-[#7C8590]">Incluye prueba de hermeticidad y sellado de gas</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-mono font-bold text-[#B4FF00] text-sm">$1,250 MXN</div>
-                      <span className="text-[10px] text-zinc-400 bg-white/[0.05] px-1.5 py-0.5 rounded">Servicio</span>
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3.5 flex items-center justify-between">
-                    <div>
-                      <div className="font-display font-bold text-sm text-white">Prueba de Presión Hidráulica</div>
-                      <div className="text-xs text-[#7C8590]">Verificación con manómetro calibrado</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-mono font-bold text-[#B4FF00] text-sm">$450 MXN</div>
-                      <span className="text-[10px] text-zinc-400 bg-white/[0.05] px-1.5 py-0.5 rounded">Diagnóstico</span>
-                    </div>
-                  </div>
-
-                  {/* Caja de Formalización SPEI en 1 Clic */}
-                  <div className="rounded-xl border border-[#B4FF00]/30 bg-[#B4FF00]/[0.03] p-4 space-y-3">
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-[#A7AEB8] font-mono">TOTAL ESTIMADO ORDEN:</span>
-                      <span className="font-mono font-black text-lg text-[#B4FF00]">$1,700 MXN</span>
-                    </div>
-
-                    <div className="bg-[#0B0C0E] border border-white/10 rounded-lg p-2.5 flex items-center justify-between text-xs">
-                      <div className="truncate pr-2">
-                        <span className="text-zinc-500 block text-[10px]">CLABE SPEI (BBVA Oficial):</span>
-                        <span className="font-mono text-zinc-200">0121 8001 2345 6789 01</span>
-                      </div>
-                      <button
-                        onClick={handleCopyDemoClabe}
-                        className="px-2.5 py-1.5 rounded bg-white/10 hover:bg-white/20 text-[11px] font-bold text-white transition shrink-0"
-                      >
-                        {copiedClabe ? '✓ Copiado' : 'Copiar'}
-                      </button>
-                    </div>
-
-                    <a
-                      href={getWaLink('Hola Baakal! Solicito formalizar la orden técnica #PLM-2026-0847 por $1,700 MXN. Ya tengo mi ubicación lista.')}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full h-11 rounded-lg bg-[#25D366] hover:bg-[#22bf5b] font-bold text-white text-xs flex items-center justify-center gap-2 shadow-md transition"
-                    >
-                      <span>💬</span> Formalizar Visita por WhatsApp
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ServiceCarousel />
 
           </div>
         </div>
