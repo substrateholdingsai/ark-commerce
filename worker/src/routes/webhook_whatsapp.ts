@@ -114,16 +114,11 @@ REGLAS DE RESPUESTA EN WHATSAPP:
       matchedService = 'Reparación de Fuga de Gas / Agua Urgente';
       estimatedPrice = 850;
       replyText = `¡Hola *${senderName}*! 👋 Gracias por escribir a *BAAKAL (Plomería & Gas)*.\n\n🛠️ Atendemos fugas de gas y emergencias hidráulicas en el Sureste Mexicano con técnicos certificados.\n\n💰 *Tarifa estimada de revisión/reparación:* $${estimatedPrice.toLocaleString('es-MX', {minimumFractionDigits: 2})} MXN.\n\n📍 ¿En qué zona o colonia te encuentras para coordinar el arribo de la unidad?`;
-    } else if (lower.includes('conta') || lower.includes('sat') || lower.includes('fiscal') || lower.includes('factur') || lower.includes('impuest')) {
-      matchedTenant = 'CONTAGRAM';
-      matchedService = 'Contabilidad General y Balanza Mensual';
-      estimatedPrice = 2800;
-      replyText = `¡Hola *${senderName}*! 🏛️ Gracias por contactar a *CONTAGRAM*.\n\n📑 Te apoyamos con tu contabilidad mensual, regularización fiscal y declaraciones ante el SAT.\n\n💰 *Honorarios mensuales desde:* $${estimatedPrice.toLocaleString('es-MX', {minimumFractionDigits: 2})} MXN.\n💳 *CLABE SPEI BBVA:* \`012180012345678901\`\n\n¿Eres persona física con actividad empresarial o persona moral?`;
     } else {
       matchedTenant = 'Ark Marketplace';
       matchedService = 'Atención General';
       estimatedPrice = 0;
-      replyText = `¡Hola *${senderName}*! 👋 Bienvenido a la red de servicios verificados de *Ark*.\n\nTe podemos conectar de inmediato con especialistas en:\n• 🔧 *Plomería & Gas (Baakal)*\n• 📊 *Contabilidad & SAT (Contagram)*\n• 🥩 *Carnes Ahumadas (Temozonía)*\n\nCuéntame qué requieres y te cotizo al instante.`;
+      replyText = `¡Hola *${senderName}*! 👋 Bienvenido a la red de servicios verificados de *Ark*.\n\nTe podemos conectar de inmediato con especialistas en:\n• 🔧 *Plomería & Gas (Baakal)*\n• 🥩 *Carnes Ahumadas (Temozonía)*\n\nCuéntame qué requieres y te cotizo al instante.`;
     }
   }
 

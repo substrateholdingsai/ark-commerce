@@ -12,7 +12,7 @@ export async function sha256Hex(data: string | ArrayBuffer): Promise<string> {
 
 export async function pbkdf2Hash(password: string, salt: Uint8Array, iterations = 100000, keylen = 32): Promise<string> {
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
-  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations, hash: 'SHA-256' }, key, keylen * 8);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: salt as BufferSource, iterations, hash: 'SHA-256' }, key, keylen * 8);
   const bytes = new Uint8Array(bits);
   const saltHex = Array.from(salt).map((b) => b.toString(16).padStart(2, '0')).join('');
   const hashHex = Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('');

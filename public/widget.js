@@ -35,15 +35,6 @@
       greeting: '¡Hola! Soy el asistente virtual de Baakal. ¿Tienes alguna fuga, drenaje tapado o requieres instalación técnica? Cuéntame y te cotizo al instante.',
       chips: ['🚨 Tengo una fuga urgente', '🚿 Arreglo de boiler', '🛠️ Destape de drenaje', '📋 Garantía y visita']
     },
-    contagram: {
-      primary: '#D4AF37', // Oro caligráfico
-      accent: '#0A192F',  // Azul persa
-      title: 'Contagram · Concierge Fiscal',
-      subtitle: 'Contabilidad & Honorarios B2B',
-      avatar: '🏛️',
-      greeting: 'Bienvenido a Contagram. Soy tu asistente contable agéntico. ¿Necesitas regularización del SAT, declaración anual o auditoría PyME?',
-      chips: ['📊 Declaración Anual', '📑 Contabilidad PyME', '⚖️ Opinión de Cumplimiento', '💳 Honorarios y SPEI']
-    },
     temozonia: {
       primary: '#D35400',
       accent: '#27AE60',
@@ -74,64 +65,75 @@
   const style = document.createElement('style');
   style.textContent = `
     #ark-bot-root * { box-sizing: border-box; margin: 0; padding: 0; }
+    #ark-bot-root button, #ark-bot-root input { font: inherit; }
     .ark-bot-btn {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      background: ${theme.primary};
+      width: 62px;
+      height: 62px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, ${theme.primary}, ${theme.accent});
       color: #FFFFFF;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-      border: 2px solid rgba(255,255,255,0.2);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.36), 0 0 0 1px rgba(255,255,255,0.18) inset;
+      border: 1px solid rgba(255,255,255,0.24);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
     }
     .ark-bot-btn:hover {
-      transform: scale(1.08);
-      box-shadow: 0 12px 32px rgba(0,0,0,0.45);
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.42), 0 0 0 1px rgba(255,255,255,0.22) inset;
+    }
+    .ark-bot-btn:focus-visible, .ark-bot-close-btn:focus-visible,
+    .ark-chip:focus-visible, .ark-bot-send-btn:focus-visible,
+    .ark-action-btn:focus-visible {
+      outline: 3px solid ${theme.primary};
+      outline-offset: 3px;
     }
     .ark-bot-badge {
       position: absolute;
-      top: -2px;
-      right: -2px;
-      width: 14px;
-      height: 14px;
-      background: #25D366;
-      border: 2.5px solid #121417;
+      top: -4px;
+      right: -4px;
+      width: 15px;
+      height: 15px;
+      background: #55D59A;
+      border: 3px solid #11161A;
       border-radius: 50%;
+      box-shadow: 0 0 12px rgba(85,213,154,0.4);
     }
     .ark-bot-card {
       position: absolute;
-      bottom: 74px;
+      bottom: 78px;
       right: 0;
-      width: 380px;
+      width: 390px;
       max-width: calc(100vw - 32px);
-      height: 520px;
-      max-height: calc(100vh - 110px);
-      background: #121417;
+      height: 560px;
+      max-height: calc(100vh - 112px);
+      background: radial-gradient(ellipse at 82% 0%, ${theme.primary}20 0, transparent 38%), linear-gradient(155deg, #171D22, #101417 72%);
       border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 20px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+      border-radius: 24px;
+      box-shadow: 0 28px 72px rgba(0,0,0,0.52), 0 2px 8px rgba(0,0,0,0.18);
       display: flex;
       flex-direction: column;
       overflow: hidden;
       opacity: 0;
       transform: translateY(16px) scale(0.96);
       pointer-events: none;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      visibility: hidden;
+      transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.22s;
     }
     .ark-bot-card.open {
       opacity: 1;
       transform: translateY(0) scale(1);
       pointer-events: auto;
+      visibility: visible;
+      transition-delay: 0s;
     }
     .ark-bot-header {
-      background: #181C22;
+      background: linear-gradient(110deg, ${theme.primary}24, ${theme.accent}14), rgba(24,28,34,0.94);
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding: 14px 18px;
+      padding: 16px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -142,15 +144,17 @@
       gap: 12px;
     }
     .ark-bot-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.08);
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      border-radius: 15px;
+      background: linear-gradient(145deg, ${theme.primary}, ${theme.accent});
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
-      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 21px;
+      border: 1px solid rgba(255,255,255,0.24);
+      box-shadow: 0 8px 20px ${theme.primary}45, 0 0 0 3px rgba(255,255,255,0.035);
     }
     .ark-bot-header-title {
       font-weight: 700;
@@ -159,57 +163,72 @@
       letter-spacing: -0.2px;
     }
     .ark-bot-header-sub {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       font-size: 11px;
-      color: #9CA3AF;
-      margin-top: 2px;
+      color: #AEB8BE;
+      margin-top: 5px;
+    }
+    .ark-bot-status {
+      width: 7px;
+      height: 7px;
+      display: inline-block;
+      border-radius: 50%;
+      background: #55D59A;
+      box-shadow: 0 0 9px rgba(85,213,154,0.55);
     }
     .ark-bot-close-btn {
       background: none;
       border: none;
-      color: #9CA3AF;
-      font-size: 20px;
+      color: #AEB8BE;
+      font-size: 22px;
       cursor: pointer;
-      padding: 4px;
+      padding: 7px;
       line-height: 1;
       transition: color 0.2s;
+      border-radius: 10px;
     }
-    .ark-bot-close-btn:hover { color: #FFFFFF; }
+    .ark-bot-close-btn:hover { color: #FFFFFF; background: rgba(255,255,255,0.07); }
     .ark-bot-messages {
       flex: 1;
       overflow-y: auto;
-      padding: 16px;
+      padding: 20px 18px;
       display: flex;
       flex-direction: column;
       gap: 12px;
+      overscroll-behavior: contain;
     }
     .ark-msg {
       max-width: 84%;
       font-size: 13px;
-      line-height: 1.45;
-      padding: 10px 14px;
-      border-radius: 14px;
+      line-height: 1.55;
+      padding: 12px 15px;
+      border-radius: 16px;
       word-break: break-word;
+      white-space: pre-wrap;
     }
     .ark-msg-assistant {
-      background: #1F242C;
+      background: linear-gradient(145deg, #232B31, #1B2227);
       color: #E5E7EB;
       align-self: flex-start;
-      border-bottom-left-radius: 4px;
+      border-bottom-left-radius: 5px;
       border: 1px solid rgba(255,255,255,0.06);
     }
     .ark-msg-user {
       background: ${theme.primary};
       color: #FFFFFF;
       align-self: flex-end;
-      border-bottom-right-radius: 4px;
+      border-bottom-right-radius: 5px;
       font-weight: 500;
+      box-shadow: 0 5px 16px ${theme.primary}35;
     }
     .ark-msg-action {
       margin-top: 8px;
-      padding: 10px;
-      background: #0E1013;
+      padding: 12px;
+      background: rgba(9,12,14,0.48);
       border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 10px;
+      border-radius: 12px;
     }
     .ark-action-btn {
       display: flex;
@@ -221,7 +240,7 @@
       font-weight: 700;
       font-size: 12px;
       padding: 8px 12px;
-      border-radius: 8px;
+      border-radius: 10px;
       text-decoration: none;
       margin-top: 8px;
       transition: background 0.2s;
@@ -230,52 +249,55 @@
     .ark-bot-chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      padding: 4px 16px 12px;
+      gap: 8px;
+      padding: 4px 18px 16px;
     }
     .ark-chip {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: #D1D5DB;
+      background: ${theme.primary}16;
+      border: 1px solid ${theme.primary}55;
+      color: #DCE7EA;
       font-size: 11px;
-      padding: 6px 10px;
-      border-radius: 8px;
+      padding: 8px 11px;
+      border-radius: 11px;
       cursor: pointer;
       transition: all 0.2s;
     }
     .ark-chip:hover {
-      background: rgba(255,255,255,0.12);
+      background: ${theme.primary}30;
       color: #FFFFFF;
       border-color: ${theme.primary};
     }
     .ark-bot-input-bar {
-      padding: 12px 16px;
+      padding: 13px 15px;
       border-top: 1px solid rgba(255,255,255,0.08);
-      background: #181C22;
+      background: rgba(21,26,30,0.96);
       display: flex;
-      gap: 8px;
+      gap: 9px;
     }
     .ark-bot-input {
       flex: 1;
-      background: #0E1013;
+      min-width: 0;
+      background: #0E1215;
       border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 10px;
+      border-radius: 13px;
       color: #FFFFFF;
       font-size: 13px;
-      padding: 10px 14px;
+      padding: 11px 14px;
       outline: none;
       transition: border-color 0.2s;
     }
     .ark-bot-input:focus {
       border-color: ${theme.primary};
+      box-shadow: 0 0 0 3px ${theme.primary}25;
     }
     .ark-bot-send-btn {
       background: ${theme.primary};
       color: #FFFFFF;
       border: none;
-      border-radius: 10px;
-      width: 40px;
-      height: 40px;
+      border-radius: 13px;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -305,24 +327,59 @@
       0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
       40% { transform: scale(1); opacity: 1; }
     }
+    @media (max-width: 640px) {
+      #ark-bot-root { right: 16px !important; bottom: max(16px, env(safe-area-inset-bottom)) !important; }
+      .ark-bot-card {
+        position: fixed;
+        right: 12px;
+        bottom: max(12px, env(safe-area-inset-bottom));
+        width: calc(100vw - 24px);
+        max-width: none;
+        height: min(82vh, 640px);
+        height: min(82dvh, 640px);
+        max-height: calc(100vh - 24px);
+        max-height: calc(100dvh - 24px);
+        border-radius: 24px;
+        transform: translateY(18px);
+      }
+      .ark-bot-card.open { transform: translateY(0); }
+      #ark-bot-root.is-open .ark-bot-btn {
+        opacity: 0;
+        transform: scale(0.85);
+        pointer-events: none;
+      }
+      .ark-bot-messages { padding: 18px 16px; }
+    }
+    @media (max-width: 380px) {
+      .ark-bot-chips { gap: 6px; padding-inline: 14px; }
+      .ark-chip { font-size: 10px; padding: 7px 9px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #ark-bot-root *, #ark-bot-root *::before, #ark-bot-root *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   `;
   document.head.appendChild(style);
 
   // 4. Estructura HTML del Widget
   container.innerHTML = `
-    <div class="ark-bot-card" id="ark-bot-card">
+    <div class="ark-bot-card" id="ark-bot-card" role="dialog" aria-label="${theme.title}" aria-hidden="true" inert>
       <div class="ark-bot-header">
         <div class="ark-bot-header-left">
           <div class="ark-bot-avatar">${theme.avatar}</div>
           <div>
             <div class="ark-bot-header-title">${theme.title}</div>
-            <div class="ark-bot-header-sub">${theme.subtitle}</div>
+            <div class="ark-bot-header-sub"><span class="ark-bot-status" aria-hidden="true"></span>${theme.subtitle}</div>
           </div>
         </div>
-        <button class="ark-bot-close-btn" id="ark-bot-close">&times;</button>
+        <button type="button" class="ark-bot-close-btn" id="ark-bot-close" aria-label="Cerrar asistente">&times;</button>
       </div>
 
-      <div class="ark-bot-messages" id="ark-bot-messages">
+      <div class="ark-bot-messages" id="ark-bot-messages" role="log" aria-live="polite" aria-relevant="additions text" aria-label="Conversación">
         <div class="ark-msg ark-msg-assistant">
           ${theme.greeting}
         </div>
@@ -333,8 +390,8 @@
       </div>
 
       <div class="ark-bot-input-bar">
-        <input type="text" class="ark-bot-input" id="ark-bot-input" placeholder="Escribe tu consulta o cotización..." />
-        <button class="ark-bot-send-btn" id="ark-bot-send" title="Enviar">
+        <input type="text" class="ark-bot-input" id="ark-bot-input" placeholder="Escribe tu consulta..." aria-label="Escribe tu consulta" autocomplete="off" />
+        <button type="button" class="ark-bot-send-btn" id="ark-bot-send" title="Enviar" aria-label="Enviar mensaje">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="22" y1="2" x2="11" y2="13"></line>
             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -343,10 +400,13 @@
       </div>
     </div>
 
-    <div class="ark-bot-btn" id="ark-bot-toggle" title="Abrir asistente">
-      <div class="ark-bot-badge"></div>
-      <span style="font-size: 26px;">💬</span>
-    </div>
+    <button type="button" class="ark-bot-btn" id="ark-bot-toggle" aria-label="Abrir asistente" aria-expanded="false" aria-controls="ark-bot-card">
+      <span class="ark-bot-badge" aria-hidden="true"></span>
+      <svg width="29" height="29" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path d="M7 7.5h18a3.5 3.5 0 0 1 3.5 3.5v9a3.5 3.5 0 0 1-3.5 3.5h-8l-6.5 4v-4H7A3.5 3.5 0 0 1 3.5 20v-9A3.5 3.5 0 0 1 7 7.5Z" fill="white" fill-opacity=".96"/>
+        <path d="m15.9 11.2.9 2.8 2.8.9-2.8.9-.9 2.8-.9-2.8-2.8-.9 2.8-.9.9-2.8Z" fill="${theme.primary}"/>
+      </svg>
+    </button>
   `;
 
   // 5. Manejadores de Eventos y Comunicación con Backend
@@ -362,11 +422,20 @@
 
   function openBot() {
     card.classList.add('open');
-    input.focus();
+    container.classList.add('is-open');
+    card.removeAttribute('inert');
+    card.setAttribute('aria-hidden', 'false');
+    toggleBtn.setAttribute('aria-expanded', 'true');
+    if (window.matchMedia('(min-width: 641px)').matches) input.focus();
   }
 
   function closeBot() {
     card.classList.remove('open');
+    container.classList.remove('is-open');
+    card.setAttribute('inert', '');
+    card.setAttribute('aria-hidden', 'true');
+    toggleBtn.setAttribute('aria-expanded', 'false');
+    toggleBtn.focus();
   }
 
   toggleBtn.addEventListener('click', () => {
@@ -375,24 +444,65 @@
   });
 
   closeBtn.addEventListener('click', closeBot);
+  card.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeBot();
+  });
 
   function appendMessage(role, text, actionData) {
     const msg = document.createElement('div');
     msg.className = `ark-msg ark-msg-${role}`;
-    
-    let content = text;
+    msg.textContent = String(text ?? '');
+
     if (actionData && actionData.whatsapp_url) {
-      content += `
-        <div class="ark-msg-action">
-          <div style="font-size:11px;color:#9CA3AF;margin-bottom:4px;">Tarifa estimada: <strong style="color:#B4FF00;">$${Number(actionData.estimated_total || 0).toLocaleString('es-MX', {minimumFractionDigits:2})} MXN</strong></div>
-          <a href="${actionData.whatsapp_url}" target="_blank" rel="noopener noreferrer" class="ark-action-btn">
-            <span>💬 Agendar por WhatsApp</span>
-            <span>&rarr;</span>
-          </a>
-        </div>
-      `;
+      const action = document.createElement('div');
+      action.className = 'ark-msg-action';
+
+      const amount = Number(actionData.estimated_total);
+      if (Number.isFinite(amount) && amount >= 0) {
+        const price = document.createElement('div');
+        price.style.cssText = 'font-size:11px;color:#AEB8BE;margin-bottom:4px;';
+        price.append('Tarifa estimada: ');
+        const strong = document.createElement('strong');
+        strong.style.color = theme.primary;
+        strong.textContent = `$${amount.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN`;
+        price.appendChild(strong);
+        action.appendChild(price);
+      }
+
+      let whatsappUrl;
+      try {
+        const parsedUrl = new URL(String(actionData.whatsapp_url));
+        if (
+          parsedUrl.protocol !== 'https:' ||
+          !['wa.me', 'api.whatsapp.com'].includes(parsedUrl.hostname) ||
+          parsedUrl.username ||
+          parsedUrl.password ||
+          parsedUrl.port
+        ) {
+          throw new Error('Dominio de WhatsApp no permitido');
+        }
+        whatsappUrl = parsedUrl.href;
+      } catch (error) {
+        console.error('El asistente devolvió una URL de WhatsApp no válida.', error);
+        const warning = document.createElement('div');
+        warning.style.cssText = 'font-size:11px;color:#FCA5A5;';
+        warning.textContent = 'No pudimos preparar un enlace seguro de WhatsApp. Intenta de nuevo más tarde.';
+        action.appendChild(warning);
+      }
+
+      if (whatsappUrl) {
+        const link = document.createElement('a');
+        link.href = whatsappUrl;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.className = 'ark-action-btn';
+        link.textContent = '💬 Agendar por WhatsApp  →';
+        action.appendChild(link);
+      }
+
+      msg.appendChild(action);
     }
-    msg.innerHTML = content;
+
     messagesBox.appendChild(msg);
     messagesBox.scrollTop = messagesBox.scrollHeight;
   }
@@ -452,6 +562,7 @@
 
     } catch (err) {
       removeTyping();
+      console.error('No se pudo enviar el mensaje al asistente.', err);
       appendMessage('assistant', 'Disculpa, tuve un detalle al conectar con el servicio. ¿Podrías volver a escribirnos o contactarnos directo por WhatsApp?');
     } finally {
       sendBtn.disabled = false;

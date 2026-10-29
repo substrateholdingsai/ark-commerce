@@ -81,7 +81,7 @@ ${JSON.stringify(providersList, null, 2)}
 
 INSTRUCCIONES CLAVE:
 1. Analiza el problema, urgencia o solicitud del usuario: "${query}".
-2. Identifica al proveedor más idóneo de la lista (por ejemplo: problemas de agua/gas/fugas -> baakal; impuestos/contabilidad/SAT -> contagram; alimentos gourmet -> temozonia; software/ecommerce -> ark).
+2. Identifica al proveedor más idóneo de la lista (por ejemplo: problemas de agua/gas/fugas -> baakal; alimentos gourmet -> temozonia; software/ecommerce -> ark).
 3. Selecciona el servicio o combinación de servicios específicos que resuelven su necesidad con sus precios reales.
 4. Responde en tono profesional, ágil, directo y con calidez mexicana. Explica brevemente por qué recomiendas a ese proveedor y cuánto costará aproximadamente el servicio.
 5. Devuelve SIEMPRE tu respuesta estructurada estrictamente en formato JSON con la siguiente estructura (sin bloques markdown extras):
@@ -136,13 +136,13 @@ INSTRUCCIONES CLAVE:
     let bestTenantSlug = 'baakal';
 
     if (lowerQuery.includes('conta') || lowerQuery.includes('fiscal') || lowerQuery.includes('sat') || lowerQuery.includes('factur') || lowerQuery.includes('impuest') || lowerQuery.includes('nómina') || lowerQuery.includes('imss')) {
-      bestTenantSlug = 'contagram';
+      bestTenantSlug = 'ark';
     } else if (lowerQuery.includes('carne') || lowerQuery.includes('ahumad') || lowerQuery.includes('comida') || lowerQuery.includes('costilla')) {
       bestTenantSlug = 'temozonia';
     } else if (lowerQuery.includes('plomer') || lowerQuery.includes('fuga') || lowerQuery.includes('gas') || lowerQuery.includes('boiler') || lowerQuery.includes('agua') || lowerQuery.includes('drenaje') || lowerQuery.includes('tubo')) {
       bestTenantSlug = 'baakal';
     } else {
-      bestTenantSlug = 'contagram';
+      bestTenantSlug = 'ark';
     }
 
     const matchedTenant = providersMap.get(bestTenantSlug) || providersList[0];

@@ -38,27 +38,3 @@ try:
         print("WhatsApp URL:", data.get('whatsapp_url')[:60] + '...')
 except Exception as e:
     print("Error Baakal chat:", e)
-
-# 3. Test chat endpoint with Contagram
-try:
-    payload = json.dumps({
-        'tenant': 'contagram',
-        'message': 'Necesito presentar mi declaracion anual y ordenar mis facturas'
-    }).encode('utf-8')
-
-    req = urllib.request.Request(
-        f'{base_url}/api/assistant/chat',
-        data=payload,
-        headers=headers
-    )
-
-    with urllib.request.urlopen(req) as r:
-        data = json.loads(r.read().decode('utf-8'))
-        print("\n--- Contagram Chat Response ---")
-        print("Success:", data.get('success'))
-        print("Tenant:", data.get('tenant', {}).get('name'))
-        print("Reply:", data.get('reply'))
-        print("Estimated total:", data.get('estimated_total'))
-        print("WhatsApp URL:", data.get('whatsapp_url')[:60] + '...')
-except Exception as e:
-    print("Error Contagram chat:", e)

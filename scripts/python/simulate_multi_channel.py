@@ -19,7 +19,7 @@ with urllib.request.urlopen(req1) as r:
 # 2. Simulate store widget chat
 req2 = urllib.request.Request(
     f'{base_url}/api/assistant/chat',
-    data=json.dumps({'tenant': 'contagram', 'message': 'Requiero cálculo de finiquito y nóminas'}).encode('utf-8'),
+    data=json.dumps({'tenant': 'baakal', 'message': 'Requiero cálculo de finiquito y nóminas'}).encode('utf-8'),
     headers=headers
 )
 with urllib.request.urlopen(req2) as r:

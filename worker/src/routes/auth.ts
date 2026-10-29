@@ -90,7 +90,7 @@ async function mergeGuestCartOnLogin(env: Env, tenantId: string, guestCartId: st
 auth.post('/guest', async (c) => {
   const tenantErr = await requireTenant(c);
   if (tenantErr) return tenantErr;
-  const tenantId = c.get('tenantId');
+  const tenantId = c.get('tenantId') as string;
   const cartId = await getOrCreateCart(c.env, tenantId, null);
   const { token } = await writeCustomerSession(c.env, tenantId, null, cartId);
   setCookie(c, CUSTOMER_COOKIE, token, { path: '/', httpOnly: true, secure: true, sameSite: 'Lax', maxAge: 2592000 });
@@ -101,7 +101,7 @@ auth.post('/guest', async (c) => {
 auth.post('/register', async (c) => {
   const tenantErr = await requireTenant(c);
   if (tenantErr) return tenantErr;
-  const tenantId = c.get('tenantId');
+  const tenantId = c.get('tenantId') as string;
   let body: any;
   try { body = await c.req.json(); } catch { return c.json({ success: false, error: 'Invalid JSON' }, 400); }
   const { email, password, fullName, phone } = body || {};
@@ -136,7 +136,7 @@ auth.post('/register', async (c) => {
 auth.post('/login', async (c) => {
   const tenantErr = await requireTenant(c);
   if (tenantErr) return tenantErr;
-  const tenantId = c.get('tenantId');
+  const tenantId = c.get('tenantId') as string;
   let body: any;
   try { body = await c.req.json(); } catch { return c.json({ success: false, error: 'Invalid JSON' }, 400); }
   const { email, password } = body || {};
@@ -205,7 +205,7 @@ auth.get('/me', async (c) => {
 auth.post('/magic/request', async (c) => {
   const tenantErr = await requireTenant(c);
   if (tenantErr) return tenantErr;
-  const tenantId = c.get('tenantId');
+  const tenantId = c.get('tenantId') as string;
   let body: any;
   try { body = await c.req.json(); } catch { return c.json({ success: false, error: 'Invalid JSON' }, 400); }
   const { email, fullName } = body || {};
@@ -240,7 +240,7 @@ auth.post('/magic/request', async (c) => {
 auth.get('/magic/callback', async (c) => {
   const tenantErr = await requireTenant(c);
   if (tenantErr) return tenantErr;
-  const tenantId = c.get('tenantId');
+  const tenantId = c.get('tenantId') as string;
   const token = c.req.query('token') || '';
   if (!token) return c.json({ success: false, error: 'Missing token' }, 400);
   const tokenHash = await sha256Hex(token);
@@ -272,7 +272,7 @@ auth.get('/magic/callback', async (c) => {
 auth.get('/orders', async (c) => {
   const tenantErr = await requireTenant(c);
   if (tenantErr) return tenantErr;
-  const tenantId = c.get('tenantId');
+  const tenantId = c.get('tenantId') as string;
   const tokenCookie = getCookie(c, CUSTOMER_COOKIE);
   if (!tokenCookie) return c.json({ success: false, error: 'Unauthorized' }, 401);
   const s = await loadSession(c.env, tokenCookie);
@@ -298,7 +298,7 @@ auth.get('/orders', async (c) => {
 auth.get('/addresses', async (c) => {
   const tenantErr = await requireTenant(c);
   if (tenantErr) return tenantErr;
-  const tenantId = c.get('tenantId');
+  const tenantId = c.get('tenantId') as string;
   const tokenCookie = getCookie(c, CUSTOMER_COOKIE);
   if (!tokenCookie) return c.json({ success: false, error: 'Unauthorized' }, 401);
   const s = await loadSession(c.env, tokenCookie);
@@ -312,7 +312,7 @@ auth.get('/addresses', async (c) => {
 auth.post('/addresses', async (c) => {
   const tenantErr = await requireTenant(c);
   if (tenantErr) return tenantErr;
-  const tenantId = c.get('tenantId');
+  const tenantId = c.get('tenantId') as string;
   const tokenCookie = getCookie(c, CUSTOMER_COOKIE);
   if (!tokenCookie) return c.json({ success: false, error: 'Unauthorized' }, 401);
   const s = await loadSession(c.env, tokenCookie);
@@ -337,7 +337,7 @@ auth.post('/addresses', async (c) => {
 auth.put('/addresses/:id/default', async (c) => {
   const tenantErr = await requireTenant(c);
   if (tenantErr) return tenantErr;
-  const tenantId = c.get('tenantId');
+  const tenantId = c.get('tenantId') as string;
   const id = c.req.param('id');
   const tokenCookie = getCookie(c, CUSTOMER_COOKIE);
   if (!tokenCookie) return c.json({ success: false, error: 'Unauthorized' }, 401);
@@ -353,7 +353,7 @@ auth.put('/addresses/:id/default', async (c) => {
 auth.put('/profile', async (c) => {
   const tenantErr = await requireTenant(c);
   if (tenantErr) return tenantErr;
-  const tenantId = c.get('tenantId');
+  const tenantId = c.get('tenantId') as string;
   const tokenCookie = getCookie(c, CUSTOMER_COOKIE);
   if (!tokenCookie) return c.json({ success: false, error: 'Unauthorized' }, 401);
   const s = await loadSession(c.env, tokenCookie);

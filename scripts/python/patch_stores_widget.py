@@ -3,8 +3,6 @@ import os
 files_to_patch = [
     ('public/stores/baakal.html', 'baakal'),
     ('dist/stores/baakal.html', 'baakal'),
-    ('public/stores/contagram.html', 'contagram'),
-    ('dist/stores/contagram.html', 'contagram'),
 ]
 
 for filepath, tenant in files_to_patch:

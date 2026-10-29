@@ -48,7 +48,7 @@ async function ensureSession(c: any) {
   }
   let cartItems: CartItem[] = [];
   if (session.cartId) {
-    const cartRow = await c.env.DB.prepare('SELECT items FROM carts WHERE id = ? AND tenant_id = ?').bind(session.cartId, tenantId).first<{ items: string }>();
+    const cartRow = await c.env.DB.prepare('SELECT items FROM carts WHERE id = ? AND tenant_id = ?').bind(session.cartId, tenantId).first() as { items: string } | null;
     cartItems = deserializeCartItems(cartRow?.items || '[]');
   } else {
     const cartId = crypto.randomUUID();

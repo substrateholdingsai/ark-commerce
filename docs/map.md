@@ -13,9 +13,8 @@
 - **Logística**: Envia.com (`ENVIA_API_KEY`, `ENVIA_SANDBOX`) para cotización, guías y rastreo; modo simulado si no hay API key
 
 ## 2. Tiendas y Tenants (Multi-Tenant)
-1. **Ark Systems** (`ark`): Plataforma y tienda principal por defecto en `/`.
-   - Posicionamiento: Ark Commerce — tienda que vende y cobra por WhatsApp (SaaS $299/mes)
-   - Vende: *Landing Express Kit* (MXN/USD)
+1. **Ark Systems / Ark Oficios** (`ark`): Plataforma y red principal por defecto en `/`.
+   - Posicionamiento: Ark Oficios — red de mantenimiento y servicios técnicos (plomería, gas, climas, electricidad) con cotización por IA y folios formales (SaaS $299/mes para técnicos)
    - Canon de diseño: **ARK PULSE v1.0** (`docs/ark_designsystem.md`)
    - Tema: Dark arquitectónico con acento Lima (#B4FF00)
    - Admin: `admin@arksystems.ai` / `admin123`
@@ -26,14 +25,7 @@
    - Admin: `admin@temozonia.com` / `admin123`
    - Configuración en D1 incluye dominio: `temozonia.substrateholdingsai.workers.dev`
 
-3. **Contagram — Despacho de Contabilidad** (`contagram`): Huésped oficial de Servicios B2B en `/contagram`.
-   - Servicios: Contabilidad General Mensual, Cumplimiento Fiscal SAT, Nómina & IMSS, Auditoría EFOS
-   - Canon de diseño: **ISFAHAN LEDGER v1.0** (`docs/isfahan_ledger_designsystem.md`)
-   - Modelo UX: Arquetipo B (Libro Mayor / Póliza de Apertura interactiva, Ley de las Cifras tabular)
-   - Paleta: Lapislázuli (`#071A30`), Oro Zarrin (`#C9A227`), Cal (`#FBF9F4`)
-   - Cobro: Transferencia SPEI Banco Azteca (`1271 8000 1844 7214 31`) y WhatsApp Business (`+52 56 5706 2511`)
-
-4. **Baakal — Plomería & Gas** (`baakal`): Huésped oficial de Servicios Técnicos & Oficios de Campo en `/baakal`.
+3. **Baakal — Plomería & Gas** (`baakal`): Huésped oficial de Servicios Técnicos & Oficios de Campo en `/baakal`.
    - Servicios: Destape con video boroscópico, Instalación de boiler/calentador, Fugas de gas LP, Hidroneumáticos & cisternas
    - Canon de diseño: **BAAKAL v1.0** (`docs/baakal_designsystem.md`)
    - Modelo UX: Arquetipo B de Campo (Tarifario transparente, tarjeta con filete de cobre, urgencia 24h, presupuesto formal)
@@ -53,6 +45,7 @@
 | **Colas** | [Cloudflare Queues](https://developers.cloudflare.com/queues/) | Procesamiento asíncrono de órdenes |
 | **Email** | [Resend](https://resend.com/) | Magic links de acceso cliente |
 | **Logística** | [Envia.com](https://envia.com/) | Cotización, guías PDF y rastreo de paquetería MX |
+| **IA** | [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/) | Cotización/recomendación de servicios (binding AI) |
 | **Seguridad** | Web Crypto (SHA-256, PBKDF2) | Hash de passwords admin (SHA-256) y cliente (PBKDF2) |
 | **Tooling** | TypeScript 5.6, Wrangler 4.149, Python (Pillow, ReportLab, openpyxl) | Desarrollo, deploy edge y automatización/onboarding |
 
@@ -65,13 +58,14 @@ temozonia/
 ├── products/                 # Catálogos de ejemplo (CSV/JSON) para importación
 ├── public/                   # Assets estáticos (favicon, imágenes, stores ejemplo)
 │   └── images/temozonia/     # Assets generados (smoke_hero, wood_tile, etc.)
+│   └── admin/                # Dashboard de leads (leads.html)
 ├── scripts/
 │   ├── python/               # Forges, onboarding, importadores, validación, smoke tests, facturas
 │   └── sql/                  # Schema D1 (schema.sql, schema_auth*.sql, schema_shipping.sql, seed.sql, ejemplo_cliente.sql)
 ├── src/                      # Código fuente Astro + React
 │   ├── components/
 │   │   ├── admin/            # Panel admin React (AdminApp.tsx)
-│   │   ├── ark/              # Landing Ark Systems (ArkLanding.tsx)
+│   │   ├── ark/              # Landing Ark Oficios (ArkLanding.tsx, AiSearchConcierge)
 │   │   ├── auth/             # AuthModal.tsx, UserMenu.tsx
 │   │   ├── checkout/         # Carrito y checkout (CartDrawer.astro, CheckoutCalculator.astro con envío Envia.com)
 │   │   ├── layout/           # Header, Footer, Hero
@@ -88,7 +82,7 @@ temozonia/
 │   ├── routes/               # Rutas base (health.ts, index.ts)
 │   └── src/
 │       ├── lib/              # auth-core.ts (helpers legacy), cart.ts, crypto.ts, email.ts, envia.ts, tokens.ts
-│       ├── routes/           # Endpoints API (products, checkout, store, admin, auth, cart, shipping)
+│       ├── routes/           # Endpoints API (products, checkout, store, admin, auth, cart, shipping, assistant, webhook_whatsapp)
 │       ├── schemas/          # Validación Zod (checkout.ts)
 │       └── types/            # Tipos Env, Tenant, auth (env.d.ts, auth.d.ts)
 ├── astro.config.mjs          # Config Astro + Cloudflare adapter
@@ -138,6 +132,11 @@ Base URL: `/api/*`
 | `/api/shipping/quote` | POST | Público (tenant) | Cotiza tarifas Envia.com por CP/destino/peso |
 | `/api/shipping/label` | POST | Público (tenant) | Genera guía PDF/tracking y actualiza la orden en D1 (status shipped) |
 | `/api/shipping/track/:carrier/:trackingNumber` | GET | Público (tenant) | Rastrea envío por transportista y guía |
+| `/api/assistant/recommend` | POST | Público (tenant) | Recomendación de proveedores/servicios con Workers AI |
+| `/api/assistant/chat` | POST | Público (tenant) | Chat conversacional Ark Concierge (IA) |
+| `/api/webhook/whatsapp` | GET/POST | Público (Meta) | Webhook Meta Cloud API WhatsApp (verificación + mensajes) |
+| `/api/webhook/whatsapp/simulate` | POST | Público | Simula mensaje WhatsApp para pruebas |
+| `/api/webhook/whatsapp/history` | GET | Público | Historial de mensajes WhatsApp por tenant |
 | `/api/auth/guest` | POST | Público | Crea sesión de invitado + carrito |
 | `/api/auth/register` | POST | Público | Registro de cliente (password PBKDF2), merge de carrito invitado |
 | `/api/auth/login` | POST | Público | Login cliente (PBKDF2 / SHA-256 legacy con migración), merge carrito |
@@ -158,9 +157,12 @@ Base URL: `/api/*`
 | `/api/admin/files/*` | GET | Público | Servir archivos subidos desde R2 |
 | `/api/admin/orders` | GET | Bearer token | Listar órdenes (filtro opcional `?status=pending|paid|delivered`) |
 | `/api/admin/orders/:id/status` | PUT | Bearer token | Actualizar estado de orden |
+| `/api/admin/leads/summary` | GET | Público | Métricas globales de leads (totales, por tenant/canal, últimos 50) |
+| `/api/admin/leads` | GET | Público | Lista de leads WhatsApp (filtros tenant/canal) |
 
 ## 7. Esquema D1 (Multi-Tenant)
-Tablas: `tenants`, `tenant_users`, `customers`, `carts`, `store_sessions`, `action_tokens`, `customer_addresses`, `products`, `orders`, `order_items`
+Tablas: `tenants`, `tenant_users`, `customers`, `carts`, `store_sessions`, `action_tokens`, `customer_addresses`, `products`, `orders`, `order_items`, `whatsapp_messages`
+- `whatsapp_messages`: leads/mensajes capturados por webhook WhatsApp y widget (matched_tenant, matched_service, estimated_price, status)
 - `customers`: email/password_hash (PBKDF2 o null para magic link), datos de perfil y dirección default
 - `carts`: items JSON por tenant/cliente o invitado
 - `store_sessions`: sesiones de cliente (token_hash, customer_id, cart_id, expires_at, revoked_at)
@@ -171,13 +173,14 @@ Tablas: `tenants`, `tenant_users`, `customers`, `carts`, `store_sessions`, `acti
 - Relaciones con `ON DELETE CASCADE` entre tenant y entidades hijas
 - Índices optimizados por tenant, estado, fechas y cliente
 - Seed data con 2 tenants + usuarios admin + productos
-- Migraciones: `schema.sql`, `schema_auth.sql`, `schema_auth2.sql`, `schema_auth3.sql`, `schema_shipping.sql`
+- Migraciones: `schema.sql`, `schema_auth.sql`, `schema_auth2.sql`, `schema_auth3.sql`, `schema_shipping.sql`, `whatsapp_table.sql`, `baakal.sql`
 
 ## 8. Páginas Astro
 | Página | Ruta | Descripción |
 |---|---|---|
 | `index.astro` | `/` | Landing Ark Commerce (ArkLanding React client:load). Auto-redirige a `/temozonia` si `?tenant=temozonia` o subdominio |
 | `temozonia.astro` | `/temozonia` | Tienda Temozonia (Layout + Hero + ProductCard grid + CheckoutCalculator con envío Envia.com) |
+| `baakal.astro` | `/baakal` | Tienda Baakal (Layout + servicios técnicos + CheckoutCalculator) |
 | `admin.astro` | `/admin` | Panel admin multi-tenant (AdminApp React client:only) |
 | `test.astro` | `/test` | Página de pruebas |
 | `contacto.astro` | `/contacto` | Contacto |
@@ -207,15 +210,20 @@ pnpm cf-typegen   # Generar tipos Cloudflare Env
 - `checkout_smoke_test.py`: prueba E2E del pipeline de órdenes (D1, queue, ticket WhatsApp)
 - `invoice_generator.py`: generación de facturas PDF con ReportLab y theme por tenant
 - `ark_universal_forge.py`, `main.py`: utilidades legacy/experimentales
+- `check_oficios_dist.py`, `generate_dist_index.py`, `update_landing_source.py`: generación/validación del sitio Ark Oficios
+- `test_oficios_live.py`: smoke test del landing Ark Oficios en producción
 
 ## 10. Estado de Verificación
 - **Build**: `pnpm run build` (Astro build + Wrangler dry-run) ejecuta correctamente; Astro genera las 8 rutas estáticas y bundles cliente
 - **D1**: `ark-commerce-db` provisionada local/remoto con esquema multi-tenant completo (tenants, users, products, orders, order_items + tablas de cliente/auth + envío)
-- **Infraestructura Cloudflare**: Worker, D1, KV (SESSION+CACHE), R2, Queues configurados en `wrangler.toml`
+- **Infraestructura Cloudflare**: Worker, D1, KV (SESSION+CACHE), R2, Queues, Workers AI configurados en `wrangler.toml`
 - **Multi-tenant**: Resolución por slug/subdominio/query param + caché KV funcionando
 - **API**: Endpoints CRUD completos para products, checkout, store, admin con auth Bearer + sesiones KV; endpoints de cliente (auth, cart, magic link, direcciones, pedidos) y logística (quote/label/track) funcionales
 - **Logística**: Envia.com integrado con fallback simulado; checkout incluye selector de paquetería y desglose subtotal/envío/total
-- **Admin Panel**: React app funcional con login, gestión productos, tienda, pedidos + subida R2
-- **Frontend**: Dos experiencias (Ark Commerce landing + Temozonia storefront) completamente funcionales; auth de cliente integrada en Header (UserMenu/AuthModal); carrito persiste tarifa de envío
+- **Admin Panel**: React app funcional con login, gestión productos, tienda, pedidos + subida R2 + dashboard de leads
+- **Frontend**: Tres experiencias (Ark Oficios landing con cotizador IA, Temozonia storefront, Baakal store) funcionales; auth de cliente integrada en Header (UserMenu/AuthModal); carrito persiste tarifa de envío
+- **IA**: Ark Concierge (Workers AI) para recomendación/cotización de servicios técnicos; widget embebible Ark Bot con cotización y handoff WhatsApp
+- **Leads**: Dashboard de leads WhatsApp (`/admin/leads.html`) con métricas por tenant/canal y API `/api/admin/leads*`
+- **WhatsApp**: Webhook Meta Cloud API con cotización IA y persistencia en D1 (`whatsapp_messages`)
 - **Seguridad cliente**: Passwords PBKDF2 (100k iter) con migración desde SHA-256 legacy; magic links de 15 min de un solo uso
 - **Automatización**: Scripts de onboarding, importación de catálogos, validación de tenants, smoke test de checkout y facturación PDF disponibles
