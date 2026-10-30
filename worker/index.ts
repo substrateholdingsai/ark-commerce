@@ -4,6 +4,7 @@ import { logger } from 'hono/logger';
 import { healthRoute } from './routes/health';
 import { apiRoutes } from './routes';
 import type { Env, Tenant } from './src/types/env';
+import { procesarCarritosAbandonados } from './src/lib/cart_recovery';
 
 type Variables = { tenant: Tenant | null; tenantId: string | null };
 
@@ -137,4 +138,26 @@ async function resolveTenant(env: Env, req: any): Promise<Tenant | null> {
   return null;
 }
 
-export default app;
+export default {
+  fetch: app.fetch,
+  scheduled: async (event: any, env: Env, ctx: any) => {
+    const promise = procesarCarritosAbandonados(env, {
+      minInactivityHours: 1,
+      maxInactivityHours: 48,
+    })
+      .then((res) => {
+        console.log(
+          `[Cron Cart Recovery]: Checked ${res.checked}, Sent ${res.sent}, Skipped ${res.skipped}`
+        );
+      })
+      .catch((err) => {
+        console.error('[Cron Cart Recovery Error]:', err);
+      });
+
+    if (ctx?.waitUntil) {
+      ctx.waitUntil(promise);
+    } else {
+      await promise;
+    }
+  },
+};

@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import type { Env } from '../types/env';
+import { procesarCarritosAbandonados } from '../lib/cart_recovery';
 
 const admin = new Hono<{ Bindings: Env; Variables: { tenant: any; tenantId: string | null; user: any } }>();
 
@@ -264,6 +265,62 @@ admin.get('/leads', async (c) => {
 
     const { results } = await c.env.DB.prepare(sql).bind(...binds).all();
     return c.json({ success: true, count: results?.length || 0, data: results });
+  } catch (err: any) {
+    return c.json({ success: false, error: err.message }, 500);
+  }
+});
+
+admin.post('/cart-recovery/trigger', async (c) => {
+  try {
+    let body: any = {};
+    try { body = await c.req.json(); } catch {}
+    const tenantId = body.tenantId || c.get('tenantId') || undefined;
+    const minHours = body.minHours ? Number(body.minHours) : 1;
+    const maxHours = body.maxHours ? Number(body.maxHours) : 48;
+
+    const summary = await procesarCarritosAbandonados(c.env, {
+      tenantId,
+      minInactivityHours: minHours,
+      maxInactivityHours: maxHours,
+    });
+
+    return c.json({ success: true, data: summary });
+  } catch (err: any) {
+    return c.json({ success: false, error: err.message }, 500);
+  }
+});
+
+admin.get('/cart-recovery/stats', async (c) => {
+  try {
+    const tenantId = c.req.query('tenantId') || c.get('tenantId');
+    let sql = `SELECT 
+      COUNT(*) AS total_sent,
+      COALESCE(SUM(cart_total), 0) AS total_recovered_potential,
+      COALESCE(SUM(items_count), 0) AS total_items
+    FROM cart_recoveries WHERE 1=1`;
+    const binds: any[] = [];
+    if (tenantId) {
+      sql += ` AND tenant_id = ?`;
+      binds.push(tenantId);
+    }
+    const stats = await c.env.DB.prepare(sql).bind(...binds).first<any>();
+
+    let listSql = `SELECT * FROM cart_recoveries WHERE 1=1`;
+    const listBinds: any[] = [];
+    if (tenantId) {
+      listSql += ` AND tenant_id = ?`;
+      listBinds.push(tenantId);
+    }
+    listSql += ` ORDER BY sent_at DESC LIMIT 50`;
+    const { results } = await c.env.DB.prepare(listSql).bind(...listBinds).all<any>();
+
+    return c.json({
+      success: true,
+      data: {
+        summary: stats || { total_sent: 0, total_recovered_potential: 0, total_items: 0 },
+        recent: results || [],
+      },
+    });
   } catch (err: any) {
     return c.json({ success: false, error: err.message }, 500);
   }
