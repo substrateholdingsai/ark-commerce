@@ -59,7 +59,3 @@ binding = "AI"
 binding = "ARKANGEL"
 service = "arkangel-cobranza"
 
-# Triggers programados (Recuperación de Carritos cada 2 horas)
-[triggers]
-crons = ["0 */2 * * *"]
-
