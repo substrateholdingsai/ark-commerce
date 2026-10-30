@@ -40,7 +40,7 @@ checkout.post('/', async (c) => {
     return c.json({ success: false, error: 'Invalid input', details: validation.error.flatten() }, 400);
   }
 
-  const { customerName, customerEmail, customerAddress, customerPhone, paymentMethod, items, notes } = validation.data;
+  const { customerName, customerEmail, customerAddress, customerPhone, paymentMethod, items, notes, shippingCost, shippingCarrier, shippingService } = validation.data;
 
   let customerId: string | null = null;
   const tokenCookie = getCookie(c, CUSTOMER_COOKIE);
@@ -70,11 +70,14 @@ checkout.post('/', async (c) => {
       return { productId: product.id, name: product.name, quantity: item.quantity, price: product.price };
     });
 
+    const shippingAmount = typeof shippingCost === 'number' && shippingCost > 0 ? shippingCost : 0;
+    total += shippingAmount;
+
     const orderId = crypto.randomUUID();
     const orderNumber = `${tenantId.toUpperCase().slice(0,3)}-${orderId.toUpperCase().slice(0,8)}`;
     const statements = [
-      c.env.DB.prepare(`INSERT INTO orders (id, order_number, tenant_id, customer_id, customer_name, customer_address, customer_phone, customer_email, customer_notes, payment_method, total, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "pending")`)
-        .bind(orderId, orderNumber, tenantId, customerId, customerName, customerAddress, customerPhone, customerEmail, notes ?? null, paymentMethod, total),
+      c.env.DB.prepare(`INSERT INTO orders (id, order_number, tenant_id, customer_id, customer_name, customer_address, customer_phone, customer_email, customer_notes, payment_method, total, shipping_cost, shipping_carrier, shipping_service, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "pending")`)
+        .bind(orderId, orderNumber, tenantId, customerId, customerName, customerAddress, customerPhone, customerEmail, notes ?? null, paymentMethod, total, shippingAmount, shippingCarrier ?? null, shippingService ?? null),
       ...orderItems.map((item) =>
         c.env.DB.prepare(`INSERT INTO order_items (id, order_id, product_id, quantity, price, name) VALUES (?, ?, ?, ?, ?, ?)`)
           .bind(crypto.randomUUID(), orderId, item.productId, item.quantity, item.price, item.name)
@@ -92,11 +95,12 @@ checkout.post('/', async (c) => {
         tipo: 'order_confirmation',
         order_id: orderId,
         body: `¡Hola ${customerName}! Tu pedido #${orderId} en ${tenant?.name ?? ''} ha sido confirmado por un total de $${total}. Te notificaremos en cuanto vaya en camino.`,
-        variables: {
-          nombre: customerName,
-          orden: orderId,
-          total: `$${total} MXN`,
-        },
+         variables: {
+           nombre: customerName,
+           orden: orderId,
+           total: `$${total} MXN`,
+           envio: shippingAmount > 0 ? `$${shippingAmount} MXN` : 'Por acordar',
+         },
       });
       if (c.executionCtx?.waitUntil) c.executionCtx.waitUntil(p); else await p;
     }

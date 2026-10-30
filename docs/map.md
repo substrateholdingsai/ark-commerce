@@ -125,7 +125,7 @@ Base URL: `/api/*`
 | `/api/store/config` | GET | Público | Configuración del tenant actual (nombre, WhatsApp, datos bancarios, BTCPay, etc.) |
 | `/api/products` | GET | Público | Lista productos activos del tenant (ordenados por display_order) |
 | `/api/products/:id` | GET | Público | Producto específico |
-| `/api/checkout` | POST | Público (cookie cliente opcional) | Crear orden (valida con Zod), guarda en D1, envía a ORDER_QUEUE, vincula customer_id y vacía carrito |
+| `/api/checkout` | POST | Público (cookie cliente opcional) | Crear orden (valida con Zod), guarda en D1, envía a ORDER_QUEUE, vincula customer_id y vacía carrito. Acepta `shippingCost`/`shippingCarrier`/`shippingService` (cotizados en Envia.com) y los suma al `total` persistiendo `shipping_cost` en `orders`. |
 | `/api/cart` | GET | Cookie cliente | Obtiene/crea carrito del tenant (invitado o cliente) |
 | `/api/cart` | PUT | Cookie cliente | Reemplaza items del carrito |
 | `/api/cart/merge` | POST | Cookie cliente | Fusiona items entrantes con carrito actual |
@@ -168,7 +168,7 @@ Tablas: `tenants`, `tenant_users`, `customers`, `carts`, `store_sessions`, `acti
 - `store_sessions`: sesiones de cliente (token_hash, customer_id, cart_id, expires_at, revoked_at)
 - `action_tokens`: magic links de acceso (expiración 15 min, uso único)
 - `customer_addresses`: direcciones guardadas por cliente
-- `orders`: incluye `customer_id`, `customer_email` y campos de envío (`shipping_carrier`, `shipping_service`, `shipping_tracking_number`, `shipping_tracking_url`, `shipping_label_url`, `shipping_cost`); estados pending/paid/delivered/shipped
+- `orders`: incluye `customer_id`, `customer_email` y campos de envío (`shipping_carrier`, `shipping_service`, `shipping_tracking_number`, `shipping_tracking_url`, `shipping_label_url`, `shipping_cost`); `shipping_cost` se persiste ya en checkout a partir de la tarifa seleccionada (Envia.com) y se recalcula/actualiza al generar la guía; estados pending/paid/delivered/shipped
 - `tenants`: incluye dirección de origen y `envia_api_key` para cotización/guías
 - Relaciones con `ON DELETE CASCADE` entre tenant y entidades hijas
 - Índices optimizados por tenant, estado, fechas y cliente
@@ -218,7 +218,7 @@ pnpm cf-typegen   # Generar tipos Cloudflare Env
 - **D1**: `ark-commerce-db` provisionada local/remoto con esquema multi-tenant completo (tenants, users, products, orders, order_items + tablas de cliente/auth + envío)
 - **Infraestructura Cloudflare**: Worker, D1, KV (SESSION+CACHE), R2, Queues, Workers AI configurados en `wrangler.toml`
 - **Multi-tenant**: Resolución por slug/subdominio/query param + caché KV funcionando
-- **API**: Endpoints CRUD completos para products, checkout, store, admin con auth Bearer + sesiones KV; endpoints de cliente (auth, cart, magic link, direcciones, pedidos) y logística (quote/label/track) funcionales
+- **API**: Endpoints CRUD completos para products, checkout, store, admin con auth Bearer + sesiones KV; endpoints de cliente (auth, cart, magic link, direcciones, pedidos) y logística (quote/label/track) funcionales. Checkout persiste `shipping_cost`/carrier/service a partir de la tarifa seleccionada (Envia.com) y lo incluye en el total y en la notificación Arkangel.
 - **Logística**: Envia.com integrado con fallback simulado; checkout incluye selector de paquetería y desglose subtotal/envío/total
 - **Admin Panel**: React app funcional con login, gestión productos, tienda, pedidos + subida R2 + dashboard de leads
 - **Frontend**: Tres experiencias (Ark Oficios landing con cotizador IA, Temozonia storefront, Baakal store) funcionales; auth de cliente integrada en Header (UserMenu/AuthModal); carrito persiste tarifa de envío

@@ -328,6 +328,8 @@ class CheckoutTester:
                 return False, "Orden sin registros en order_items"
             
             expected_total = sum(float(it["price"]) * int(it["quantity"]) for it in items)
+            shipping_cost = float(order.get("shipping_cost") or 0)
+            expected_total += shipping_cost
             actual_total = float(order.get("total", 0))
             if abs(expected_total - actual_total) > 0.05:
                 return False, f"Total discrepante: sum(items)={expected_total}, total_order={actual_total}"

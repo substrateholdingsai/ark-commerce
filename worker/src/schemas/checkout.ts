@@ -13,6 +13,10 @@ export const CheckoutSchema = z.object({
   paymentMethod: z.enum(['transfer', 'card', 'lightning', 'whatsapp']),
   items: z.array(CheckoutItemSchema).min(1).max(50),
   notes: z.string().max(500).optional(),
+  shippingCost: z.number().nonnegative().optional().default(0),
+  shippingCarrier: z.string().max(50).optional(),
+  shippingService: z.string().max(100).optional(),
+  shippingTrackingEstimate: z.string().max(100).optional(),
 });
 
 export type CheckoutInput = z.infer<typeof CheckoutSchema>;
