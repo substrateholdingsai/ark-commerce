@@ -26,7 +26,7 @@ export async function notificarArkangel(
     };
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${env.ARKANGEL_ADMIN_TOKEN || 'secret_admin_token'}`,
+      'Authorization': `Bearer ${env.ARKANGEL_ADMIN_TOKEN || 'arkangel_internal_service'}`,
       'X-Tenant-Id': payload.tenant_id,
     };
     let res: Response;

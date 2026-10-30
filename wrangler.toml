@@ -22,7 +22,7 @@ BANK = "BBVA"
 CLABE_HOLDER = "Ark Systems"
 SATS_RATE = "2.5"
 WHATSAPP_VERIFY_TOKEN = "ark_commerce_wa_secret_2026"
-ARKANGEL_ADMIN_TOKEN = "tu_admin_token_secreto"
+ARKANGEL_ADMIN_TOKEN = "arkangel_internal_service"
 ARKANGEL_URL = "https://arkangel.arksystems.site"
 
 # D1 Database Multi-Tenant
