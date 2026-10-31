@@ -162,6 +162,10 @@ const ogImage = `${siteUrl}/images/ark/ark_promo_banner.png`;
           const host = window.location.hostname;
           if (tenant === 'temozonia' || host.startsWith('temozonia.')) {
             window.location.replace('/temozonia' + window.location.search);
+          } else if (tenant === 'baakal' || host.startsWith('baakal.')) {
+            window.location.replace('/baakal' + window.location.search);
+          } else if (tenant === 'marea' || host.startsWith('marea.')) {
+            window.location.replace('/marea' + window.location.search);
           }
         } catch (e) {}
       })();

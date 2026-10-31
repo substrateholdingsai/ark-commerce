@@ -274,3 +274,173 @@
   /* Fade-up animation utility */
   .animate-fade-up { animation: var(--animate-fade-up); }
 }
+
+/* ── Design System: MAREA ── */
+:root {
+  --marea-font-display: "Baloo 2", "Nunito", cursive;
+  --marea-font-body: "Nunito", Inter, sans-serif;
+  --marea-font-mono: "JetBrains Mono", Consolas, monospace;
+
+  --marea-arena: #FFF9F0;
+  --marea-arena-2: #FEF3E2;
+  --marea-blanco: #FFFFFF;
+  --marea-arena-b: #F0E5D0;
+  --marea-teal: #0EA9A8;
+  --marea-teal-dk: #087F7E;
+  --marea-teal-hi: #3FD4D2;
+  --marea-coral: #E94E49;
+  --marea-coral-dk: #C53732;
+  --marea-coral-hi: #FF7B76;
+  --marea-mango: #FFB947;
+  --marea-mango-dk: #C98F1F;
+  --marea-selva: #2FA060;
+  --marea-selva-dk: #1F7A45;
+  --marea-lavanda: #8B6FC9;
+  --marea-tinta: #1A3B38;
+  --marea-tinta-2: #3D5C58;
+  --marea-tinta-3: #6B8280;
+  --marea-noche: #0F2E2C;
+  --marea-noche-2: #163B38;
+  --marea-noche-b: #264F4B;
+  --marea-bruma: #B8D4D1;
+  --marea-radius: 20px;
+}
+
+.marea-display { font-family: var(--marea-font-display); font-weight: 700; letter-spacing: -0.02em; }
+.marea-body    { font-family: var(--marea-font-body); font-weight: 400; }
+.marea-label   { font-family: var(--marea-font-body); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.75rem; }
+.marea-mono    { font-family: var(--marea-font-mono); font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+.marea-price   { font-family: var(--marea-font-mono); font-weight: 600; font-variant-numeric: tabular-nums; color: var(--marea-tinta); }
+
+/* Tarjeta de producto */
+.marea-producto {
+  background: var(--marea-blanco);
+  border: 1px solid var(--marea-arena-b);
+  border-radius: var(--marea-radius);
+  box-shadow: 0 8px 24px -6px rgba(14, 169, 168, 0.18);
+  overflow: hidden;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.marea-producto:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px -8px rgba(233, 78, 73, 0.20);
+}
+.marea-producto__imagen { aspect-ratio: 1/1; object-fit: cover; }
+.marea-producto__precio {
+  font-family: var(--marea-font-mono);
+  font-weight: 600;
+  color: var(--marea-tinta);
+}
+
+/* Botón primario (teal del logo) */
+.marea-btn-primary {
+  background: var(--marea-teal);
+  color: var(--marea-tinta);
+  border: none;
+  border-radius: 999px;
+  padding: 14px 28px;
+  font-family: var(--marea-font-body);
+  font-weight: 600;
+  transition: background 200ms ease, transform 150ms ease;
+}
+.marea-btn-primary:hover {
+  background: #3FD4D2;
+  transform: scale(1.02);
+}
+
+/* Botón secundario (coral del logo) */
+.marea-btn-coral {
+  background: var(--marea-coral);
+  color: var(--marea-blanco);
+  border-radius: 999px;
+  padding: 14px 28px;
+  font-weight: 600;
+}
+.marea-btn-coral:hover {
+  background: var(--marea-coral-dk);
+}
+
+/* Botón mango (ofertas, descuentos) */
+.marea-btn-mango {
+  background: var(--marea-mango);
+  color: var(--marea-tinta);
+  border-radius: 999px;
+  padding: 14px 28px;
+  font-weight: 600;
+}
+
+/* Badge de estado */
+.marea-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: var(--marea-font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.marea-badge--stock    { background: rgba(47,160,96,0.12); color: #1F7A45; border: 1px solid rgba(47,160,96,0.3); }
+.marea-badge--oferta   { background: rgba(255,185,71,0.16); color: #C98F1F; border: 1px solid rgba(255,185,71,0.35); }
+.marea-badge--agotado  { background: rgba(107,130,128,0.12); color: #3D5C58; border: 1px solid rgba(107,130,128,0.3); }
+.marea-badge--nuevo    { background: rgba(14,169,168,0.12); color: #087F7E; border: 1px solid rgba(14,169,168,0.3); }
+
+/* Selector de tallas */
+.marea-talla {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 48px;
+  border: 2px solid var(--marea-arena-b);
+  border-radius: 12px;
+  font-family: var(--marea-font-mono);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+.marea-talla:hover { border-color: var(--marea-teal); }
+.marea-talla--activa {
+  background: var(--marea-teal);
+  color: var(--marea-tinta);
+  border-color: var(--marea-teal);
+}
+
+/* Banner de oferta (mango) */
+.marea-oferta-banner {
+  background: linear-gradient(135deg, #FFB947, #FF9E2B);
+  color: var(--marea-tinta);
+  border-radius: 16px;
+  padding: 16px 24px;
+  font-weight: 700;
+}
+
+/* Fondo con textura de olas */
+.marea-olas-bg {
+  background-color: var(--marea-arena);
+  background-image: url("/images/marea/pattern-olas.svg");
+  background-size: 64px 64px;
+}
+
+/* Divisor de ola */
+.marea-ola-divider {
+  height: 32px;
+  background-image: url("/images/marea/divider-ola.svg");
+  background-repeat: repeat-x;
+}
+
+/* Navegación con blur */
+.marea-nav {
+  background: rgba(255, 249, 240, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--marea-arena-b);
+}
+
+/* Footer oscuro (modo noche) */
+.marea-footer {
+  background: var(--marea-noche);
+  color: var(--marea-bruma);
+}
+.marea-footer a:hover { color: var(--marea-teal-hi); }

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="ogBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF9F0"/>
+      <stop offset="1" stop-color="#FEF3E2"/>
+    </linearGradient>
+    <filter id="ogArena" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="2" seed="11" stitchTiles="stitch" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.98  0 0 0 0 0.93  0 0 0 0 0.85  0 0 0 0.06 0"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#ogBg)"/>
+  <rect width="1200" height="630" filter="url(#ogArena)"/>
+
+  <!-- marco -->
+  <rect x="40" y="40" width="1120" height="550" fill="none" stroke="#F0E5D0" stroke-width="1"/>
+
+  <!-- motivo grande -->
+  <g transform="translate(140 180) scale(2.2)">
+    <circle cx="0" cy="0" r="60" fill="#FFF9F0" stroke="#F0E5D0" stroke-width="2"/>
+    <g transform="translate(0 4) scale(1.1)">
+      
+      <circle cx="0" cy="-17.5" r="9.0" fill="#E94E49"/>
+      <circle cx="0" cy="-17.5" r="12.0" fill="none" stroke="#E94E49" stroke-width="1.0" opacity="0.3"/>
+    
+      <path d="M-22.5 5.0 Q-10.0 -7.5, 0.0 5.0 T22.5 5.0"
+            fill="none" stroke="#0EA9A8" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M-19.0 11.0 Q-7.5 7.5, 2.5 11.0 T19.0 11.0"
+            fill="none" stroke="#087F7E" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
+    
+      <path d="M-19.0 16.0 L-15.0 23.0 L-11.0 16.0 Z" fill="#FFB947"/>
+      <path d="M-9.0 16.0 L-5.0 23.0 L-1.0 16.0 Z" fill="#FFB947"/>
+      <path d="M1.0 16.0 L5.0 23.0 L9.0 16.0 Z" fill="#FFB947"/>
+      <path d="M11.0 16.0 L15.0 23.0 L19.0 16.0 Z" fill="#FFB947"/>
+    </g>
+  </g>
+
+  <!-- tipografía -->
+  <text x="420" y="260" font-family="'Baloo 2', 'Nunito', cursive" font-size="110"
+        font-weight="700" letter-spacing="-3" fill="#1A3B38">MAREA</text>
+  <text x="422" y="322" font-family="'Nunito', Inter, sans-serif" font-size="26"
+        font-weight="600" letter-spacing="8" fill="#087F7E">PLAYERAS PERSONALIZADAS</text>
+  <line x1="420" y1="350" x2="900" y2="350" stroke="#F0E5D0" stroke-width="1"/>
+  <text x="422" y="390" font-family="'Nunito', Inter, sans-serif" font-size="20"
+        fill="#3D5C58">Diseña tu ola · Sureste Mexicano</text>
+
+  <!-- KPIs -->
+  <g transform="translate(420 430)">
+    <rect width="200" height="76" fill="#FFFFFF" stroke="#F0E5D0" rx="16"/>
+    <text x="16" y="28" font-family="'Nunito', sans-serif" font-size="10" letter-spacing="2" fill="#3D5C58">DISEÑOS</text>
+    <text x="16" y="58" font-family="'Baloo 2', cursive" font-size="28" font-weight="700" fill="#1A3B38">340+</text>
+  </g>
+  <g transform="translate(640 430)">
+    <rect width="200" height="76" fill="#FFFFFF" stroke="#F0E5D0" rx="16"/>
+    <text x="16" y="28" font-family="'Nunito', sans-serif" font-size="10" letter-spacing="2" fill="#3D5C58">TALLAS</text>
+    <text x="16" y="58" font-family="'Baloo 2', cursive" font-size="28" font-weight="700" fill="#1A3B38">S–XXL</text>
+  </g>
+  <g transform="translate(860 430)">
+    <rect width="200" height="76" fill="#FFFFFF" stroke="#F0E5D0" rx="16"/>
+    <text x="16" y="28" font-family="'Nunito', sans-serif" font-size="10" letter-spacing="2" fill="#3D5C58">ENVÍO</text>
+    <text x="16" y="58" font-family="'Baloo 2', cursive" font-size="28" font-weight="700" fill="#E94E49">24–48h</text>
+  </g>
+
+  <!-- olas decorativas laterales -->
+  <path d="M1050 150 Q1070 130, 1090 150 T1130 150" fill="none" stroke="#0EA9A8" stroke-width="3" opacity="0.4"/>
+  <path d="M1040 180 Q1065 165, 1090 180 T1140 180" fill="none" stroke="#087F7E" stroke-width="2" opacity="0.3"/>
+  <path d="M1055 210 Q1075 198, 1095 210 T1125 210" fill="none" stroke="#FFB947" stroke-width="2" opacity="0.4"/>
+
+  <text x="1160" y="588" font-family="'JetBrains Mono', Consolas, monospace" font-size="11"
+        letter-spacing="2" fill="#3D5C58" text-anchor="end">marea.mx</text>
+</svg>

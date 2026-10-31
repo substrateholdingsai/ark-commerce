@@ -61,4 +61,17 @@ export const SERVICES: ServiceItem[] = [
     ],
     whatsappMsg: 'Hola! Tengo una falla en el centro de carga principal de mi casa. Solicito electricista urgente.',
   },
+  {
+    id: 'playeras',
+    title: 'Playeras & Moda del Sureste',
+    subtitle: 'Estampado textil personalizado y diseños de autor',
+    image: '/images/marea/seo/og-image.png',
+    store: 'marea.ark.mx',
+    services: [
+      { name: 'Playera "Ola Nocturna" (100% Algodón)', price: '$349' },
+      { name: 'Playera "Sol de Tulum" Edición Coral', price: '$329' },
+      { name: 'Estampado con tu propio diseño', price: '$349' },
+    ],
+    whatsappMsg: 'Hola MAREA! 🌊 Quiero cotizar playeras con envío a mi domicilio.',
+  },
 ];

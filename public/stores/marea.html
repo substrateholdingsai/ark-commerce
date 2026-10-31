@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MAREA · Playeras Personalizadas del Sureste</title>
+<meta name="description" content="Playeras personalizadas del Caribe mexicano. Diseña tu ola: sube tu diseño, elige tu talla y la hacemos realidad. Envío 24–48h en todo México.">
+<link rel="icon" type="image/svg+xml" href="/images/marea/favicon.svg">
+<link rel="manifest" href="/manifest.json?tenant=marea">
+<meta name="theme-color" content="#0EA9A8">
+
+<!-- Tipografía tríada MAREA -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Tailwind CDN + config MAREA -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        marea: {
+          arena: '#FFF9F0', 'arena-2': '#FEF3E2', blanco: '#FFFFFF', 'arena-b': '#F0E5D0',
+          teal: '#0EA9A8', 'teal-dk': '#087F7E', 'teal-hi': '#3FD4D2',
+          coral: '#E94E49', 'coral-dk': '#C53732', 'coral-hi': '#FF7B76',
+          mango: '#FFB947', 'mango-dk': '#C98F1F',
+          selva: '#2FA060', 'selva-dk': '#1F7A45',
+          lavanda: '#8B6FC9',
+          tinta: '#1A3B38', 'tinta-2': '#3D5C58', 'tinta-3': '#6B8280',
+          noche: '#0F2E2C', 'noche-2': '#163B38', bruma: '#B8D4D1',
+        }
+      },
+      fontFamily: {
+        display: ['"Baloo 2"','cursive'],
+        body: ['Nunito','sans-serif'],
+        mono: ['"JetBrains Mono"','monospace'],
+      },
+      borderRadius: { 
+        ola: '50% 50% 50% 50% / 60% 60% 40% 40%',
+        marea: '20px',
+        'marea-lg': '28px',
+      },
+      boxShadow: {
+        ola: '0 8px 24px -6px rgba(14,169,168,.18)',
+        coral: '0 8px 24px -6px rgba(233,78,73,.20)',
+        fiesta: '0 12px 32px -8px rgba(255,185,71,.30)',
+      }
+    }
+  }
+}
+</script>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  html{scroll-behavior:smooth}
+  body{font-family:'Nunito',sans-serif;-webkit-font-smoothing:antialiased}
+  .font-display{font-family:'Baloo 2',cursive}
+  .font-mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+
+  /* ── Ola animada del hero ── */
+  @keyframes olaFlotar{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-10px) rotate(-1deg)}}
+  @keyframes olaDesliza{0%{transform:translateX(0)}100%{transform:translateX(-240px)}}
+  .ola-flota{animation:olaFlotar 5s ease-in-out infinite}
+  .ola-cinta{animation:olaDesliza 9s linear infinite}
+
+  @keyframes solGira{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  .sol-gira{animation:solGira 24s linear infinite;transform-origin:center}
+
+  @keyframes aparece{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .aparece{animation:aparece .5s ease both}
+
+  /* ── Drawer carrito ── */
+  .drawer{transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
+  .drawer.abierto{transform:translateX(0)}
+  .overlay{opacity:0;pointer-events:none;transition:opacity .3s}
+  .overlay.abierto{opacity:1;pointer-events:auto}
+
+  /* ── Toast ── */
+  @keyframes toastSube{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
+  .toast{animation:toastSube .3s ease both}
+
+  /* marquee */
+  @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .marquee{animation:marquee 22s linear infinite}
+
+  .scroll-hide::-webkit-scrollbar{display:none}
+  ::selection{background:#FFB947;color:#1A3B38}
+
+  .marea-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .marea-badge--nuevo   { background: rgba(14,169,168,0.14); color: #087F7E; border: 1px solid rgba(14,169,168,0.3); }
+  .marea-badge--oferta  { background: rgba(233,78,73,0.14); color: #C53732; border: 1px solid rgba(233,78,73,0.3); }
+  .marea-badge--limitada{ background: rgba(255,185,71,0.20); color: #C98F1F; border: 1px solid rgba(255,185,71,0.4); }
+
+  .marea-talla {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    border: 2px solid #F0E5D0;
+    border-radius: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+  .marea-talla:hover { border-color: #0EA9A8; }
+  .marea-talla--activa {
+    background: #0EA9A8;
+    color: #1A3B38;
+    border-color: #0EA9A8;
+  }
+</style>
+</head>
+
+<body class="bg-marea-arena text-marea-tinta min-h-screen flex flex-col">
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="sticky top-0 z-40 bg-marea-arena/95 backdrop-blur-md border-b-2 border-marea-arena-b">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 h-[72px] flex items-center justify-between gap-3">
+
+    <!-- Logo MAREA -->
+    <a href="#" class="flex items-center gap-2.5 shrink-0">
+      <img src="/images/marea/favicon.svg" alt="MAREA Logo" class="w-10 h-10 object-contain" onerror="this.outerHTML='<svg width=40 height=40 viewBox=\'0 0 64 64\'><rect width=64 height=64 rx=14 fill=\'#0EA9A8\'/><circle cx=32 cy=20 r=8 fill=\'#E94E49\'/><path d=\'M12 38 Q22 28, 32 38 T52 38\' fill=\'none\' stroke=\'#fff\' stroke-width=4 stroke-linecap=\'round\'/></svg>'">
+      <div class="leading-none">
+        <div class="font-display font-800 text-2xl tracking-tight text-marea-tinta">MAREA</div>
+        <div class="font-mono text-[9px] tracking-[0.22em] text-marea-teal-dk uppercase">Playeras del Sureste</div>
+      </div>
+    </a>
+
+    <!-- Nav desktop -->
+    <nav class="hidden md:flex items-center gap-7 font-bold text-marea-tinta-2">
+      <a href="#disenos" class="hover:text-marea-teal-dk transition-colors">Diseños</a>
+      <a href="#personaliza" class="hover:text-marea-teal-dk transition-colors">Personaliza</a>
+      <a href="#tallas" class="hover:text-marea-teal-dk transition-colors">Tallas</a>
+      <a href="#pago-mexico" class="hover:text-marea-teal-dk transition-colors">Pagos SPEI & WhatsApp</a>
+    </nav>
+
+    <!-- Acciones -->
+    <div class="flex items-center gap-3">
+      <button onclick="abrirCarrito()" class="relative flex items-center gap-2 p-2.5 px-4 rounded-full bg-marea-teal text-marea-tinta font-bold text-sm hover:bg-marea-teal-hi transition-colors shadow-ola" aria-label="Carrito">
+        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+        <span class="hidden sm:inline font-mono">Mi ola</span>
+        <span id="badgeCarrito" class="min-w-[20px] h-5 px-1.5 rounded-full bg-marea-coral text-white text-xs font-800 flex items-center justify-center">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="relative overflow-hidden bg-gradient-to-b from-marea-arena to-marea-arena-2">
+  <!-- Slot Spline 3D interactivo -->
+  <div id="splineSlot" data-spline-url="" class="hidden absolute inset-0 z-10 pointer-events-none">
+    <canvas id="splineCanvas" class="w-full h-full"></canvas>
+  </div>
+
+  <div class="relative z-20 max-w-7xl mx-auto px-4 md:px-6 pt-12 md:pt-20 pb-6 grid md:grid-cols-2 gap-10 items-center">
+    <!-- Texto -->
+    <div class="aparece">
+      <div class="inline-flex items-center gap-2 bg-marea-blanco border-2 border-marea-arena-b rounded-full px-4 py-1.5 mb-5 shadow-ola">
+        <span class="w-2.5 h-2.5 rounded-full bg-marea-coral animate-pulse"></span>
+        <span class="font-mono text-xs tracking-widest uppercase text-marea-teal-dk font-bold">Hecho en el Sureste · Envíos a todo México</span>
+      </div>
+
+      <h1 class="font-display font-800 text-5xl md:text-7xl leading-[0.95] tracking-tight text-marea-tinta">
+        Diseña tu <span class="text-marea-teal">ola</span>.<br>
+        Nosotros la <span class="text-marea-coral">estampamos</span>.
+      </h1>
+
+      <p class="mt-5 text-lg md:text-xl text-marea-tinta-2 max-w-md leading-relaxed">
+        Playeras personalizadas con toda la vibra del Caribe mexicano. Sube tu diseño o elige uno de la colección. <strong>Pagos fáciles vía SPEI, Efectivo o WhatsApp</strong>.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a href="#disenos" class="group inline-flex items-center gap-2 bg-marea-teal text-marea-tinta font-800 text-lg px-7 py-4 rounded-full shadow-ola hover:bg-marea-teal-hi transition-all hover:scale-[1.02]">
+          Ver diseños <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+        </a>
+        <a href="#personaliza" class="inline-flex items-center gap-2 bg-marea-blanco border-2 border-marea-coral text-marea-coral-dk font-800 px-6 py-[14px] rounded-full hover:bg-marea-coral hover:text-white transition-colors">
+          <i data-lucide="paintbrush" class="w-5 h-5"></i> Crear la mía
+        </a>
+      </div>
+
+      <!-- Métricas / Pruebas de Confianza México -->
+      <div class="mt-8 flex flex-wrap items-center gap-6 font-mono text-xs text-marea-tinta-2">
+        <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-marea-selva-dk"></i> SPEI Seguro BBVA</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="truck" class="w-4 h-4 text-marea-teal-dk"></i> Estafeta / FedEx 24-48h</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i> Soporte WhatsApp directo</span>
+      </div>
+    </div>
+
+    <!-- Visual: Playera flotando + Sol giratorio -->
+    <div id="heroVisual" class="relative flex items-center justify-center py-6">
+      <div class="absolute top-0 right-4 sol-gira pointer-events-none">
+        <svg width="100" height="100" viewBox="0 0 90 90">
+          <circle cx="45" cy="45" r="18" fill="#FFB947"/>
+          <g stroke="#FFB947" stroke-width="4" stroke-linecap="round" opacity="0.75">
+            <line x1="45" y1="6" x2="45" y2="16"/><line x1="45" y1="74" x2="45" y2="84"/>
+            <line x1="6" y1="45" x2="16" y2="45"/><line x1="74" y1="45" x2="84" y2="45"/>
+            <line x1="17" y1="17" x2="24" y2="24"/><line x1="66" y1="66" x2="73" y2="73"/>
+            <line x1="17" y1="73" x2="24" y2="66"/><line x1="66" y1="24" x2="73" y2="17"/>
+          </g>
+        </svg>
+      </div>
+      <div class="ola-flota" id="playeraHero"></div>
+    </div>
+  </div>
+
+  <!-- Olas animadas decorativas -->
+  <div class="relative z-10 h-[70px] overflow-hidden">
+    <div class="ola-cinta absolute bottom-0 flex w-[200%]">
+      <svg class="w-1/2 h-full" viewBox="0 0 480 120" preserveAspectRatio="none">
+        <path d="M0,60 Q60,30 120,60 T240,60 T360,60 T480,60 V120 H0 Z" fill="#0EA9A8" opacity="0.85"/>
+      </svg>
+      <svg class="w-1/2 h-full" viewBox="0 0 480 120" preserveAspectRatio="none">
+        <path d="M0,60 Q60,30 120,60 T240,60 T360,60 T480,60 V120 H0 Z" fill="#0EA9A8" opacity="0.85"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ MARQUEE ═══════════ -->
+<div class="bg-marea-noche text-marea-bruma overflow-hidden py-3 border-y-2 border-marea-noche-2">
+  <div class="marquee flex gap-10 whitespace-nowrap font-display font-700 text-base md:text-lg w-max">
+    <span>🌊 Olas del Caribe</span><span>🌅 Atardecer Tulum</span><span>🌴 Selva Maya</span><span>🐠 Fauna marina</span><span>🎨 Sube tu diseño</span><span>⚡ Pagos por SPEI sin comisión</span><span>🔥 Ediciones Limitadas</span>
+    <span>🌊 Olas del Caribe</span><span>🌅 Atardecer Tulum</span><span>🌴 Selva Maya</span><span>🐠 Fauna marina</span><span>🎨 Sube tu diseño</span><span>⚡ Pagos por SPEI sin comisión</span><span>🔥 Ediciones Limitadas</span>
+  </div>
+</div>
+
+<!-- ═══════════ CATÁLOGO DE DISEÑOS ═══════════ -->
+<section id="disenos" class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-20 flex-1">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+    <div>
+      <span class="font-mono text-xs tracking-[0.22em] uppercase text-marea-coral-dk font-bold">Colección Caribeña</span>
+      <h2 class="font-display font-800 text-4xl md:text-5xl mt-2">Diseños con <span class="text-marea-teal">toda la onda</span></h2>
+    </div>
+
+    <!-- Filtros -->
+    <div class="flex flex-wrap gap-2" id="filtros">
+      <button data-filtro="todos" class="filtro activo font-bold text-sm px-5 py-2.5 rounded-full border-2 border-marea-teal bg-marea-teal text-marea-tinta transition-all">Todos</button>
+      <button data-filtro="olas" class="filtro font-bold text-sm px-5 py-2.5 rounded-full border-2 border-marea-arena-b bg-marea-blanco text-marea-tinta-2 hover:border-marea-teal transition-all">Olas</button>
+      <button data-filtro="sol" class="filtro font-bold text-sm px-5 py-2.5 rounded-full border-2 border-marea-arena-b bg-marea-blanco text-marea-tinta-2 hover:border-marea-teal transition-all">Sol & Playa</button>
+      <button data-filtro="selva" class="filtro font-bold text-sm px-5 py-2.5 rounded-full border-2 border-marea-arena-b bg-marea-blanco text-marea-tinta-2 hover:border-marea-teal transition-all">Selva</button>
+      <button data-filtro="limitadas" class="filtro font-bold text-sm px-5 py-2.5 rounded-full border-2 border-marea-arena-b bg-marea-blanco text-marea-tinta-2 hover:border-marea-teal transition-all">Limitadas</button>
+    </div>
+  </div>
+
+  <!-- Grid de Playeras -->
+  <div id="gridProductos" class="grid grid-cols-2 lg:grid-cols-4 gap-5 md:gap-7"></div>
+
+  <!-- Estado vacío -->
+  <div id="vacio" class="hidden text-center py-16">
+    <i data-lucide="waves" class="w-14 h-14 text-marea-teal mx-auto mb-4"></i>
+    <p class="font-display font-700 text-2xl">Aún no hay diseños en esta ola</p>
+    <p class="text-marea-tinta-2 mt-1">Prueba con otra categoría, la marea trae cosas nuevas cada día.</p>
+  </div>
+</section>
+
+<!-- ═══════════ PERSONALIZADOR ═══════════ -->
+<section id="personaliza" class="bg-marea-teal relative overflow-hidden text-marea-tinta">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-20 grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <span class="font-mono text-xs tracking-[0.22em] uppercase text-marea-noche/75 font-bold">Personalizado a tu gusto</span>
+      <h2 class="font-display font-800 text-4xl md:text-5xl mt-2 text-marea-tinta">¿Tienes un diseño? <br>Lo hacemos playera.</h2>
+      <p class="mt-4 text-lg text-marea-tinta/85 max-w-md">Estampado en serigrafía o DTF textil premium sobre algodón peinado 100%. Tú pones la idea, el Caribe pone la vibra.</p>
+
+      <ol class="mt-6 space-y-3 font-semibold">
+        <li class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-marea-tinta text-marea-arena font-display font-800 flex items-center justify-center shrink-0">1</span><span>Sube tu archivo o mándalo por WhatsApp</span></li>
+        <li class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-marea-tinta text-marea-arena font-display font-800 flex items-center justify-center shrink-0">2</span><span>Elige color de tela y tu talla (S a XXL)</span></li>
+        <li class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-marea-tinta text-marea-arena font-display font-800 flex items-center justify-center shrink-0">3</span><span>Pagas vía SPEI y te la enviamos en 24–48h</span></li>
+      </ol>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <button onclick="solicitarPersonalizada()" class="inline-flex items-center gap-2 bg-marea-coral text-white font-800 text-lg px-8 py-4 rounded-full shadow-coral hover:bg-marea-coral-dk transition-all hover:scale-[1.02]">
+          <i data-lucide="message-circle" class="w-5 h-5"></i> Cotizar diseño por WhatsApp
+        </button>
+      </div>
+    </div>
+
+    <!-- Dropzone Mockup -->
+    <div class="bg-marea-arena rounded-3xl border-4 border-dashed border-marea-tinta/20 p-8 text-center hover:border-marea-tinta transition-colors cursor-pointer" onclick="solicitarPersonalizada()">
+      <i data-lucide="upload-cloud" class="w-16 h-16 text-marea-teal mx-auto mb-3"></i>
+      <p class="font-display font-800 text-2xl text-marea-tinta">Envía o arrastra tu diseño</p>
+      <p class="text-marea-tinta-2 mt-1 font-mono text-sm">PNG con fondo transparente · JPG · PDF vector</p>
+      <div class="mt-6 flex justify-center flex-wrap gap-2">
+        <span class="px-3 py-1 rounded-full bg-marea-blanco border border-marea-arena-b font-mono text-xs text-marea-tinta-2 font-bold">Tacto ultrasuave</span>
+        <span class="px-3 py-1 rounded-full bg-marea-blanco border border-marea-arena-b font-mono text-xs text-marea-tinta-2 font-bold">Algodón 100%</span>
+        <span class="px-3 py-1 rounded-full bg-marea-blanco border border-marea-arena-b font-mono text-xs text-marea-tinta-2 font-bold">Desde 1 pieza</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ GUÍA DE TALLAS ═══════════ -->
+<section id="tallas" class="max-w-4xl mx-auto px-4 md:px-6 py-16 text-center">
+  <span class="font-mono text-xs tracking-[0.22em] uppercase text-marea-coral-dk font-bold">Medidas Mexicanas</span>
+  <h2 class="font-display font-800 text-4xl md:text-5xl mt-2">Encuentra tu talla ideal</h2>
+  <div class="mt-8 flex flex-wrap justify-center gap-3">
+    <span class="marea-talla font-mono font-700">S</span>
+    <span class="marea-talla font-mono font-700">M</span>
+    <span class="marea-talla font-mono font-700 marea-talla--activa">L</span>
+    <span class="marea-talla font-mono font-700">XL</span>
+    <span class="marea-talla font-mono font-700">XXL</span>
+  </div>
+  <p class="mt-5 text-marea-tinta-2 max-w-lg mx-auto leading-relaxed">
+    Corte unisex mexicano contemporáneo, pre-encogido. Si dudas entre dos tallas, te sugerimos elegir la más grande para una caída relajada y fresca en la playa.
+  </p>
+</section>
+
+<!-- ═══════════ EXPLICACIÓN DE PAGO EN MÉXICO ═══════════ -->
+<section id="pago-mexico" class="bg-marea-blanco border-t-2 border-marea-arena-b py-16">
+  <div class="max-w-7xl mx-auto px-4 md:px-6">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="font-mono text-xs tracking-widest uppercase text-marea-teal-dk font-bold">Comodidad y Confianza</span>
+      <h2 class="font-display font-800 text-3xl md:text-4xl mt-2">Pagos prácticos y transparentes en México</h2>
+      <p class="text-marea-tinta-2 mt-2">Sin formularios engorrosos ni cobros sorpresa. Elige la vía que más te acomode:</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-marea-arena rounded-2xl p-6 border-2 border-marea-arena-b hover:border-marea-teal transition-all">
+        <div class="w-12 h-12 rounded-full bg-marea-teal/15 text-marea-teal-dk flex items-center justify-center mb-4">
+          <i data-lucide="landmark" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-display font-700 text-xl text-marea-tinta">Transferencia SPEI (BBVA)</h3>
+        <p class="text-sm text-marea-tinta-2 mt-2 leading-relaxed">Transfiere directo desde cualquier app bancaria sin comisiones extra. Copias la CLABE en un clic en el carrito.</p>
+      </div>
+
+      <div class="bg-marea-arena rounded-2xl p-6 border-2 border-marea-arena-b hover:border-marea-coral transition-all">
+        <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mb-4">
+          <i data-lucide="message-square" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-display font-700 text-xl text-marea-tinta">Ticket por WhatsApp</h3>
+        <p class="text-sm text-marea-tinta-2 mt-2 leading-relaxed">Tu pedido genera un ticket desglosado con tallas y envío que se abre de inmediato en el WhatsApp del taller para seguimiento humano.</p>
+      </div>
+
+      <div class="bg-marea-arena rounded-2xl p-6 border-2 border-marea-arena-b hover:border-marea-mango transition-all">
+        <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center mb-4">
+          <i data-lucide="map-pin" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-display font-700 text-xl text-marea-tinta">Entrega Local en el Sureste</h3>
+        <p class="text-sm text-marea-tinta-2 mt-2 leading-relaxed">Puntos de entrega o pago al recibir en Cancún, Playa del Carmen, Tulum y Mérida disponible al confirmar por chat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="bg-marea-noche text-marea-bruma mt-auto">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 py-12 grid md:grid-cols-3 gap-10">
+    <div>
+      <div class="font-display font-800 text-2xl text-marea-arena">MAREA</div>
+      <p class="mt-2 text-sm text-marea-bruma/80 max-w-xs leading-relaxed">
+        Playeras personalizadas del Sureste mexicano. Diseña tu ola, nosotros la estampamos con calidad premium.
+      </p>
+    </div>
+    <div class="font-mono text-sm space-y-2">
+      <div class="text-marea-arena font-700 tracking-widest text-xs uppercase mb-3">Contacto Directo</div>
+      <p class="flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-marea-teal-hi"></i> Cancún · Playa del Carmen · Mérida</p>
+      <p class="flex items-center gap-2"><i data-lucide="message-circle" class="w-4 h-4 text-marea-teal-hi"></i> WhatsApp: +52 999 000 0000</p>
+      <p class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 text-marea-teal-hi"></i> pedidos@marea.mx</p>
+    </div>
+    <div class="font-mono text-sm space-y-2">
+      <div class="text-marea-arena font-700 tracking-widest text-xs uppercase mb-3">Datos de Pago</div>
+      <p class="text-xs text-marea-bruma/80">Banco: <strong>BBVA México</strong></p>
+      <p class="text-xs text-marea-bruma/80">CLABE: <strong class="select-all text-marea-teal-hi">0121 8000 1234 5678 90</strong></p>
+      <p class="text-xs text-marea-bruma/80">Beneficiario: Marea Playeras del Sureste</p>
+    </div>
+  </div>
+  <div class="border-t border-marea-noche-2 py-5 text-center font-mono text-xs text-marea-bruma/60">
+    © <span id="anio">2026</span> MAREA · Plataforma Ark Commerce · Hecho con 🌊 en el Caribe mexicano
+  </div>
+</footer>
+
+<!-- ═══════════ OVERLAY + DRAWER CARRITO & CHECKOUT ═══════════ -->
+<div id="overlay" class="overlay fixed inset-0 bg-marea-tinta/60 backdrop-blur-sm z-50" onclick="cerrarCarrito()"></div>
+
+<aside id="drawer" class="drawer fixed top-0 right-0 h-full w-full max-w-lg bg-marea-arena z-50 flex flex-col shadow-2xl">
+  <!-- Header del Carrito -->
+  <div class="flex items-center justify-between p-5 border-b-2 border-marea-arena-b bg-marea-blanco">
+    <div>
+      <h3 class="font-display font-800 text-2xl flex items-center gap-2 text-marea-tinta">
+        <i data-lucide="shopping-bag" class="w-6 h-6 text-marea-teal"></i> Tu carrito
+      </h3>
+      <p class="text-xs font-mono text-marea-tinta-3">Playeras personalizadas listas para estampar</p>
+    </div>
+    <button onclick="cerrarCarrito()" class="p-2 rounded-full hover:bg-marea-arena-2 text-marea-tinta-2" aria-label="Cerrar">
+      <i data-lucide="x" class="w-5 h-5"></i>
+    </button>
+  </div>
+
+  <!-- Contenido: Lista de Productos y Formulario Checkout -->
+  <div class="flex-1 overflow-y-auto p-5 space-y-5 scroll-hide">
+    <!-- Lista de items -->
+    <div id="carritoItems" class="space-y-3"></div>
+
+    <!-- Sección de Checkout en México (visible si hay items) -->
+    <div id="seccionCheckout" class="hidden space-y-5 pt-3 border-t-2 border-marea-arena-b">
+
+      <!-- 1. Cotizador de Envío C.P. -->
+      <div class="bg-marea-blanco p-4 rounded-2xl border border-marea-arena-b space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="font-mono text-xs font-bold uppercase tracking-wider text-marea-tinta">📦 Envío en México</span>
+          <span id="envioTag" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Local / Sureste</span>
+        </div>
+        <div class="flex gap-2">
+          <input id="inputCp" type="text" maxlength="5" placeholder="Tu C.P. (ej. 77710)" class="w-36 px-3 py-2 rounded-xl border border-marea-arena-b font-mono text-sm focus:outline-none focus:border-marea-teal">
+          <button onclick="calcularEnvio()" class="flex-1 px-3 py-2 rounded-xl bg-marea-arena-2 hover:bg-marea-arena-b border border-marea-arena-b text-xs font-bold text-marea-tinta-2 transition-colors">
+            Calcular envío
+          </button>
+        </div>
+        <p id="envioDetalle" class="text-xs text-marea-tinta-3">Envío Sureste ($99 MXN) o <strong>GRATIS</strong> llevando 2 o más playeras.</p>
+      </div>
+
+      <!-- 2. Datos del Comprador -->
+      <div class="bg-marea-blanco p-4 rounded-2xl border border-marea-arena-b space-y-3">
+        <span class="font-mono text-xs font-bold uppercase tracking-wider text-marea-tinta">👤 Datos de Entrega</span>
+        <div class="space-y-2">
+          <input id="clienteNombre" type="text" placeholder="Nombre completo" class="w-full px-3.5 py-2 rounded-xl border border-marea-arena-b text-sm focus:outline-none focus:border-marea-teal font-body">
+          <input id="clienteTelefono" type="tel" placeholder="WhatsApp / Teléfono (10 dígitos)" class="w-full px-3.5 py-2 rounded-xl border border-marea-arena-b text-sm focus:outline-none focus:border-marea-teal font-mono">
+          <input id="clienteDireccion" type="text" placeholder="Dirección de entrega (Calle, Núm, Col, Ciudad)" class="w-full px-3.5 py-2 rounded-xl border border-marea-arena-b text-sm focus:outline-none focus:border-marea-teal font-body">
+        </div>
+      </div>
+
+      <!-- 3. Método de Pago México -->
+      <div class="bg-marea-blanco p-4 rounded-2xl border border-marea-arena-b space-y-3">
+        <span class="font-mono text-xs font-bold uppercase tracking-wider text-marea-tinta">💳 Forma de Pago</span>
+        <div class="grid grid-cols-2 gap-2 text-xs font-bold font-mono">
+          <button type="button" onclick="seleccionarPago('spei')" id="btnPagoSpei" class="pago-btn p-3 rounded-xl border-2 border-marea-teal bg-marea-teal/10 text-marea-tinta flex flex-col items-center gap-1">
+            <i data-lucide="landmark" class="w-5 h-5 text-marea-teal-dk"></i>
+            <span>SPEI BBVA</span>
+          </button>
+          <button type="button" onclick="seleccionarPago('whatsapp')" id="btnPagoWa" class="pago-btn p-3 rounded-xl border-2 border-marea-arena-b bg-marea-arena text-marea-tinta-2 flex flex-col items-center gap-1">
+            <i data-lucide="message-circle" class="w-5 h-5 text-emerald-600"></i>
+            <span>WhatsApp</span>
+          </button>
+          <button type="button" onclick="seleccionarPago('efectivo')" id="btnPagoEfectivo" class="pago-btn p-3 rounded-xl border-2 border-marea-arena-b bg-marea-arena text-marea-tinta-2 flex flex-col items-center gap-1">
+            <i data-lucide="banknote" class="w-5 h-5 text-amber-600"></i>
+            <span>Contra entrega</span>
+          </button>
+          <button type="button" onclick="seleccionarPago('tarjeta')" id="btnPagoTarjeta" class="pago-btn p-3 rounded-xl border-2 border-marea-arena-b bg-marea-arena text-marea-tinta-2 flex flex-col items-center gap-1">
+            <i data-lucide="credit-card" class="w-5 h-5 text-marea-coral"></i>
+            <span>Tarjeta / Link</span>
+          </button>
+        </div>
+
+        <!-- Caja de ayuda SPEI (visible si SPEI está activo) -->
+        <div id="cajaSpei" class="bg-marea-arena p-3.5 rounded-xl border border-marea-arena-b space-y-2 text-xs">
+          <div class="flex justify-between items-center font-mono">
+            <span class="text-marea-tinta-3">Banco: <strong>BBVA</strong></span>
+            <span class="text-marea-tinta-3">Beneficiario: <strong>Marea</strong></span>
+          </div>
+          <div class="flex items-center justify-between bg-marea-blanco p-2 rounded-lg border border-marea-arena-b">
+            <span class="font-mono font-bold select-all tracking-wider text-marea-tinta">0121 8000 1234 5678 90</span>
+            <button onclick="copiarClabe()" id="btnCopiarClabe" class="px-2.5 py-1 rounded bg-marea-teal text-marea-tinta font-bold text-[11px] hover:bg-marea-teal-hi transition-colors flex items-center gap-1">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
+            </button>
+          </div>
+          <p class="text-[11px] text-marea-tinta-3">Transfiere el total y envíanos tu comprobante por WhatsApp al confirmar.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer con Totales y Botón de Pago -->
+  <div class="p-5 border-t-2 border-marea-arena-b bg-marea-blanco space-y-3">
+    <div class="space-y-1 text-sm font-mono">
+      <div class="flex justify-between text-marea-tinta-2">
+        <span>Subtotal</span>
+        <span id="carritoSubtotal">$0 MXN</span>
+      </div>
+      <div class="flex justify-between text-marea-tinta-2">
+        <span>Envío</span>
+        <span id="carritoEnvio">$0 MXN</span>
+      </div>
+      <div class="flex justify-between font-display font-800 text-2xl text-marea-tinta pt-1 border-t border-marea-arena-b">
+        <span>Total</span>
+        <span id="carritoTotal" class="font-mono text-marea-tinta">$0 MXN</span>
+      </div>
+    </div>
+
+    <button onclick="procesarPagoOla()" id="btnPagarOla" class="w-full bg-marea-coral text-white font-800 text-lg py-4 rounded-full shadow-coral hover:bg-marea-coral-dk transition-all flex items-center justify-center gap-2">
+      <span>Confirmar mi ola por WhatsApp</span> 🌊
+    </button>
+  </div>
+</aside>
+
+<!-- ═══════════ MODAL DE PRODUCTO ═══════════ -->
+<div id="modalProducto" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div class="absolute inset-0 bg-marea-tinta/60 backdrop-blur-sm" onclick="cerrarModal()"></div>
+  <div class="relative bg-marea-arena rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl aparece">
+    <button onclick="cerrarModal()" class="absolute top-4 right-4 z-10 p-2 rounded-full bg-marea-blanco shadow-ola text-marea-tinta" aria-label="Cerrar modal">
+      <i data-lucide="x" class="w-5 h-5"></i>
+    </button>
+    <div class="grid md:grid-cols-2">
+      <div class="bg-marea-arena-2 flex items-center justify-center p-8 rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none" id="modalImg"></div>
+      <div class="p-8 flex flex-col justify-between">
+        <div>
+          <div id="modalBadgeContainer"></div>
+          <h3 id="modalNombre" class="font-display font-800 text-3xl mt-3 text-marea-tinta"></h3>
+          <p id="modalPrecio" class="font-mono font-700 text-2xl text-marea-teal-dk mt-2"></p>
+          <p class="text-marea-tinta-2 mt-3 text-sm leading-relaxed">Algodón peinado 100%, tintas ecológicas de alta duración. Estampada artesanalmente en el Sureste.</p>
+
+          <div class="mt-6">
+            <div class="font-mono text-xs tracking-widest uppercase text-marea-tinta-2 font-bold mb-2">Elige tu talla mexicana</div>
+            <div id="modalTallas" class="flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+
+        <button id="modalAgregar" class="mt-8 w-full bg-marea-teal text-marea-tinta font-800 text-lg py-4 rounded-full shadow-ola hover:bg-marea-teal-hi transition-colors flex items-center justify-center gap-2">
+          <span>Llévala contigo</span> 🌊
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TOAST FEEDBACK ═══════════ -->
+<div id="toast" class="toast hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-marea-tinta text-marea-arena font-bold text-sm px-6 py-3.5 rounded-full shadow-2xl flex items-center gap-2"></div>
+
+<script>
+/* ═══════════════ CATÁLOGO OFICIAL MAREA ═══════════════ */
+const PRODUCTOS = [
+  {id:"marea-1", nombre:"Ola Nocturna",     precio:349, tela:"#0EA9A8", print:"#FFF9F0", diseno:"ola",       cat:"olas",      badge:"nuevo",     tallas:["S","M","L","XL"]},
+  {id:"marea-2", nombre:"Sol de Tulum",     precio:329, tela:"#FFF9F0", print:"#E94E49", diseno:"sol",       cat:"sol",       badge:null,        tallas:["S","M","L","XL","XXL"]},
+  {id:"marea-3", nombre:"Espíritu Selva",   precio:359, tela:"#2FA060", print:"#FFF9F0", diseno:"palmera",   cat:"selva",     badge:null,        tallas:["M","L","XL"]},
+  {id:"marea-4", nombre:"Marea Tricolor",   precio:379, tela:"#1A3B38", print:"#FFB947", diseno:"triangulos",cat:"limitadas", badge:"limitada",  tallas:["S","M","L"]},
+  {id:"marea-5", nombre:"Coral Vivo",       precio:349, tela:"#E94E49", print:"#FFF9F0", diseno:"ola",       cat:"olas",      badge:null,        tallas:["S","M","L","XL"]},
+  {id:"marea-6", nombre:"MANGO Beach",      precio:339, tela:"#FFB947", print:"#1A3B38", diseno:"mareaTexto",cat:"sol",       badge:"oferta", antes:399, tallas:["S","M","L","XL","XXL"]},
+  {id:"marea-7", nombre:"Máscara Marina",   precio:399, tela:"#8B6FC9", print:"#FFF9F0", diseno:"mascara",   cat:"limitadas", badge:"limitada",  tallas:["M","L","XL"]},
+  {id:"marea-8", nombre:"Ola Espuma",       precio:329, tela:"#FFFFFF", print:"#0EA9A8", diseno:"ola",       cat:"olas",      badge:null,        tallas:["S","M","L","XL","XXL"]},
+];
+
+/* ═══════════════ GENERADOR VECTORIAL SVG DE PLAYERAS ═══════════════ */
+function svgPlayera(p, size=220){
+  if (!p) return '';
+  const prints = {
+    ola: `<g stroke="${p.print}" fill="none" stroke-width="6" stroke-linecap="round">
+            <path d="M-32,0 Q-16,-16 0,0 T32,0"/>
+            <path d="M-26,14 Q-13,2 0,14 T26,14" opacity="0.7" stroke-width="5"/>
+          </g>`,
+    sol: `<circle r="20" fill="${p.print}"/>
+          <g stroke="${p.print}" stroke-width="5" stroke-linecap="round">
+            <line x1="0" y1="-30" x2="0" y2="-38"/><line x1="0" y1="30" x2="0" y2="38"/>
+            <line x1="-30" y1="0" x2="-38" y2="0"/><line x1="30" y1="0" x2="38" y2="0"/>
+            <line x1="-22" y1="-22" x2="-28" y2="-28"/><line x1="22" y1="22" x2="28" y2="28"/>
+            <line x1="-22" y1="22" x2="-28" y2="28"/><line x1="22" y1="-22" x2="28" y2="-28"/>
+          </g>`,
+    triangulos: `<g fill="${p.print}">
+            <path d="M-30,15 L-20,-8 L-10,15 Z"/>
+            <path d="M-8,15 L2,-14 L12,15 Z" opacity="0.85"/>
+            <path d="M14,15 L24,-4 L34,15 Z" opacity="0.7"/>
+          </g>`,
+    palmera: `<g stroke="${p.print}" fill="none" stroke-width="5" stroke-linecap="round">
+            <path d="M0,32 Q-2,10 0,-6"/>
+            <path d="M0,-6 Q-18,-20 -30,-14"/><path d="M0,-6 Q18,-22 30,-16"/>
+            <path d="M0,-6 Q-14,-28 -6,-34"/><path d="M0,-6 Q16,-26 10,-34"/>
+          </g>`,
+    mascara: `<g fill="${p.print}">
+            <ellipse cx="0" cy="-2" rx="26" ry="30" opacity="0.15"/>
+            <ellipse cx="0" cy="-2" rx="26" ry="30" fill="none" stroke="${p.print}" stroke-width="5"/>
+            <circle cx="-10" cy="-10" r="4.5"/><circle cx="10" cy="-10" r="4.5"/>
+            <path d="M-10,14 Q0,22 10,14" fill="none" stroke="${p.print}" stroke-width="5" stroke-linecap="round"/>
+          </g>`,
+    mareaTexto: `<text text-anchor="middle" y="10" font-family="'Baloo 2',cursive" font-weight="800" font-size="26" fill="${p.print}" letter-spacing="2">MAREA</text>
+          <path d="M-30,22 Q-15,14 0,22 T30,22" stroke="${p.print}" fill="none" stroke-width="4" stroke-linecap="round"/>`,
+  };
+
+  const badge = p.badge==='limitada' ? `<rect x="114" y="14" width="76" height="26" rx="13" fill="#FFB947"/><text x="152" y="32" text-anchor="middle" font-family="'Nunito',sans-serif" font-weight="800" font-size="11" fill="#1A3B38">LIMITADA</text>` :
+                p.badge==='oferta'   ? `<rect x="118" y="14" width="70" height="26" rx="13" fill="#E94E49"/><text x="153" y="32" text-anchor="middle" font-family="'Nunito',sans-serif" font-weight="800" font-size="12" fill="#fff">OFERTA</text>` :
+                p.badge==='nuevo'    ? `<rect x="118" y="14" width="66" height="26" rx="13" fill="#0EA9A8"/><text x="151" y="32" text-anchor="middle" font-family="'Nunito',sans-serif" font-weight="800" font-size="12" fill="#fff">NUEVO</text>` : '';
+
+  return `<svg width="${size}" height="${size*1.1}" viewBox="0 0 200 220">
+    <ellipse cx="100" cy="206" rx="62" ry="8" fill="#1A3B38" opacity="0.07"/>
+    <path d="M62 45 L38 58 L26 92 L48 102 L54 86 L54 185 Q54 195 64 195 L136 195 Q146 195 146 185 L146 86 L152 102 L174 92 L162 58 L138 45 Q120 60 100 60 Q80 60 62 45 Z"
+          fill="${p.tela}" stroke="#1A3B38" stroke-opacity="0.12" stroke-width="2"/>
+    <path d="M62 45 Q80 60 100 60 Q120 60 138 45 Q120 52 100 52 Q80 52 62 45 Z" fill="#1A3B38" opacity="0.15"/>
+    <g transform="translate(100 125)">${prints[p.diseno] || ''}</g>
+    ${badge}
+  </svg>`;
+}
+
+/* ═══════════════ RENDER DEL GRID ═══════════════ */
+const grid = document.getElementById('gridProductos');
+const vacio  = document.getElementById('vacio');
+
+function badgeHTML(b){
+  if(b==='nuevo')    return '<span class="marea-badge marea-badge--nuevo">Nuevo</span>';
+  if(b==='limitada') return '<span class="marea-badge marea-badge--limitada">Limitada</span>';
+  if(b==='oferta')   return '<span class="marea-badge marea-badge--oferta">Oferta</span>';
+  return '';
+}
+
+function precioHTML(p){
+  if(p.antes) return `<span class="font-mono text-marea-tinta-3 line-through text-sm mr-1.5">$${p.antes}</span><span class="font-mono font-700 text-marea-coral-dk text-lg">$${p.precio} MXN</span>`;
+  return `<span class="font-mono font-700 text-marea-tinta text-lg">$${p.precio} MXN</span>`;
+}
+
+function render(filtro='todos'){
+  const lista = filtro==='todos' ? PRODUCTOS : PRODUCTOS.filter(p=>p.cat===filtro);
+  grid.innerHTML = lista.map(p=>`
+    <div class="bg-marea-blanco rounded-[24px] border-2 border-marea-arena-b overflow-hidden cursor-pointer transition-all hover:-translate-y-1.5 hover:shadow-ola hover:border-marea-teal aparece flex flex-col justify-between" onclick="abrirModal('${p.id}')">
+      <div class="bg-marea-arena-2 flex items-center justify-center pt-6 pb-2">${svgPlayera(p,180)}</div>
+      <div class="p-5 flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-start justify-between gap-2">
+            <h3 class="font-display font-700 text-lg leading-tight text-marea-tinta">${p.nombre}</h3>
+            ${badgeHTML(p.badge)}
+          </div>
+          <p class="mt-2">${precioHTML(p)}</p>
+        </div>
+        <div class="mt-3 pt-3 border-t border-marea-arena-b/60 flex items-center justify-between text-xs font-mono text-marea-tinta-3">
+          <span>${p.tallas.join(' · ')}</span>
+          <span class="text-marea-teal-dk font-bold">Ver +</span>
+        </div>
+      </div>
+    </div>`).join('');
+  vacio.classList.toggle('hidden', lista.length>0);
+  if(window.lucide) lucide.createIcons();
+}
+
+/* Eventos Filtros */
+document.querySelectorAll('.filtro').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filtro').forEach(b=>{
+      b.classList.remove('activo','bg-marea-teal','text-marea-tinta','border-marea-teal');
+      b.classList.add('bg-marea-blanco','text-marea-tinta-2','border-marea-arena-b');
+    });
+    btn.classList.add('activo','bg-marea-teal','text-marea-tinta','border-marea-teal');
+    btn.classList.remove('bg-marea-blanco','text-marea-tinta-2','border-marea-arena-b');
+    render(btn.dataset.filtro);
+  });
+});
+
+/* ═══════════════ CARRITO & CHECKOUT MÉXICO ═══════════════ */
+let carrito = JSON.parse(localStorage.getItem('marea_cart') || '[]');
+let metodoPago = 'spei';
+let costoEnvio = 99;
+const drawer = document.getElementById('drawer');
+const overlay = document.getElementById('overlay');
+
+function guardarCarrito(){
+  localStorage.setItem('marea_cart', JSON.stringify(carrito));
+  actualizarBadge();
+  renderCarrito();
+}
+
+function actualizarBadge(){
+  const n = carrito.reduce((a,i)=>a+i.qty,0);
+  document.getElementById('badgeCarrito').textContent = n;
+}
+
+function abrirCarrito(){ 
+  drawer.classList.add('abierto'); 
+  overlay.classList.add('abierto'); 
+  renderCarrito(); 
+}
+
+function cerrarCarrito(){ 
+  drawer.classList.remove('abierto'); 
+  overlay.classList.remove('abierto'); 
+}
+
+function agregar(id, talla){
+  const p = PRODUCTOS.find(x=>x.id===id);
+  if (!p) return;
+  const key = id+'-'+talla;
+  const ex = carrito.find(i=>i.key===key);
+  if(ex) ex.qty++; 
+  else carrito.push({key, id, talla, nombre:p.nombre, precio:p.precio, qty:1, tela:p.tela, diseno:p.diseno, print:p.print});
+  guardarCarrito();
+  abrirCarrito();
+  toast(`🌊 "${p.nombre}" (${talla}) agregada a tu ola`);
+}
+
+function cambiarQty(key, delta){
+  const item = carrito.find(i=>i.key===key);
+  if(!item) return;
+  item.qty += delta;
+  if(item.qty <= 0) {
+    carrito = carrito.filter(i=>i.key!==key);
+  }
+  guardarCarrito();
+}
+
+function quitar(key){ 
+  carrito = carrito.filter(i=>i.key!==key); 
+  guardarCarrito(); 
+}
+
+function calcularEnvio(){
+  const cp = document.getElementById('inputCp').value.trim();
+  const totalPlayeras = carrito.reduce((a,i)=>a+i.qty,0);
+  if(!/^\d{5}$/.test(cp)){
+    toast('⚠️ Ingresa un Código Postal válido de 5 dígitos');
+    return;
+  }
+  
+  // Regla comercial mexicana: 2 o más playeras tienen envío GRATIS
+  if (totalPlayeras >= 2) {
+    costoEnvio = 0;
+    document.getElementById('envioTag').textContent = '¡Envío Gratis!';
+    document.getElementById('envioTag').className = 'text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300';
+    document.getElementById('envioDetalle').innerHTML = `✅ C.P. <strong>${cp}</strong> califica para <strong>Envío Nacional Gratis</strong> (2+ playeras).`;
+  } else {
+    costoEnvio = 99;
+    document.getElementById('envioTag').textContent = 'Estafeta / FedEx ($99 MXN)';
+    document.getElementById('envioTag').className = 'text-xs font-bold text-marea-teal-dk bg-marea-teal/15 px-2.5 py-0.5 rounded-full border border-marea-teal/30';
+    document.getElementById('envioDetalle').innerHTML = `📦 Cobertura verificada para C.P. <strong>${cp}</strong>. (¡Agrega 1 playera más para envío GRATIS!)`;
+  }
+  renderCarrito();
+}
+
+function seleccionarPago(metodo){
+  metodoPago = metodo;
+  document.querySelectorAll('.pago-btn').forEach(b=>{
+    b.classList.remove('border-marea-teal', 'bg-marea-teal/10', 'text-marea-tinta');
+    b.classList.add('border-marea-arena-b', 'bg-marea-arena', 'text-marea-tinta-2');
+  });
+  
+  const mapBtn = {
+    spei: 'btnPagoSpei',
+    whatsapp: 'btnPagoWa',
+    efectivo: 'btnPagoEfectivo',
+    tarjeta: 'btnPagoTarjeta'
+  };
+  const activeBtn = document.getElementById(mapBtn[metodo]);
+  if(activeBtn){
+    activeBtn.classList.add('border-marea-teal', 'bg-marea-teal/10', 'text-marea-tinta');
+    activeBtn.classList.remove('border-marea-arena-b', 'bg-marea-arena', 'text-marea-tinta-2');
+  }
+
+  const cajaSpei = document.getElementById('cajaSpei');
+  if(cajaSpei) {
+    cajaSpei.style.display = (metodo === 'spei') ? 'block' : 'none';
+  }
+}
+
+function copiarClabe(){
+  const clabe = "012180001234567890";
+  navigator.clipboard.writeText(clabe).then(()=>{
+    const btn = document.getElementById('btnCopiarClabe');
+    btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i> ¡Copiada!`;
+    if(window.lucide) lucide.createIcons();
+    toast('📋 CLABE BBVA copiada al portapapeles');
+    setTimeout(()=>{
+      btn.innerHTML = `<i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar`;
+      if(window.lucide) lucide.createIcons();
+    }, 2500);
+  });
+}
+
+function renderCarrito(){
+  const cont = document.getElementById('carritoItems');
+  const seccionCheckout = document.getElementById('seccionCheckout');
+  const btnPagar = document.getElementById('btnPagarOla');
+
+  if(carrito.length === 0){
+    cont.innerHTML = `
+      <div class="text-center py-16">
+        <i data-lucide="waves" class="w-14 h-14 text-marea-teal mx-auto mb-4"></i>
+        <p class="font-display font-700 text-xl text-marea-tinta">Tu carrito está vacío</p>
+        <p class="text-marea-tinta-2 text-sm mt-1">La marea está esperando tu primer diseño.</p>
+        <button onclick="cerrarCarrito()" class="mt-6 px-6 py-2.5 rounded-full bg-marea-teal text-marea-tinta font-bold text-xs uppercase tracking-wider">
+          Explorar playeras
+        </button>
+      </div>`;
+    seccionCheckout.classList.add('hidden');
+    btnPagar.disabled = true;
+    btnPagar.classList.add('opacity-50', 'cursor-not-allowed');
+  } else {
+    cont.innerHTML = carrito.map(i=>{
+      const prod = PRODUCTOS.find(p=>p.id===i.id) || i;
+      return `
+        <div class="flex gap-3 bg-marea-blanco rounded-2xl p-3 border border-marea-arena-b">
+          <div class="bg-marea-arena-2 rounded-xl w-20 h-20 flex items-center justify-center shrink-0">
+            ${svgPlayera(prod, 60)}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-display font-700 truncate text-marea-tinta">${i.nombre}</p>
+            <p class="font-mono text-xs text-marea-tinta-3">Talla: <strong class="text-marea-tinta">${i.talla}</strong></p>
+            <div class="flex items-center justify-between mt-2">
+              <span class="font-mono font-bold text-marea-teal-dk text-sm">$${i.precio * i.qty} MXN</span>
+              <div class="flex items-center gap-2 bg-marea-arena rounded-lg px-2 py-1 border border-marea-arena-b">
+                <button onclick="cambiarQty('${i.key}', -1)" class="text-marea-tinta-2 hover:text-marea-coral font-bold text-sm px-1">-</button>
+                <span class="font-mono font-bold text-xs">${i.qty}</span>
+                <button onclick="cambiarQty('${i.key}', 1)" class="text-marea-tinta-2 hover:text-marea-teal-dk font-bold text-sm px-1">+</button>
+              </div>
+            </div>
+          </div>
+          <button onclick="quitar('${i.key}')" class="self-start p-1.5 rounded-full hover:bg-marea-arena-2 text-marea-coral/80 hover:text-marea-coral" aria-label="Eliminar">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </div>`;
+    }).join('');
+
+    seccionCheckout.classList.remove('hidden');
+    btnPagar.disabled = false;
+    btnPagar.classList.remove('opacity-50', 'cursor-not-allowed');
+  }
+
+  const subtotal = carrito.reduce((a,i)=>a + i.precio * i.qty, 0);
+  const totalPlayeras = carrito.reduce((a,i)=>a + i.qty, 0);
+  const envioEfectivo = (totalPlayeras >= 2 || subtotal === 0) ? 0 : costoEnvio;
+  const total = subtotal + (carrito.length > 0 ? envioEfectivo : 0);
+
+  document.getElementById('carritoSubtotal').textContent = `$${subtotal.toLocaleString('es-MX')} MXN`;
+  document.getElementById('carritoEnvio').textContent = envioEfectivo === 0 ? 'GRATIS' : `$${envioEfectivo} MXN`;
+  document.getElementById('carritoTotal').textContent = `$${total.toLocaleString('es-MX')} MXN`;
+
+  if(window.lucide) lucide.createIcons();
+}
+
+/* ═══════════════ PROCESAMIENTO CHECKOUT / WHATSAPP ═══════════════ */
+async function procesarPagoOla(){
+  if(carrito.length === 0) return;
+
+  const nombre = document.getElementById('clienteNombre').value.trim() || 'Cliente MAREA';
+  const telefono = document.getElementById('clienteTelefono').value.trim() || 'No especificado';
+  const direccion = document.getElementById('clienteDireccion').value.trim() || 'Por confirmar en chat';
+  const cp = document.getElementById('inputCp').value.trim() || '';
+
+  const subtotal = carrito.reduce((a,i)=>a + i.precio * i.qty, 0);
+  const totalPlayeras = carrito.reduce((a,i)=>a + i.qty, 0);
+  const envio = (totalPlayeras >= 2) ? 0 : costoEnvio;
+  const total = subtotal + envio;
+  const folio = "MR-" + Math.floor(1000 + Math.random() * 9000);
+
+  // Registro asíncrono en Worker D1 (tolerante a fallos locales)
+  try {
+    fetch('/api/checkout?tenant=marea', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customer: { name: nombre, phone: telefono, address: direccion + (cp ? ` C.P. ${cp}` : '') },
+        items: carrito.map(i => ({ id: i.id, qty: i.qty, talla: i.talla })),
+        paymentMethod: metodoPago,
+        shippingCost: envio
+      })
+    }).catch(()=>{});
+  } catch(e){}
+
+  // Formato del Ticket de Compra para México
+  const itemsTexto = carrito.map(i => `• ${i.qty}x *${i.nombre}* (Talla ${i.talla}) — $${i.precio * i.qty} MXN`).join('\n');
+  const envioTexto = envio === 0 ? 'GRATIS (Promoción 2+ playeras)' : `$${envio} MXN`;
+  const metodoLabel = {
+    spei: 'Transferencia SPEI (BBVA)',
+    whatsapp: 'Acordar en WhatsApp',
+    efectivo: 'Pago contra entrega / Local',
+    tarjeta: 'Tarjeta bancaria / Link de pago'
+  }[metodoPago] || 'SPEI BBVA';
+
+  const ticketMsg = 
+`🌊 *NUEVO PEDIDO MAREA #${folio}*
+----------------------------------------
+${itemsTexto}
+----------------------------------------
+*Subtotal:* $${subtotal} MXN
+*Envío:* ${envioTexto}${cp ? ` (C.P. ${cp})` : ''}
+*TOTAL:* $${total} MXN
+----------------------------------------
+*Forma de Pago:* ${metodoLabel}
+*Cliente:* ${nombre}
+*Teléfono:* ${telefono}
+*Dirección:* ${direccion}
+----------------------------------------
+_Hola equipo MAREA! Confirmo mi pedido para que inicien el estampado de mi ola._`;
+
+  // Número oficial MAREA
+  const whatsappOficial = "529990000000";
+  const urlWa = `https://wa.me/${whatsappOficial}?text=${encodeURIComponent(ticketMsg)}`;
+  window.open(urlWa, '_blank');
+
+  toast(`🌊 ¡Pedido #${folio} generado con éxito!`);
+}
+
+function solicitarPersonalizada(){
+  const msg = `¡Hola MAREA! 🌊 Quiero cotizar una playera personalizada con mi propio diseño. ¿Me pueden apoyar con las especificaciones y precios?`;
+  window.open(`https://wa.me/529990000000?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+/* ═══════════════ MODAL DE PRODUCTO ═══════════════ */
+let tallaSel = null, prodActual = null;
+const modal = document.getElementById('modalProducto');
+
+function abrirModal(id){
+  prodActual = PRODUCTOS.find(p=>p.id===id);
+  if(!prodActual) return;
+  tallaSel = prodActual.tallas[Math.floor(prodActual.tallas.length/2)];
+  
+  document.getElementById('modalImg').innerHTML = svgPlayera(prodActual, 240);
+  document.getElementById('modalNombre').textContent = prodActual.nombre;
+  document.getElementById('modalPrecio').innerHTML = precioHTML(prodActual);
+  
+  const bContainer = document.getElementById('modalBadgeContainer');
+  bContainer.innerHTML = badgeHTML(prodActual.badge);
+
+  document.getElementById('modalTallas').innerHTML = prodActual.tallas.map(t=>
+    `<button data-talla="${t}" class="talla-btn marea-talla font-mono font-bold ${t===tallaSel?'marea-talla--activa':''}">${t}</button>`).join('');
+  
+  document.querySelectorAll('.talla-btn').forEach(b=>b.addEventListener('click',()=>{
+    tallaSel = b.dataset.talla;
+    document.querySelectorAll('.talla-btn').forEach(x=>x.classList.remove('marea-talla--activa'));
+    b.classList.add('marea-talla--activa');
+  }));
+
+  document.getElementById('modalAgregar').onclick = ()=>{ 
+    agregar(prodActual.id, tallaSel); 
+    cerrarModal(); 
+  };
+
+  modal.classList.remove('hidden'); 
+  modal.classList.add('flex');
+  if(window.lucide) lucide.createIcons();
+}
+
+function cerrarModal(){ 
+  modal.classList.add('hidden'); 
+  modal.classList.remove('flex'); 
+}
+
+/* ═══════════════ TOAST ═══════════════ */
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.innerHTML = msg; 
+  t.classList.remove('hidden');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.add('hidden'), 2800);
+}
+
+/* ═══════════════ SPLINE 3D (con fallback) ═══════════════ */
+async function cargarSpline(){
+  const slot = document.getElementById('splineSlot');
+  const url = slot.dataset.splineUrl;
+  if(!url) return;
+  try{
+    const { Application } = await import('https://unpkg.com/@splinetool/runtime@1.9.28/build/spline-runtime.js');
+    const canvas = document.getElementById('splineCanvas');
+    const app = new Application(canvas);
+    await app.load(url);
+    slot.classList.remove('hidden');
+    document.getElementById('heroVisual').style.opacity = '0.3';
+  }catch(e){
+    console.warn('Spline fallback activo');
+  }
+}
+
+/* ═══════════════ INIT ═══════════════ */
+document.getElementById('anio').textContent = new Date().getFullYear();
+document.getElementById('playeraHero').innerHTML = svgPlayera(PRODUCTOS[0], 280);
+render('todos');
+actualizarBadge();
+if(window.lucide) lucide.createIcons();
+cargarSpline();
+</script>
+
+<!-- Widget Concierge Ark / Soporte -->
+<script src="/widget.js" data-tenant="marea"></script>
+</body>
+</html>

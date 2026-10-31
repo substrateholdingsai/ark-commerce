@@ -57,6 +57,19 @@ const TRADE_CATEGORIES = [
     ],
     whatsappPreview: 'Hola! Tengo una falla en el centro de carga principal de mi casa. Solicito electricista urgente.',
   },
+  {
+    id: 'playeras',
+    icon: '👕',
+    title: 'Playeras & Moda del Sureste',
+    subtitle: 'Estampado textil, personalizadas y streetwear',
+    sampleStore: 'marea.ark.mx',
+    services: [
+      { name: 'Playera "Ola Nocturna" (100% Algodón)', price: '$349', desc: 'Serigrafía premium y tacto ultrasuave' },
+      { name: 'Playera "Sol de Tulum" Edición Coral', price: '$329', desc: 'Estampado con pigmento eco en tela arena' },
+      { name: 'Estampado con tu propio diseño', price: '$349', desc: 'Sube tu logo o arte, desde 1 pieza' },
+    ],
+    whatsappPreview: 'Hola MAREA! 🌊 Quiero pedir la playera Ola Nocturna en talla L con envío nacional.',
+  },
 ];
 
 export default function ArkLanding() {
@@ -443,7 +456,7 @@ export default function ArkLanding() {
             <div className="my-8 border-t border-white/10 pt-8 text-left space-y-3.5 text-sm">
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Tu web profesional con diseño de autor</strong> (como Baakal)</span>
+                <span className="text-zinc-200"><strong>Tu web profesional con diseño de autor</strong> (como Baakal o Marea)</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>

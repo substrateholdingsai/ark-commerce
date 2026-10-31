@@ -81,7 +81,7 @@ ${JSON.stringify(providersList, null, 2)}
 
 INSTRUCCIONES CLAVE:
 1. Analiza el problema, urgencia o solicitud del usuario: "${query}".
-2. Identifica al proveedor más idóneo de la lista (por ejemplo: problemas de agua/gas/fugas -> baakal; alimentos gourmet -> temozonia; software/ecommerce -> ark).
+2. Identifica al proveedor más idóneo de la lista (por ejemplo: problemas de agua/gas/fugas -> baakal; playeras/ropa personalizada/merch -> marea; alimentos gourmet/carnes ahumadas -> temozonia; software/ecommerce/servicios digitales -> ark).
 3. Selecciona el servicio o combinación de servicios específicos que resuelven su necesidad con sus precios reales.
 4. Responde en tono profesional, ágil, directo y con calidez mexicana. Explica brevemente por qué recomiendas a ese proveedor y cuánto costará aproximadamente el servicio.
 5. Devuelve SIEMPRE tu respuesta estructurada estrictamente en formato JSON con la siguiente estructura (sin bloques markdown extras):
@@ -139,6 +139,8 @@ INSTRUCCIONES CLAVE:
       bestTenantSlug = 'ark';
     } else if (lowerQuery.includes('carne') || lowerQuery.includes('ahumad') || lowerQuery.includes('comida') || lowerQuery.includes('costilla')) {
       bestTenantSlug = 'temozonia';
+    } else if (lowerQuery.includes('playera') || lowerQuery.includes('camiseta') || lowerQuery.includes('ropa') || lowerQuery.includes('estamp') || lowerQuery.includes('personaliz') || lowerQuery.includes('talla') || lowerQuery.includes('merch') || lowerQuery.includes('textil') || lowerQuery.includes('marea') || lowerQuery.includes('serigraf')) {
+      bestTenantSlug = 'marea';
     } else if (lowerQuery.includes('plomer') || lowerQuery.includes('fuga') || lowerQuery.includes('gas') || lowerQuery.includes('boiler') || lowerQuery.includes('agua') || lowerQuery.includes('drenaje') || lowerQuery.includes('tubo')) {
       bestTenantSlug = 'baakal';
     } else {
@@ -148,6 +150,12 @@ INSTRUCCIONES CLAVE:
     const matchedTenant = providersMap.get(bestTenantSlug) || providersList[0];
     const firstService = matchedTenant.services[0];
     const estimatedTotal = firstService ? firstService.price : 0;
+
+    // Resolver target_url amigable
+    const targetUrl = matchedTenant.slug === 'temozonia' ? '/temozonia' :
+                      matchedTenant.slug === 'baakal' ? '/baakal' :
+                      matchedTenant.slug === 'marea' ? '/marea' :
+                      `/stores/${matchedTenant.slug}.html`;
 
     // Registrar lead en D1 (canal: web_concierge)
     try {
@@ -176,7 +184,7 @@ INSTRUCCIONES CLAVE:
         name: matchedTenant.name,
         slug: matchedTenant.slug,
         whatsapp: matchedTenant.whatsapp,
-        target_url: `/stores/${matchedTenant.slug}.html`,
+        target_url: targetUrl,
         matched_services: [
           {
             id: firstService.id,

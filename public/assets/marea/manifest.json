@@ -1,0 +1,69 @@
+{
+  "schema": "bobs.asset-manifest.v1",
+  "system": "MAREA",
+  "slug": "marea",
+  "cliente": "Tienda de Playeras Personalizadas · Sureste Mexicano",
+  "huesped": "retail",
+  "kind": "vector-forge",
+  "stdlib_only": true,
+  "noise_seed": 2491,
+  "files": [
+    {
+      "path": "favicon.svg",
+      "bytes": 864,
+      "kb": 0.84
+    },
+    {
+      "path": "logo-lockup.svg",
+      "bytes": 1617,
+      "kb": 1.58
+    },
+    {
+      "path": "monogram-marea.svg",
+      "bytes": 1041,
+      "kb": 1.02
+    },
+    {
+      "path": "pattern-olas.svg",
+      "bytes": 528,
+      "kb": 0.52
+    },
+    {
+      "path": "pattern-triangulos.svg",
+      "bytes": 632,
+      "kb": 0.62
+    },
+    {
+      "path": "pattern-mascara.svg",
+      "bytes": 804,
+      "kb": 0.79
+    },
+    {
+      "path": "texture-arena.svg",
+      "bytes": 800,
+      "kb": 0.78
+    },
+    {
+      "path": "divider-ola.svg",
+      "bytes": 1007,
+      "kb": 0.98
+    },
+    {
+      "path": "og-image.svg",
+      "bytes": 4139,
+      "kb": 4.04
+    },
+    {
+      "path": "sprite-playera.svg",
+      "bytes": 2399,
+      "kb": 2.34
+    }
+  ],
+  "total_bytes": 13831,
+  "total_kb": 13.51,
+  "checks": {
+    "pattern_olas_under_4kb": true,
+    "pattern_triangulos_under_4kb": true,
+    "pattern_mascara_under_4kb": true
+  }
+}

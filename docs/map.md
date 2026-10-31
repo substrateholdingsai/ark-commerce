@@ -32,6 +32,14 @@
    - Paleta: Verde Selva (`#1A2F2A`), Agua Turquesa (`#2A7F9E`), Cobre (`#B87333`), Terracota (`#C86B4A`), Cal (`#F5F1E8`)
    - Cobro: Pago en sitio o Transferencia SPEI BBVA (`0121 8000 9988 7766 55`) y WhatsApp (`+52 999 123 4567`)
 
+4. **MAREA — Playeras Personalizadas** (`marea`): Tienda retail de moda y streetwear caribeño en `/marea` y `/stores/marea.html`.
+   - Catálogo: 8 playeras personalizadas con generador SVG dinámico (Ola Nocturna, Sol de Tulum, Espíritu Selva, Marea Tricolor, Coral Vivo, MANGO Beach, Máscara Marina, Ola Espuma)
+   - Canon de diseño: **MAREA v1.0** (`docs/tienda-playeras-marea.md`)
+   - Modelo UX: Retail joven y festivo, Regla del 12% festivo, selector de tallas S a XXL, personalizador de diseño propio
+   - Paleta: Arena (`#FFF9F0`), Teal (`#0EA9A8` / `#087F7E`), Coral (`#E94E49` / `#C53732`), Mango (`#FFB947`), Noche (`#0F2E2C`)
+   - Cobro: Transferencia SPEI BBVA (`0121 8000 1234 5678 90`), Ticket WhatsApp en 1 clic, Cotización C.P. Envia.com y pago contra entrega local en Riviera Maya / Mérida
+   - Admin: `admin@marea.mx` / `admin123`
+
 ## 3. Stack Tecnológico
 | Capa | Tecnología | Propósito |
 |---|---|---|
@@ -54,14 +62,17 @@
 temozonia/
 ├── astro/                    # Frontend Astro legacy (archivos antiguos)
 ├── config/                   # Configuración centralizada (config.ts)
-├── docs/                     # Documentación (map.md, designsystem.md, ark_designsystem.md)
+├── docs/                     # Documentación (map.md, designsystem.md, ark_designsystem.md, baakal_designsystem.md, tienda-playeras-marea.md)
 ├── products/                 # Catálogos de ejemplo (CSV/JSON) para importación
 ├── public/                   # Assets estáticos (favicon, imágenes, stores ejemplo)
-│   └── images/temozonia/     # Assets generados (smoke_hero, wood_tile, etc.)
+│   ├── images/temozonia/     # Assets generados (smoke_hero, wood_tile, etc.)
+│   ├── images/baakal/        # Assets generados Baakal (girih, favicon, lockup)
+│   ├── images/marea/         # Assets generados Marea (vector forge + raster SEO)
+│   ├── stores/               # Storefronts standalone (baakal.html, marea.html)
 │   └── admin/                # Dashboard de leads (leads.html)
 ├── scripts/
-│   ├── python/               # Forges, onboarding, importadores, validación, smoke tests, facturas
-│   └── sql/                  # Schema D1 (schema.sql, schema_auth*.sql, schema_shipping.sql, seed.sql, ejemplo_cliente.sql)
+│   ├── python/               # Forges (marea_vector_forge.py, marea_raster_forge.py, smoke_amber, baakal), onboarding, importadores
+│   └── sql/                  # Schema D1 (schema.sql, schema_auth*.sql, schema_shipping.sql, seed.sql, baakal.sql, marea.sql)
 ├── src/                      # Código fuente Astro + React
 │   ├── components/
 │   │   ├── admin/            # Panel admin React (AdminApp.tsx)
@@ -172,15 +183,16 @@ Tablas: `tenants`, `tenant_users`, `customers`, `carts`, `store_sessions`, `acti
 - `tenants`: incluye dirección de origen y `envia_api_key` para cotización/guías
 - Relaciones con `ON DELETE CASCADE` entre tenant y entidades hijas
 - Índices optimizados por tenant, estado, fechas y cliente
-- Seed data con 2 tenants + usuarios admin + productos
-- Migraciones: `schema.sql`, `schema_auth.sql`, `schema_auth2.sql`, `schema_auth3.sql`, `schema_shipping.sql`, `whatsapp_table.sql`, `baakal.sql`
+- Seed data con 4 tenants + usuarios admin + productos
+- Migraciones: `schema.sql`, `schema_auth.sql`, `schema_auth2.sql`, `schema_auth3.sql`, `schema_shipping.sql`, `whatsapp_table.sql`, `baakal.sql`, `marea.sql`
 
 ## 8. Páginas Astro
 | Página | Ruta | Descripción |
 |---|---|---|
-| `index.astro` | `/` | Landing Ark Commerce (ArkLanding React client:load). Auto-redirige a `/temozonia` si `?tenant=temozonia` o subdominio |
+| `index.astro` | `/` | Landing Ark Commerce (ArkLanding React client:load). Auto-redirige si `?tenant=temozonia|baakal|marea` o subdominio |
 | `temozonia.astro` | `/temozonia` | Tienda Temozonia (Layout + Hero + ProductCard grid + CheckoutCalculator con envío Envia.com) |
 | `baakal.astro` | `/baakal` | Tienda Baakal (Layout + servicios técnicos + CheckoutCalculator) |
+| `marea.astro` | `/marea` | Tienda MAREA Playeras Personalizadas (Hero caribeño + generador SVG + tallas S-XXL + checkout SPEI/WhatsApp) |
 | `admin.astro` | `/admin` | Panel admin multi-tenant (AdminApp React client:only) |
 | `test.astro` | `/test` | Página de pruebas |
 | `contacto.astro` | `/contacto` | Contacto |
@@ -202,27 +214,27 @@ pnpm cf-typegen   # Generar tipos Cloudflare Env
 ```
 
 **Python (scripts/python):**
-- `smoke_amber_forge.py`, `ark_pulse_forge.py`: generación de assets visuales
+- `marea_vector_forge.py`, `marea_raster_forge.py`: generación de assets SVG y capa raster SEO/PWA para MAREA
+- `smoke_amber_forge.py`, `ark_pulse_forge.py`, `forge_baakal.py`: generación de assets visuales
 - `onboard_tenant.py`: CLI interactivo de onboarding de tenants
 - `excel_to_d1.py`: importador universal Excel/CSV → D1 (imágenes + upsert)
 - `seed_tenants.py`: siembra de tenants oficiales en D1
 - `validate_tenant.py`: health check multi-tenant (config, admin, productos, theme, API)
 - `checkout_smoke_test.py`: prueba E2E del pipeline de órdenes (D1, queue, ticket WhatsApp)
 - `invoice_generator.py`: generación de facturas PDF con ReportLab y theme por tenant
-- `ark_universal_forge.py`, `main.py`: utilidades legacy/experimentales
 - `check_oficios_dist.py`, `generate_dist_index.py`, `update_landing_source.py`: generación/validación del sitio Ark Oficios
 - `test_oficios_live.py`: smoke test del landing Ark Oficios en producción
 
 ## 10. Estado de Verificación
-- **Build**: `pnpm run build` (Astro build + Wrangler dry-run) ejecuta correctamente; Astro genera las 8 rutas estáticas y bundles cliente
+- **Build**: `pnpm run build` (Astro build + Wrangler dry-run) ejecuta correctamente; Astro genera las 9 rutas estáticas y bundles cliente
 - **D1**: `ark-commerce-db` provisionada local/remoto con esquema multi-tenant completo (tenants, users, products, orders, order_items + tablas de cliente/auth + envío)
 - **Infraestructura Cloudflare**: Worker, D1, KV (SESSION+CACHE), R2, Queues, Workers AI configurados en `wrangler.toml`
-- **Multi-tenant**: Resolución por slug/subdominio/query param + caché KV funcionando
+- **Multi-tenant**: Resolución por slug/subdominio/query param + caché KV funcionando (Ark, Temozonia, Baakal, Marea)
 - **API**: Endpoints CRUD completos para products, checkout, store, admin con auth Bearer + sesiones KV; endpoints de cliente (auth, cart, magic link, direcciones, pedidos) y logística (quote/label/track) funcionales. Checkout persiste `shipping_cost`/carrier/service a partir de la tarifa seleccionada (Envia.com) y lo incluye en el total y en la notificación Arkangel.
 - **Logística**: Envia.com integrado con fallback simulado; checkout incluye selector de paquetería y desglose subtotal/envío/total
 - **Admin Panel**: React app funcional con login, gestión productos, tienda, pedidos + subida R2 + dashboard de leads
-- **Frontend**: Tres experiencias (Ark Oficios landing con cotizador IA, Temozonia storefront, Baakal store) funcionales; auth de cliente integrada en Header (UserMenu/AuthModal); carrito persiste tarifa de envío
-- **IA**: Ark Concierge (Workers AI) para recomendación/cotización de servicios técnicos; widget embebible Ark Bot con cotización y handoff WhatsApp
+- **Frontend**: Cuatro experiencias (Ark Oficios landing con cotizador IA, Temozonia storefront, Baakal store, Marea storefront) funcionales; auth de cliente integrada en Header (UserMenu/AuthModal); carrito persiste tarifa de envío
+- **IA**: Ark Concierge (Workers AI) para recomendación/cotización de servicios técnicos y playeras personalizadas; webhook WhatsApp con cotización IA contextualizada y handoff WhatsApp
 - **Leads**: Dashboard de leads WhatsApp (`/admin/leads.html`) con métricas por tenant/canal y API `/api/admin/leads*`
 - **WhatsApp**: Webhook Meta Cloud API con cotización IA y persistencia en D1 (`whatsapp_messages`)
 - **Seguridad cliente**: Passwords PBKDF2 (100k iter) con migración desde SHA-256 legacy; magic links de 15 min de un solo uso

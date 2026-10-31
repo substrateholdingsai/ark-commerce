@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 
 const SUGGESTIONS = [
   { label: '🚨 Fuga urgente de gas o agua', query: 'Tengo una fuga urgente de gas LP en la cocina y huele fuerte' },
+  { label: '👕 Playeras personalizadas', query: 'Quiero playeras estampadas de algodón con diseño personalizado del Caribe' },
   { label: '🚿 Boiler no calienta o instalación', query: 'Necesito instalación de calentador de agua con prueba de presión' },
   { label: '🛠️ Drenaje tapado en baño o cocina', query: 'El drenaje del baño está completamente tapado y se regresa el agua' },
-  { label: '❄️ Mantenimiento y lavado de minisplit', query: 'Requiero servicio de limpieza profunda y recarga de gas para minisplit' }
+  { label: '❄️ Mantenimiento de minisplit', query: 'Requiero servicio de limpieza profunda y recarga de gas para minisplit' }
 ];
 
 export default function AiSearchConcierge() {

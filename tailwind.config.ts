@@ -9,6 +9,30 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        marea: {
+          arena: "#FFF9F0",
+          "arena-2": "#FEF3E2",
+          blanco: "#FFFFFF",
+          "arena-b": "#F0E5D0",
+          teal: "#0EA9A8",
+          "teal-dk": "#087F7E",
+          "teal-hi": "#3FD4D2",
+          coral: "#E94E49",
+          "coral-dk": "#C53732",
+          "coral-hi": "#FF7B76",
+          mango: "#FFB947",
+          "mango-dk": "#C98F1F",
+          selva: "#2FA060",
+          "selva-dk": "#1F7A45",
+          lavanda: "#8B6FC9",
+          tinta: "#1A3B38",
+          "tinta-2": "#3D5C58",
+          "tinta-3": "#6B8280",
+          noche: "#0F2E2C",
+          "noche-2": "#163B38",
+          "noche-b": "#264F4B",
+          bruma: "#B8D4D1",
+        },
         brand: {
           500: "#FD5C0D",
           600: "#F54B06",
@@ -45,7 +69,15 @@ const config: Config = {
         body: ["1rem", { lineHeight: "1.7" }],
         caption: ["0.75rem", { letterSpacing: "0.1em", textTransform: "uppercase" }],
       },
+      borderRadius: {
+        marea: '20px',
+        'marea-lg': '28px',
+        ola: '50% 50% 50% 50% / 60% 60% 40% 40%',
+      },
       boxShadow: {
+        ola: '0 8px 24px -6px rgba(14, 169, 168, 0.18)',
+        coral: '0 8px 24px -6px rgba(233, 78, 73, 0.20)',
+        fiesta: '0 12px 32px -8px rgba(255, 185, 71, 0.30)',
         "liquid-glass": "0 4px 0 #888, 0 8px 16px rgba(0,0,0,0.1)",
         "liquid-glass-dark": "0 4px 0 #333, 0 8px 16px rgba(0,0,0,0.3)",
         "gold-glow": "0 0 20px rgba(212, 175, 55, 0.4)",

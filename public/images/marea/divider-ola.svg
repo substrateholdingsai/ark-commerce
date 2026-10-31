@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 48" width="600" height="48">
+  <!-- sol central -->
+  <circle cx="300" cy="16" r="10" fill="#FFB947"/>
+  <circle cx="300" cy="16" r="14" fill="none" stroke="#FFB947" stroke-width="1.5" opacity="0.4"/>
+  <!-- olas laterales -->
+  <path d="M40 32 Q100 24, 160 32 T280 32" fill="none" stroke="#0EA9A8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M320 32 Q380 24, 440 32 T560 32" fill="none" stroke="#0EA9A8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M80 38 Q130 34, 180 38 T240 38" fill="none" stroke="#087F7E" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  <path d="M360 38 Q410 34, 460 38 T520 38" fill="none" stroke="#087F7E" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  <!-- triángulos decorativos -->
+  <path d="M270 24 L276 30 L282 24 Z" fill="#E94E49" opacity="0.6"/>
+  <path d="M318 24 L324 30 L330 24 Z" fill="#E94E49" opacity="0.6"/>
+</svg>

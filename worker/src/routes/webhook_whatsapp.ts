@@ -114,11 +114,16 @@ REGLAS DE RESPUESTA EN WHATSAPP:
       matchedService = 'Reparación de Fuga de Gas / Agua Urgente';
       estimatedPrice = 850;
       replyText = `¡Hola *${senderName}*! 👋 Gracias por escribir a *BAAKAL (Plomería & Gas)*.\n\n🛠️ Atendemos fugas de gas y emergencias hidráulicas en el Sureste Mexicano con técnicos certificados.\n\n💰 *Tarifa estimada de revisión/reparación:* $${estimatedPrice.toLocaleString('es-MX', {minimumFractionDigits: 2})} MXN.\n\n📍 ¿En qué zona o colonia te encuentras para coordinar el arribo de la unidad?`;
+    } else if (lower.includes('playera') || lower.includes('estamp') || lower.includes('ropa') || lower.includes('marea') || lower.includes('talla') || lower.includes('camiseta') || lower.includes('merch')) {
+      matchedTenant = 'MAREA · Playeras Personalizadas';
+      matchedService = 'Playera Personalizada Caribeña';
+      estimatedPrice = 349;
+      replyText = `¡Hola *${senderName}*! 🌊 Gracias por escribir a *MAREA (Playeras del Sureste)*.\n\n👕 Estampamos playeras 100% algodón peinado con diseños del Caribe y personalizadas desde 1 pieza.\n\n💰 *Tarifa desde:* $${estimatedPrice.toLocaleString('es-MX', {minimumFractionDigits: 2})} MXN (Envío GRATIS en 2+ playeras).\n\n¿Tienes un diseño listo para estampar o quieres ver el catálogo oficial?`;
     } else {
       matchedTenant = 'Ark Marketplace';
       matchedService = 'Atención General';
       estimatedPrice = 0;
-      replyText = `¡Hola *${senderName}*! 👋 Bienvenido a la red de servicios verificados de *Ark*.\n\nTe podemos conectar de inmediato con especialistas en:\n• 🔧 *Plomería & Gas (Baakal)*\n• 🥩 *Carnes Ahumadas (Temozonía)*\n\nCuéntame qué requieres y te cotizo al instante.`;
+      replyText = `¡Hola *${senderName}*! 👋 Bienvenido a la red de servicios verificados de *Ark*.\n\nTe podemos conectar de inmediato con especialistas en:\n• 🔧 *Plomería & Gas (Baakal)*\n• 👕 *Playeras Personalizadas (Marea)*\n• 🥩 *Carnes Ahumadas (Temozonía)*\n\nCuéntame qué requieres y te cotizo al instante.`;
     }
   }
 

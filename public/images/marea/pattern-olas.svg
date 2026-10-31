@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <g>
+    <path d="M0 16 Q16 8, 32 16 T64 16" fill="none" stroke="#0EA9A8" stroke-width="2" opacity="0.07"/>
+    <path d="M0 32 Q16 24, 32 32 T64 32" fill="none" stroke="#087F7E" stroke-width="2" opacity="0.05"/>
+    <path d="M0 48 Q16 40, 32 48 T64 48" fill="none" stroke="#3FD4D2" stroke-width="2" opacity="0.04"/>
+    <circle cx="48" cy="8" r="4" fill="#FFB947" opacity="0.08"/>
+  </g>
+</svg>

@@ -34,8 +34,9 @@ app.get('/manifest.json', async (c) => {
 
   // Determinamos start_url de acuerdo al tenant
   let startUrl = `/`;
-  if (slug === 'baakal') startUrl = `/stores/baakal.html`;
+  if (slug === 'baakal') startUrl = `/baakal`;
   else if (slug === 'temozonia') startUrl = `/temozonia`;
+  else if (slug === 'marea') startUrl = `/marea`;
   else if (slug !== 'ark') startUrl = `/stores/${slug}.html`;
 
   const manifest = {
