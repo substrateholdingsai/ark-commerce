@@ -10,6 +10,36 @@ interface RecommendRequest {
   location?: string;
 }
 
+// Contexto enriquecido por tienda para que el cerebro de la IA conozca productos, tallas, envíos y pagos
+const TENANT_CONTEXT: Record<string, string> = {
+  marea: `
+- Giro: Tienda oficial de playeras personalizadas y streetwear del Caribe mexicano ("Cada playera lleva su propia ola").
+- Producto: Playeras 100% algodón peinado premium (200 g/m²), estampadas en serigrafía artesanal y tintas ecológicas.
+- Tallas disponibles: S, M, L, XL y XXL (corte relajado unisex).
+- Personalización: Además del catálogo oficial, ofrecemos "Tu propio diseño" ($349 MXN) donde el cliente elige color de playera, talla y nos envía su logo, ilustración o frase por WhatsApp desde 1 pieza.
+- Promoción de envío: Envío estándar $99 MXN con Envia.com a todo México, o ENVÍO GRATIS comprando 2 o más playeras (pedidos desde $599 MXN).
+- Métodos de pago: Transferencia SPEI BBVA (CLABE 0121 8000 1234 5678 90 a nombre de Marea Playeras del Sureste) con 0% comisión, o Pago contra entrega local en Mérida y Riviera Maya.
+- URL de la tienda: /marea`,
+  temozonia: `
+- Giro: Tienda gourmet de carnes ahumadas artesanales al estilo Valladolid y embutidos regionales en Mérida, Yucatán.
+- Producto: Cortes ahumados lentamente por 8 a 12 horas con leña de jabín (Pork Belly, Costillas BBQ, Carne Ahumada, Longaniza de Valladolid, Salchichón), empacados al vacío listos para calentar en minutos.
+- Envíos y sucursales: Sucursales en Caucel y Fracc. del Parque (Mérida), envío a domicilio local y envíos por paquetería con Envia.com cotizando con Código Postal.
+- Métodos de pago: Transferencia SPEI BBVA, Bitcoin Lightning y pedido directo por WhatsApp.
+- URL de la tienda: /temozonia`,
+  baakal: `
+- Giro: Especialistas verificados en plomería, desazolve de drenajes con sonda eléctrica, detección de fugas de agua y redes de gas LP en el Sureste.
+- Garantía: Folio formal de servicio (#PLM-2026), precios transparentes de catálogo antes de iniciar y garantía por escrito de 30 a 90 días.
+- Métodos de pago: Transferencia SPEI BBVA (0121 8000 9988 7766 55) o pago en sitio al concluir el trabajo.
+- URL de la tienda: /baakal`,
+  ark: `
+- Giro: Ark Commerce — Plataforma multi-tienda de comercio directo y servicios en el Sureste Mexicano.
+- Tiendas alojadas en la red:
+  1. MAREA (/marea): Playeras personalizadas y moda caribeña en algodón peinado ($329-$399 MXN, tallas S-XXL, envío gratis en 2+ piezas).
+  2. Temozonia (/temozonia): Carnes ahumadas artesanales con leña de jabín y longaniza de Valladolid.
+  3. BAAKAL (/baakal): Servicios técnicos certificados de plomería, boilers y fugas de gas LP.
+- Plan para negocios ($299 MXN/mes): Cualquier marca, restaurante o contratista puede abrir su propia tienda online con diseño de autor, 0% comisiones por venta, cobro directo por SPEI BBVA, cotizador Envia.com y asistente IA 3D.`
+};
+
 assistantRoute.post('/recommend', async (c) => {
   try {
     const body = await c.req.json<RecommendRequest>();
@@ -19,7 +49,7 @@ assistantRoute.post('/recommend', async (c) => {
       return c.json({ error: 'La consulta no puede estar vacía.' }, 400);
     }
 
-    // 1. Consultar proveedores y servicios activos desde Cloudflare D1
+    // 1. Consultar tiendas, productos y servicios activos desde Cloudflare D1
     const { results } = await c.env.DB.prepare(`
       SELECT 
         t.id as tenant_id, 
@@ -41,12 +71,12 @@ assistantRoute.post('/recommend', async (c) => {
 
     if (!results || results.length === 0) {
       return c.json({
-        message: 'No hay proveedores de servicios registrados actualmente.',
+        message: 'No hay tiendas ni productos registrados actualmente.',
         recommended: null
       });
     }
 
-    // 2. Agrupar servicios por tenant para crear el contexto de proveedores
+    // 2. Agrupar catálogo por tenant
     const providersMap = new Map<string, any>();
     for (const r of results as any[]) {
       if (!providersMap.has(r.tenant_id)) {
@@ -56,6 +86,7 @@ assistantRoute.post('/recommend', async (c) => {
           slug: r.tenant_slug,
           whatsapp: r.whatsapp,
           theme_color: r.theme_color,
+          context: TENANT_CONTEXT[r.tenant_slug] || '',
           services: []
         });
       }
@@ -71,42 +102,46 @@ assistantRoute.post('/recommend', async (c) => {
 
     const providersList = Array.from(providersMap.values());
 
-    // 3. System Prompt para el Asistente Concierge de Ark
+    // 3. System Prompt para el Asistente Concierge 3D de Ark Commerce
     const systemPrompt = `
-Eres "Ark Concierge", el asistente de inteligencia artificial de Ark Commerce en el Sureste Mexicano (Mérida, Cancún, Riviera Maya).
-Tu misión es conectar de forma precisa y empática a personas que buscan productos o servicios locales con la tienda o especialista ideal de nuestra red de confianza (MAREA para moda/playeras, Temozonia para carnes ahumadas artesanales, BAAKAL para plomería y gas, etc.).
+Eres "Ark", el robot asistente 3D de inteligencia artificial de Ark Commerce en el Sureste Mexicano (Mérida, Cancún, Riviera Maya y todo México).
+Tu misión es conectar de forma cálida, precisa y ágil a los usuarios con la tienda independiente o especialista ideal de nuestra red (tanto para comprar productos físicos como playeras y carnes ahumadas, como para contratar servicios técnicos o abrir su propia tienda).
 
-PROVEEDORES Y SERVICIOS ACTIVOS EN NUESTRA BASE DE DATOS D1:
+TIENDAS, PRODUCTOS Y SERVICIOS ACTIVOS EN D1:
 ${JSON.stringify(providersList, null, 2)}
 
 INSTRUCCIONES CLAVE:
-1. Analiza el problema, urgencia o solicitud del usuario: "${query}".
-2. Identifica al proveedor más idóneo de la lista (por ejemplo: problemas de agua/gas/fugas -> baakal; playeras/ropa personalizada/merch -> marea; alimentos gourmet/carnes ahumadas -> temozonia; software/ecommerce/servicios digitales -> ark).
-3. Selecciona el servicio o combinación de servicios específicos que resuelven su necesidad con sus precios reales.
-4. Responde en tono profesional, ágil, directo y con calidez mexicana. Explica brevemente por qué recomiendas a ese proveedor y cuánto costará aproximadamente el servicio.
-5. Devuelve SIEMPRE tu respuesta estructurada estrictamente en formato JSON con la siguiente estructura (sin bloques markdown extras):
+1. Analiza lo que busca el usuario: "${query}".
+2. Identifica la tienda más idónea:
+   - Playeras, camisetas, ropa, estampados, diseños personalizados, regalos caribeños, tallas S-XXL -> "marea" (target_url: "/marea")
+   - Comida, carnes ahumadas, costillas BBQ, pork belly, longaniza, chorizo, cena, asado -> "temozonia" (target_url: "/temozonia")
+   - Plomería, fugas de agua o gas, drenaje tapado, boiler, tinaco, bomba -> "baakal" (target_url: "/baakal")
+   - Abrir una tienda online, ecommerce, software, contabilidad -> "ark" (target_url: "/")
+3. Selecciona el producto o servicio específico que mejor responde a su búsqueda con su precio real en MXN.
+4. Responde en tono cercano, entusiasta y profesional. Si es un producto físico (MAREA o Temozonia), menciona detalles atractivos como tallas, algodón peinado, envío gratis en 2+ playeras o ahumado artesanal en leña de jabín.
+5. Devuelve SIEMPRE tu respuesta estructurada estrictamente en formato JSON (sin bloques markdown extras):
 
 {
-  "explanation": "Texto conversacional explicando la recomendación al usuario...",
+  "explanation": "Texto conversacional recomendando el producto o servicio...",
   "recommended_tenant": {
     "id": "slug_del_tenant",
     "name": "Nombre comercial",
     "slug": "slug",
     "whatsapp": "whatsapp_del_tenant",
-    "target_url": "/stores/slug.html",
+    "target_url": "/marea",
     "matched_services": [
       {
-        "id": "service_id",
-        "name": "Nombre del servicio",
-        "price": 0.00
+        "id": "product_id",
+        "name": "Nombre del producto o servicio",
+        "price": 349.00
       }
     ],
-    "estimated_total": 0.00
+    "estimated_total": 349.00
   }
 }
 `;
 
-    // 4. Si Cloudflare Workers AI está disponible, ejecutamos la inferencia con Llama 3.3
+    // 4. Inferencia con Cloudflare Workers AI (Llama 3.3)
     if (c.env.AI) {
       try {
         const aiResponse: any = await c.env.AI.run('@cf/meta/llama-3.3-70b-instruct', {
@@ -115,35 +150,38 @@ INSTRUCCIONES CLAVE:
             { role: 'user', content: query }
           ],
           response_format: { type: 'json_object' },
-          temperature: 0.2
+          temperature: 0.25
         });
 
         const rawText = aiResponse?.response || (typeof aiResponse === 'string' ? aiResponse : JSON.stringify(aiResponse));
-        
-        // Intentar parsear el JSON devuelto por el LLM
         const jsonMatch = rawText.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
           const parsed = JSON.parse(jsonMatch[0]);
+          if (parsed?.recommended_tenant?.slug) {
+            const s = parsed.recommended_tenant.slug;
+            parsed.recommended_tenant.target_url =
+              s === 'marea' ? '/marea' :
+              s === 'temozonia' ? '/temozonia' :
+              s === 'baakal' ? '/baakal' : '/';
+          }
           return c.json({ success: true, ...parsed });
         }
       } catch (aiErr: any) {
-        console.warn('Fallback de Workers AI:', aiErr?.message);
+        console.warn('Fallback de Workers AI recommend:', aiErr?.message);
       }
     }
 
-    // 5. Fallback Heurístico Determinista de Alta Velocidad (por si AI no está configurada o falla)
+    // 5. Fallback Heurístico Determinista
     const lowerQuery = query.toLowerCase();
-    let bestTenantSlug = 'baakal';
+    let bestTenantSlug = 'marea';
 
-    if (lowerQuery.includes('conta') || lowerQuery.includes('fiscal') || lowerQuery.includes('sat') || lowerQuery.includes('factur') || lowerQuery.includes('impuest') || lowerQuery.includes('nómina') || lowerQuery.includes('imss')) {
-      bestTenantSlug = 'ark';
-    } else if (lowerQuery.includes('carne') || lowerQuery.includes('ahumad') || lowerQuery.includes('comida') || lowerQuery.includes('costilla')) {
+    if (lowerQuery.includes('carne') || lowerQuery.includes('ahumad') || lowerQuery.includes('comida') || lowerQuery.includes('costilla') || lowerQuery.includes('pork') || lowerQuery.includes('belly') || lowerQuery.includes('longaniza') || lowerQuery.includes('chorizo') || lowerQuery.includes('temozon')) {
       bestTenantSlug = 'temozonia';
-    } else if (lowerQuery.includes('playera') || lowerQuery.includes('camiseta') || lowerQuery.includes('ropa') || lowerQuery.includes('estamp') || lowerQuery.includes('personaliz') || lowerQuery.includes('talla') || lowerQuery.includes('merch') || lowerQuery.includes('textil') || lowerQuery.includes('marea') || lowerQuery.includes('serigraf')) {
+    } else if (lowerQuery.includes('playera') || lowerQuery.includes('camiseta') || lowerQuery.includes('ropa') || lowerQuery.includes('estamp') || lowerQuery.includes('personaliz') || lowerQuery.includes('talla') || lowerQuery.includes('merch') || lowerQuery.includes('textil') || lowerQuery.includes('marea') || lowerQuery.includes('serigraf') || lowerQuery.includes('tulum') || lowerQuery.includes('ola')) {
       bestTenantSlug = 'marea';
-    } else if (lowerQuery.includes('plomer') || lowerQuery.includes('fuga') || lowerQuery.includes('gas') || lowerQuery.includes('boiler') || lowerQuery.includes('agua') || lowerQuery.includes('drenaje') || lowerQuery.includes('tubo')) {
+    } else if (lowerQuery.includes('plomer') || lowerQuery.includes('fuga') || lowerQuery.includes('gas') || lowerQuery.includes('boiler') || lowerQuery.includes('agua') || lowerQuery.includes('drenaje') || lowerQuery.includes('tubo') || lowerQuery.includes('tinaco')) {
       bestTenantSlug = 'baakal';
-    } else {
+    } else if (lowerQuery.includes('tienda') || lowerQuery.includes('vender') || lowerQuery.includes('ecommerce') || lowerQuery.includes('conta') || lowerQuery.includes('fiscal')) {
       bestTenantSlug = 'ark';
     }
 
@@ -151,11 +189,19 @@ INSTRUCCIONES CLAVE:
     const firstService = matchedTenant.services[0];
     const estimatedTotal = firstService ? firstService.price : 0;
 
-    // Resolver target_url amigable
-    const targetUrl = matchedTenant.slug === 'temozonia' ? '/temozonia' :
-                      matchedTenant.slug === 'baakal' ? '/baakal' :
-                      matchedTenant.slug === 'marea' ? '/marea' :
-                      `/stores/${matchedTenant.slug}.html`;
+    const targetUrl =
+      matchedTenant.slug === 'temozonia' ? '/temozonia' :
+      matchedTenant.slug === 'baakal' ? '/baakal' :
+      matchedTenant.slug === 'marea' ? '/marea' : '/';
+
+    let explanation = `Te recomiendo visitar ${matchedTenant.name}, donde encontrarás "${firstService?.name}" con precios directos y pago seguro por SPEI o WhatsApp.`;
+    if (matchedTenant.slug === 'marea') {
+      explanation = `¡En MAREA tenemos lo que buscas! Nuestras playeras son 100% algodón peinado (tallas S a XXL) con diseños del Caribe o personalizadas con tu propio arte. Además, tienes envío gratis llevando 2 o más piezas.`;
+    } else if (matchedTenant.slug === 'temozonia') {
+      explanation = `¡Te recomiendo Temozonia Carnes Ahumadas! Ahumamos lentamente con leña de jabín tradicional y empacamos al vacío para que disfrutes costillas BBQ, pork belly y longaniza artesanal en casa.`;
+    } else if (matchedTenant.slug === 'baakal') {
+      explanation = `Para resolverlo hoy mismo te conecto con BAAKAL — Plomería & Gas. Cuentan con técnicos verificados, equipo de diagnóstico especializado y garantía por escrito.`;
+    }
 
     // Registrar lead en D1 (canal: web_concierge)
     try {
@@ -169,7 +215,7 @@ INSTRUCCIONES CLAVE:
         matchedTenant.whatsapp || 'Web Lead',
         query,
         matchedTenant.name,
-        firstService?.name || 'Servicio recomendado',
+        firstService?.name || 'Producto recomendado',
         estimatedTotal
       ).run();
     } catch (logErr) {
@@ -178,20 +224,20 @@ INSTRUCCIONES CLAVE:
 
     return c.json({
       success: true,
-      explanation: `Para lo que necesitas, te recomiendo a ${matchedTenant.name}. Cuentan con atención garantizada y precios transparentes.`,
+      explanation,
       recommended_tenant: {
         id: matchedTenant.id,
         name: matchedTenant.name,
         slug: matchedTenant.slug,
         whatsapp: matchedTenant.whatsapp,
         target_url: targetUrl,
-        matched_services: [
+        matched_services: firstService ? [
           {
             id: firstService.id,
             name: firstService.name,
             price: firstService.price
           }
-        ],
+        ] : [],
         estimated_total: estimatedTotal
       }
     });
@@ -203,7 +249,7 @@ INSTRUCCIONES CLAVE:
 });
 
 // =========================================================================
-// POST /api/assistant/chat — Asistente Conversacional para Tenant Específico (Widget)
+// POST /api/assistant/chat — Asistente Conversacional 3D ("Ark") para Widget
 // =========================================================================
 interface ChatRequest {
   tenant: string;
@@ -214,74 +260,108 @@ interface ChatRequest {
 assistantRoute.post('/chat', async (c) => {
   try {
     const body = await c.req.json<ChatRequest>();
-    const tenantSlug = body.tenant?.trim().toLowerCase();
+    const rawTenantSlug = (body.tenant || 'ark').trim().toLowerCase();
     const message = body.message?.trim();
     const history = body.history || [];
 
-    if (!tenantSlug || !message) {
-      return c.json({ error: 'Tenant y mensaje son requeridos.' }, 400);
+    if (!message) {
+      return c.json({ error: 'El mensaje es requerido.' }, 400);
     }
 
-    // 1. Obtener datos del Tenant en D1
-    const { results: tenantRows } = await c.env.DB.prepare(`
-      SELECT id, name, slug, whatsapp, theme_color
+    // 1. Obtener datos del Tenant en D1 (con fallback a ark)
+    let { results: tenantRows } = await c.env.DB.prepare(`
+      SELECT id, name, slug, whatsapp, clabe, bank, clabe_holder, theme_color
       FROM tenants
       WHERE slug = ? OR id = ?
       LIMIT 1
-    `).bind(tenantSlug, tenantSlug).all();
+    `).bind(rawTenantSlug, rawTenantSlug).all();
 
     if (!tenantRows || tenantRows.length === 0) {
-      return c.json({ error: `Tenant '${tenantSlug}' no encontrado.` }, 404);
+      const fallback = await c.env.DB.prepare(`
+        SELECT id, name, slug, whatsapp, clabe, bank, clabe_holder, theme_color
+        FROM tenants
+        WHERE slug = 'ark' OR id = 'ark'
+        LIMIT 1
+      `).all();
+      tenantRows = fallback.results;
     }
 
-    const tenant = tenantRows[0] as any;
+    const tenant = (tenantRows && tenantRows[0]) ? (tenantRows[0] as any) : {
+      id: 'ark',
+      name: 'Ark Commerce',
+      slug: 'ark',
+      whatsapp: '529994918221',
+      clabe: '012180012345678901',
+      bank: 'BBVA',
+      clabe_holder: 'Ark Systems',
+      theme_color: '#0EA9A8'
+    };
 
-    // 2. Obtener catálogo y servicios activos del tenant
-    const { results: productRows } = await c.env.DB.prepare(`
-      SELECT id, name, price, weight as scope, desc, badge
-      FROM products
-      WHERE tenant_id = ? AND active = 1
-      ORDER BY display_order ASC
-    `).bind(tenant.id).all();
+    // 2. Obtener productos/servicios: si es 'ark' (landing general), cargamos el catálogo multi-tienda completo
+    let services: any[] = [];
+    if (tenant.slug === 'ark') {
+      const { results: allRows } = await c.env.DB.prepare(`
+        SELECT p.id, p.name, p.price, p.weight as scope, p.desc, p.badge, t.name as store_name, t.slug as store_slug
+        FROM products p
+        JOIN tenants t ON p.tenant_id = t.id
+        WHERE p.active = 1
+        ORDER BY t.name ASC, p.display_order ASC
+      `).all();
+      services = (allRows || []) as any[];
+    } else {
+      const { results: productRows } = await c.env.DB.prepare(`
+        SELECT id, name, price, weight as scope, desc, badge
+        FROM products
+        WHERE tenant_id = ? AND active = 1
+        ORDER BY display_order ASC
+      `).bind(tenant.id).all();
+      services = (productRows || []) as any[];
+    }
 
-    const services = (productRows || []) as any[];
+    // 3. Formatear catálogo y contexto de tienda para el LLM
+    const catalogSummary = services.map(s => {
+      const storeTag = s.store_name ? `[Tienda: ${s.store_name}] ` : '';
+      return `- ${storeTag}[ID: ${s.id}] ${s.name}: $${s.price} MXN (${s.scope || 'Disponible'}). ${s.desc || ''}${s.badge ? ` [${s.badge}]` : ''}`;
+    }).join('\n');
 
-    // 3. Formatear catálogo para el LLM
-    const catalogSummary = services.map(s => 
-      `- [ID: ${s.id}] ${s.name}: $${s.price} MXN. Descripción: ${s.desc || 'Servicio profesional'}. Alcance: ${s.scope || 'Estándar'}`
-    ).join('\n');
+    const storeContext = TENANT_CONTEXT[tenant.slug] || TENANT_CONTEXT.ark;
+    const isRetailStore = tenant.slug === 'marea' || tenant.slug === 'temozonia';
 
     let reply = '';
     let matchedServiceIds: string[] = [];
     let estimatedTotal = 0;
-    let whatsappMessage = `Hola ${tenant.name}, vengo del asistente web y me interesa consultar sobre: "${message}"`;
+    let actionLabel = isRetailStore ? '💬 Pedir por WhatsApp →' : '💬 Continuar en WhatsApp →';
+    let whatsappMessage = `Hola ${tenant.name}, vengo del asistente 3D Ark y me interesa: "${message}"`;
 
-    // 4. Intentar Workers AI si el binding está presente
+    // 4. Ejecutar inferencia en Cloudflare Workers AI (Llama 3.3 70B)
     if (c.env.AI) {
       try {
-        const systemPrompt = `Eres el asistente agéntico de ventas oficial de "${tenant.name}" (${tenant.slug}).
-Tu misión es atender dudas de clientes en México, entender su problema o necesidad y cotizar con precisión según los servicios o productos disponibles.
+        const systemPrompt = `Eres "Ark", el simpático robot 3D y asesor de compras e inteligencia artificial de "${tenant.name}".
+Atiendes en español de México con calidez, agilidad y conocimiento experto tanto de productos físicos (playeras, tallas, diseños personalizados, carnes ahumadas, envíos Envia.com, pagos SPEI) como de servicios.
 
-CATÁLOGO OFICIAL Y PRECIOS:
+INFORMACIÓN DE LA TIENDA ACTUAL:
+${storeContext}
+- Datos SPEI: Banco ${tenant.bank || 'BBVA'} · CLABE ${tenant.clabe || '0121 8000 1234 5678 90'} (${tenant.clabe_holder || tenant.name}).
+
+CATÁLOGO OFICIAL Y PRECIOS EN VIVO:
 ${catalogSummary}
 
-REGLAS DE ATENCIÓN:
-1. Responde en español (México) de manera concisa, educada y profesional.
-2. Identifica cuál de los servicios del catálogo soluciona el problema y menciona el precio en pesos mexicanos ($... MXN).
-3. Invita al cliente a formalizar por WhatsApp.
-4. Devuelve ÚNICAMENTE un objeto JSON válido (sin código markdown ni explicaciones adicionales) con el siguiente formato:
+REGLAS DE CONVERSACIÓN:
+1. NO hables solo de "servicios" si estás en una tienda de productos como MAREA (playeras) o Temozonia (carnes ahumadas). Habla de modelos, tallas (S a XXL), algodón peinado, estampado personalizado, cortes ahumados, envío gratis o cotización por C.P.
+2. Responde en máximo 3-4 oraciones claras, entusiastas y útiles, mencionando precios reales en pesos mexicanos ($... MXN).
+3. Sugiere los productos o servicios que mejor encajan y prepara un mensaje listo para ordenar o confirmar por WhatsApp.
+4. Devuelve ÚNICAMENTE un objeto JSON válido (sin bloques markdown):
 {
-  "reply": "Tu respuesta conversacional directa al cliente...",
+  "reply": "Tu respuesta conversacional al cliente...",
   "matched_service_ids": ["ID1"],
-  "estimated_total": 1200,
-  "whatsapp_message": "Hola ${tenant.name}! Me interesa agendar el servicio X..."
+  "estimated_total": 349,
+  "whatsapp_message": "Hola ${tenant.name}! Quiero ordenar..."
 }`;
 
         const messages: Array<{ role: string; content: string }> = [
           { role: 'system', content: systemPrompt }
         ];
 
-        // Añadir historial previo si existe
         for (const h of history.slice(-4)) {
           messages.push({ role: h.role, content: h.content });
         }
@@ -290,6 +370,7 @@ REGLAS DE ATENCIÓN:
 
         const aiResponse: any = await c.env.AI.run('@cf/meta/llama-3.3-70b-instruct', {
           messages,
+          response_format: { type: 'json_object' },
           temperature: 0.3,
           max_tokens: 512
         });
@@ -299,7 +380,7 @@ REGLAS DE ATENCIÓN:
         if (jsonMatch) {
           const parsed = JSON.parse(jsonMatch[0]);
           reply = parsed.reply || '';
-          matchedServiceIds = parsed.matched_service_ids || [];
+          matchedServiceIds = Array.isArray(parsed.matched_service_ids) ? parsed.matched_service_ids : [];
           estimatedTotal = Number(parsed.estimated_total || 0);
           if (parsed.whatsapp_message) {
             whatsappMessage = parsed.whatsapp_message;
@@ -310,29 +391,77 @@ REGLAS DE ATENCIÓN:
       }
     }
 
-    // 5. Fallback Heurístico si AI no devolvió respuesta
+    // 5. Fallback Inteligente sensible al giro de cada tienda si AI no devolvió respuesta
     if (!reply) {
       const lowerMsg = message.toLowerCase();
-      let matched = services.find(s => 
-        lowerMsg.includes(s.name.toLowerCase()) || 
-        (s.desc && lowerMsg.split(' ').some((w: string) => w.length > 3 && s.desc.toLowerCase().includes(w)))
+
+      // Buscar coincidencia directa en nombres o descripciones del catálogo
+      let matched = services.find(s =>
+        lowerMsg.includes(s.name.toLowerCase()) ||
+        (s.desc && lowerMsg.split(/\s+/).some((w: string) => w.length > 3 && s.desc.toLowerCase().includes(w)))
       );
 
-      if (!matched && services.length > 0) {
-        matched = services[0];
-      }
-
-      if (matched) {
-        reply = `Con gusto te asesoramos en ${tenant.name}. Para lo que describes te recomendamos "${matched.name}" con una tarifa de $${matched.price.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN. ¿Te gustaría formalizar la cita o pedido por WhatsApp?`;
-        matchedServiceIds = [matched.id];
-        estimatedTotal = matched.price;
-        whatsappMessage = `Hola ${tenant.name}, me interesa contratar: ${matched.name} ($${matched.price} MXN). Vengo del asistente virtual.`;
+      if (tenant.slug === 'marea') {
+        if (lowerMsg.includes('personaliz') || lowerMsg.includes('propio') || lowerMsg.includes('diseño') || lowerMsg.includes('logo')) {
+          matched = services[0];
+          estimatedTotal = 349;
+          reply = `¡Claro! 🎨 En MAREA estampamos tu propio diseño, frase o ilustración desde 1 pieza por $349 MXN en playera 100% algodón peinado (tallas S a XXL). Puedes usar el botón "Tu propio diseño" en la tienda o enviarnos tu imagen directo por WhatsApp. ¡Recuerda que en 2 o más playeras el envío es GRATIS!`;
+          whatsappMessage = `Hola MAREA! 🌊 Quiero estampar una playera personalizada con mi propio diseño ($349 MXN).`;
+        } else if (lowerMsg.includes('talla') || lowerMsg.includes('medida') || lowerMsg.includes('chica') || lowerMsg.includes('grande')) {
+          matched = matched || services[0];
+          estimatedTotal = matched?.price || 349;
+          reply = `Manejamos tallas S, M, L, XL y XXL en corte relajado unisex (100% algodón peinado de 200 g/m² que no encoge). Puedes seleccionar tu talla directamente en cada tarjeta de producto antes de agregarla al carrito. ¿Qué modelo te gustó más?`;
+          whatsappMessage = `Hola MAREA! 🌊 Tengo una consulta sobre las tallas disponibles para hacer mi pedido.`;
+        } else if (lowerMsg.includes('envío') || lowerMsg.includes('envio') || lowerMsg.includes('gratis') || lowerMsg.includes('paqueter') || lowerMsg.includes('cp')) {
+          matched = matched || services[0];
+          estimatedTotal = matched?.price || 349;
+          reply = `🚚 Enviamos a todo México con Envia.com ($99 MXN estándar) y también tenemos entrega local en Mérida y Riviera Maya. ¡Si agregas 2 o más playeras a tu carrito (desde $599 MXN), el envío es totalmente GRATIS!`;
+          whatsappMessage = `Hola MAREA! 🌊 Quiero cotizar el envío de mi pedido de playeras.`;
+        } else {
+          matched = matched || services[0];
+          estimatedTotal = matched?.price || 349;
+          const topModels = services.slice(0, 4).map(s => `${s.name} ($${s.price})`).join(', ');
+          reply = `🌊 ¡Bienvenido a MAREA! Nuestras playeras son 100% algodón peinado en tallas S a XXL. Entre las favoritas están: ${topModels}. Te sugiero "${matched?.name}" por $${estimatedTotal} MXN (¡envío gratis llevando 2 o más!). ¿La agregamos o la pedimos por WhatsApp?`;
+          matchedServiceIds = matched ? [matched.id] : [];
+          whatsappMessage = `Hola MAREA! 🌊 Me interesa pedir la playera "${matched?.name}" ($${estimatedTotal} MXN).`;
+        }
+      } else if (tenant.slug === 'temozonia') {
+        matched = matched || services[0];
+        estimatedTotal = matched?.price || 269;
+        const cuts = services.slice(0, 3).map(s => `${s.name} ($${s.price})`).join(', ');
+        reply = `🔥 ¡Qué buen antojo! En Temozonia ahumamos lentamente con leña de jabín y empacamos al vacío. Te recomiendo probar "${matched?.name}" por $${estimatedTotal} MXN (también tenemos ${cuts}). Puedes cotizar tu envío con tu Código Postal o pedir directo por WhatsApp.`;
+        matchedServiceIds = matched ? [matched.id] : [];
+        whatsappMessage = `Hola Temozonia! 🥩 Quiero ordenar "${matched?.name}" ($${estimatedTotal} MXN).`;
+      } else if (tenant.slug === 'baakal') {
+        matched = matched || services[0];
+        estimatedTotal = matched?.price || 850;
+        reply = `🔧 En BAAKAL contamos con técnicos certificados en plomería y gas LP con garantía por escrito. Para lo que necesitas te recomendamos "${matched?.name}" con tarifa base de $${estimatedTotal} MXN. ¿Coordinamos tu visita por WhatsApp?`;
+        matchedServiceIds = matched ? [matched.id] : [];
+        whatsappMessage = `Hola BAAKAL! 🔧 Solicito el servicio "${matched?.name}" ($${estimatedTotal} MXN).`;
       } else {
-        reply = `Gracias por escribir a ${tenant.name}. Podemos apoyarte de inmediato. ¿Deseas que un asesor te contacte directamente por WhatsApp?`;
+        // Ark Commerce general
+        if (lowerMsg.includes('playera') || lowerMsg.includes('marea') || lowerMsg.includes('ropa')) {
+          estimatedTotal = 349;
+          reply = `🌊 Para playeras personalizadas y streetwear del Caribe te recomiendo nuestra tienda oficial **MAREA** (/marea). Tienen diseños desde $329 MXN en tallas S a XXL y envío gratis en 2+ piezas.`;
+          whatsappMessage = `Hola Ark Commerce! Me interesa comprar playeras en MAREA.`;
+        } else if (lowerMsg.includes('carne') || lowerMsg.includes('ahumad') || lowerMsg.includes('costilla') || lowerMsg.includes('temozon')) {
+          estimatedTotal = 389;
+          reply = `🥩 Para carnes ahumadas artesanales visita **Temozonia** (/temozonia), donde encontrarás costillas BBQ, pork belly y longaniza de Valladolid empacados al vacío.`;
+          whatsappMessage = `Hola Ark Commerce! Quiero pedir carnes ahumadas de Temozonia.`;
+        } else if (lowerMsg.includes('tienda') || lowerMsg.includes('299') || lowerMsg.includes('vender')) {
+          estimatedTotal = 299;
+          reply = `🚀 ¡Excelente! Con **Ark Commerce** puedes lanzar tu propia tienda online con diseño de autor (como MAREA, Temozonia o BAAKAL), asistente IA 3D, cobros directos SPEI con 0% comisiones y envíos Envia.com por solo $299 MXN/mes.`;
+          whatsappMessage = `Hola Ark Commerce! Quiero abrir mi tienda online por $299 MXN/mes.`;
+        } else {
+          matched = matched || services[0];
+          estimatedTotal = matched?.price || 349;
+          reply = `👋 ¡Hola! Soy Ark, tu asistente 3D en Ark Commerce. Puedo conectarte con nuestras tiendas oficiales: **MAREA** (playeras personalizadas), **Temozonia** (carnes ahumadas), **BAAKAL** (plomería y gas) o ayudarte a abrir tu propia tienda por $299/mes.`;
+          whatsappMessage = `Hola Ark Commerce! Quiero información sobre sus tiendas y productos.`;
+        }
       }
     }
 
-    // 6. Obtener lista de servicios sugeridos con detalles
+    // 6. Obtener lista de productos/servicios sugeridos con detalles
     const matchedServices = services.filter(s => matchedServiceIds.includes(s.id));
     if (matchedServices.length > 0 && estimatedTotal === 0) {
       estimatedTotal = matchedServices.reduce((sum, s) => sum + (s.price || 0), 0);
@@ -353,7 +482,7 @@ REGLAS DE ATENCIÓN:
         cleanWhatsapp,
         message,
         tenant.name,
-        matchedServices[0]?.name || 'Consulta en tienda',
+        matchedServices[0]?.name || 'Consulta en asistente 3D',
         estimatedTotal
       ).run();
     } catch (logErr) {
@@ -363,6 +492,7 @@ REGLAS DE ATENCIÓN:
     return c.json({
       success: true,
       reply,
+      action_label: actionLabel,
       tenant: {
         id: tenant.id,
         name: tenant.name,

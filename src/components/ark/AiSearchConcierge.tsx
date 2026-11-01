@@ -41,22 +41,38 @@ export default function AiSearchConcierge() {
 
   return (
     <div className="w-full bg-[#121417] border border-white/10 rounded-2xl p-5 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-      {/* Header del Concierge */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#B4FF00] animate-pulse"></span>
-          <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-wider uppercase">
-            ARK CONCIERGE · BUSCADOR DE TIENDAS & SERVICIOS
-          </span>
+      {/* Header del Concierge con Mascota 3D Ark */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-4 border-b border-white/10">
+        <div className="flex items-center gap-3.5">
+          <div className="relative h-14 w-14 shrink-0 rounded-full overflow-hidden bg-[#0b1329] ring-2 ring-[#3FD4D2] shadow-[0_0_20px_rgba(63,212,210,0.35)]">
+            <img
+              src="/ark-mascot.jpg"
+              alt="Ark 3D Concierge"
+              className="h-full w-full object-cover scale-110"
+            />
+            <span className="absolute top-0.5 right-0.5 w-3 h-3 rounded-full bg-emerald-400 ring-2 ring-[#0b1329] animate-pulse"></span>
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-wider uppercase">
+                ARK CONCIERGE 3D · ASISTENTE MULTI-TIENDA
+              </span>
+              <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-400/30">
+                IA Activa
+              </span>
+            </div>
+            <h3 className="font-display text-xl sm:text-2xl font-bold text-white mt-0.5">
+              ¿Qué producto o servicio buscas hoy en el Sureste?
+            </h3>
+          </div>
         </div>
-        <span className="text-[11px] font-mono text-zinc-400">EN VIVO EN EL SURESTE</span>
+        <span className="text-[11px] font-mono text-zinc-400 self-start sm:self-center">
+          MAREA · TEMOZONIA · BAAKAL
+        </span>
       </div>
 
-      <h3 className="font-display text-xl sm:text-2xl font-bold text-white mb-2">
-        ¿Qué producto o servicio buscas hoy en el Sureste?
-      </h3>
       <p className="text-xs sm:text-sm text-zinc-400 mb-5 leading-relaxed">
-        Describe en lenguaje natural tu encargo o necesidad. Nuestra IA consulta en tiempo real nuestro catálogo de tiendas independientes y técnicos verificados para cotizarte al instante.
+        Pregúntale a <strong>Ark</strong> en lenguaje natural por playeras personalizadas, cortes de carne ahumada o servicios técnicos para el hogar. Consulta inventarios y precios reales en D1 al instante.
       </p>
 
       {/* Input de Búsqueda Conversacional */}
@@ -80,11 +96,11 @@ export default function AiSearchConcierge() {
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
               </svg>
-              <span>Buscando...</span>
+              <span>Consultando a Ark...</span>
             </>
           ) : (
             <>
-              <span>Consultar IA</span>
+              <span>Preguntar a Ark</span>
               <span>→</span>
             </>
           )}
@@ -120,7 +136,7 @@ export default function AiSearchConcierge() {
         <div className="mt-6 p-5 sm:p-6 rounded-xl bg-gradient-to-b from-[#181C22] to-[#0E1013] border border-[#B4FF00]/30 shadow-[0_12px_32px_rgba(0,0,0,0.4)] animate-fadeIn">
           <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
             <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#B4FF00]">
-              <span>✓</span> TIENDA O SERVICIO VERIFICADO ENCONTRADO
+              <span>✓</span> RECOMENDACIÓN DE ARK 3D
             </div>
             <span className="text-xs font-mono text-zinc-400 uppercase">Respuesta Instantánea</span>
           </div>
@@ -141,7 +157,7 @@ export default function AiSearchConcierge() {
 
             <div className="flex items-center gap-4 sm:border-l sm:border-white/10 sm:pl-5">
               <div className="text-left sm:text-right">
-                <div className="text-[10px] font-mono text-zinc-400 uppercase">Total Estimado</div>
+                <div className="text-[10px] font-mono text-zinc-400 uppercase">Precio / Base</div>
                 <div className="font-mono text-xl font-bold text-[#B4FF00]">
                   ${Number(result.recommended_tenant.estimated_total || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                   <span className="text-xs text-zinc-400 font-normal"> MXN</span>
