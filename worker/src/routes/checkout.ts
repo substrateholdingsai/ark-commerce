@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
 import { CheckoutSchema } from '../schemas/checkout';
 import { getUnixTime, sha256Hex } from '../lib/crypto';
+import { checkGeoAllowed, checkRateLimit } from '../lib/security';
 import type { Env, CheckoutMessage } from '../types/env';
 import type { CustomerSessionData } from '../types/auth';
 import { notificarArkangel } from '../lib/arkangel';
@@ -27,6 +28,17 @@ async function loadSession(env: Env, token: string): Promise<CustomerSessionData
 }
 
 checkout.post('/', async (c) => {
+  const geo = checkGeoAllowed(c);
+  if (!geo.allowed) {
+    return c.json({ success: false, error: 'Servicio de pedidos disponible en México, Norteamérica, España y Latinoamérica' }, 403);
+  }
+
+  const rl = await checkRateLimit(c as any, { scope: 'checkout', limit: 8, windowSeconds: 60 });
+  if (!rl.allowed) {
+    c.header('Retry-After', String(rl.retryAfterSeconds));
+    return c.json({ success: false, error: 'Demasiados intentos de pedido seguidos. Espera un minuto.' }, 429);
+  }
+
   const tenantId = c.get('tenantId');
   if (!tenantId) return c.json({ success: false, error: 'Tenant not found' }, 404);
 
@@ -95,12 +107,12 @@ checkout.post('/', async (c) => {
         tipo: 'order_confirmation',
         order_id: orderId,
         body: `¡Hola ${customerName}! Tu pedido #${orderId} en ${tenant?.name ?? ''} ha sido confirmado por un total de $${total}. Te notificaremos en cuanto vaya en camino.`,
-         variables: {
-           nombre: customerName,
-           orden: orderId,
-           total: `$${total} MXN`,
-           envio: shippingAmount > 0 ? `$${shippingAmount} MXN` : 'Por acordar',
-         },
+        variables: {
+          nombre: customerName,
+          orden: orderId,
+          total: `$${total} MXN`,
+          envio: shippingAmount > 0 ? `$${shippingAmount} MXN` : 'Por acordar',
+        },
       });
       if (c.executionCtx?.waitUntil) c.executionCtx.waitUntil(p); else await p;
     }

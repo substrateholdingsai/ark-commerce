@@ -4,11 +4,24 @@ import { getUnixTime, sha256Hex, hashPasswordForClient, verifyPbkdf2, verifyLega
 import { generateSecureToken } from '../lib/tokens';
 import { sendEmail } from '../lib/email';
 import { serializeCartItems, deserializeCartItems, mergeCartItems } from '../lib/cart';
+import { checkRateLimit } from '../lib/security';
 import type { Env } from '../types/env';
 import type { CustomerSessionData } from '../types/auth';
 
 const auth = new Hono<{ Bindings: Env; Variables: { tenant: any; tenantId: string | null } }>();
 const CUSTOMER_COOKIE = 'customer_session';
+
+// Rate Limit para rutas de autenticación de clientes (anti fuerza bruta y spam de magic links)
+auth.use('/*', async (c, next) => {
+  if (c.req.method === 'POST') {
+    const rl = await checkRateLimit(c as any, { scope: 'customer_auth', limit: 10, windowSeconds: 60 });
+    if (!rl.allowed) {
+      c.header('Retry-After', String(rl.retryAfterSeconds));
+      return c.json({ success: false, error: 'Demasiados intentos seguidos. Espera un minuto.' }, 429);
+    }
+  }
+  await next();
+});
 
 async function getOrCreateCart(env: Env, tenantId: string, customerId: string | null) {
   const now = getUnixTime();

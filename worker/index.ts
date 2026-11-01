@@ -13,6 +13,14 @@ const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 app.use('*', logger());
 app.use('*', cors());
 
+// Security Headers globales
+app.use('*', async (c, next) => {
+  await next();
+  c.header('X-Content-Type-Options', 'nosniff');
+  c.header('X-Frame-Options', 'SAMEORIGIN');
+  c.header('Referrer-Policy', 'strict-origin-when-cross-origin');
+});
+
 app.use('/api/*', async (c, next) => {
   const tenant = await resolveTenant(c.env, c.req);
   c.set('tenant', tenant);

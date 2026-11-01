@@ -463,7 +463,15 @@
 
       async function fetchSummary() {
         try {
-          const res = await fetch('/api/admin/leads/summary');
+          const token = localStorage.getItem('admin_token') || '';
+          const res = await fetch('/api/admin/leads/summary', {
+            headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+          });
+          if (res.status === 401) {
+            document.getElementById('leads-table-body').innerHTML =
+              '<tr><td colspan="7" class="empty-state">🔒 Sesión de administrador requerida. <a href="/admin" style="color:var(--lima);text-decoration:underline;font-weight:700;">Inicia sesión en /admin</a> y vuelve a cargar esta página.</td></tr>';
+            return;
+          }
           if (!res.ok) throw new Error('Error al consultar métricas');
           const json = await res.json();
           if (!json.success || !json.data) return;

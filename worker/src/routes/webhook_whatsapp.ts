@@ -1,5 +1,10 @@
 import { Hono } from 'hono';
 import type { Env, Tenant } from '../types/env';
+import {
+  checkRateLimit,
+  sanitizeAndValidateAiInput,
+  verifyMetaWebhookSignature
+} from '../lib/security';
 
 type Variables = { tenant: Tenant | null; tenantId: string | null };
 
@@ -135,7 +140,20 @@ REGLAS DE RESPUESTA EN WHATSAPP:
 // =========================================================================
 whatsappWebhookRoute.post('/', async (c) => {
   try {
-    const body = await c.req.json<any>();
+    const rl = await checkRateLimit(c as any, { scope: 'whatsapp_webhook', limit: 30, windowSeconds: 60 });
+    if (!rl.allowed) {
+      return c.json({ error: 'Rate limit exceeded' }, 429);
+    }
+
+    const rawBody = await c.req.text();
+    const sigHeader = c.req.header('X-Hub-Signature-256');
+    const appSecret = (c.env as any).WHATSAPP_APP_SECRET as string | undefined;
+    const sigOk = await verifyMetaWebhookSignature(rawBody, sigHeader, appSecret);
+    if (!sigOk) {
+      return c.json({ error: 'Invalid webhook signature' }, 401);
+    }
+
+    const body = JSON.parse(rawBody);
 
     // Verificar que sea un evento de WhatsApp Business Account
     if (body.object !== 'whatsapp_business_account') {
@@ -153,10 +171,12 @@ whatsappWebhookRoute.post('/', async (c) => {
     }
 
     const message = messages[0];
-    const from = message.from; // Número de WhatsApp del cliente (e.g. "5219991234567")
-    const msgId = message.id;
-    const msgText = message.text?.body || message.caption || '[Mensaje no de texto]';
-    const contactName = value.contacts?.[0]?.profile?.name || 'Cliente';
+    const from = String(message.from || '').slice(0, 32); // Número de WhatsApp del cliente
+    const msgId = String(message.id || '').slice(0, 64);
+    const rawMsgText = message.text?.body || message.caption || '[Mensaje no de texto]';
+    const checkMsg = sanitizeAndValidateAiInput(rawMsgText, [], 400);
+    const msgText = checkMsg.sanitizedText || '[Mensaje vacío]';
+    const contactName = String(value.contacts?.[0]?.profile?.name || 'Cliente').slice(0, 64);
     const phoneNumberId = value.metadata?.phone_number_id || c.env.WHATSAPP_PHONE_NUMBER_ID;
 
     console.log(`[WhatsApp Inbound] De: ${contactName} (${from}) - Mensaje: "${msgText}"`);

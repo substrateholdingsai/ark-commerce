@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import { EnviaService } from '../lib/envia';
 import { notificarArkangel } from '../lib/arkangel';
+import { checkGeoAllowed, checkRateLimit, verifyAdminSession } from '../lib/security';
 import type { Env, Tenant } from '../types/env';
 
 const shipping = new Hono<{ Bindings: Env; Variables: { tenant: Tenant | null; tenantId: string | null } }>();
@@ -32,6 +33,17 @@ const GenerateLabelSchema = z.object({
  * Obtiene cotizaciones en tiempo real de paqueterías mexicanas para el carrito/pedido.
  */
 shipping.post('/quote', async (c) => {
+  const geo = checkGeoAllowed(c);
+  if (!geo.allowed) {
+    return c.json({ success: false, error: 'Servicio no disponible en tu región' }, 403);
+  }
+
+  const rl = await checkRateLimit(c as any, { scope: 'shipping_quote', limit: 15, windowSeconds: 60 });
+  if (!rl.allowed) {
+    c.header('Retry-After', String(rl.retryAfterSeconds));
+    return c.json({ success: false, error: 'Demasiadas cotizaciones seguidas, espera un momento' }, 429);
+  }
+
   const tenant = c.get('tenant');
   if (!tenant) return c.json({ success: false, error: 'Tenant not found' }, 404);
 
@@ -101,8 +113,17 @@ shipping.post('/quote', async (c) => {
  * Genera la guía de envío y actualiza la orden en D1 con el número de guía y PDF.
  */
 shipping.post('/label', async (c) => {
+  // Hardening: Solo administradores autenticados del tenant pueden emitir guías con costo en Envia.com
+  const adminSession = await verifyAdminSession(c as any);
+  if (!adminSession) {
+    return c.json({ success: false, error: 'Unauthorized: se requiere sesión de administrador para generar guías' }, 401);
+  }
+
   const tenant = c.get('tenant');
   if (!tenant) return c.json({ success: false, error: 'Tenant not found' }, 404);
+  if (adminSession.tenantId !== tenant.id && adminSession.tenantId !== 'ark') {
+    return c.json({ success: false, error: 'Forbidden: no tienes permisos sobre esta tienda' }, 403);
+  }
 
   let body: unknown;
   try {
