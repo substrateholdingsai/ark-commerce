@@ -4,89 +4,87 @@ import ServiceCarousel from './ServiceCarousel';
 
 const WHATSAPP_NUMBER = '529994918221';
 
-const TRADE_CATEGORIES = [
+interface TradeCategory {
+  id: string;
+  icon: string;
+  title: string;
+  subtitle: string;
+  sampleStore: string;
+  storeUrl: string;
+  badge: string;
+  services: { name: string; price: string; desc: string }[];
+  whatsappPreview: string;
+}
+
+const TRADE_CATEGORIES: TradeCategory[] = [
   {
-    id: 'plomeria',
-    icon: '🔧',
-    title: 'Plomería & Drenajes',
-    subtitle: 'Fugas de agua, tinacos y bombas',
-    sampleStore: 'baakal.ark.mx',
+    id: 'marea',
+    icon: '👕',
+    title: 'MAREA · Moda del Sureste',
+    subtitle: 'Playeras personalizadas, serigrafía y streetwear caribeño',
+    sampleStore: 'tiendas.arksystems.site/marea',
+    storeUrl: '/marea',
+    badge: 'RETAIL & MODA',
     services: [
-      { name: 'Destape de Drenaje con Sonda Eléctrica', price: '$850', desc: 'Desazolve sin romper pisos ni tuberías' },
-      { name: 'Detección y Reparación de Fuga de Agua', price: '$650', desc: 'Diagnóstico en tubería de cobre y PPR' },
-      { name: 'Instalación de Tinaco / Bomba Presurizadora', price: '$1,400', desc: 'Conexión hidráulica y prueba de presión' },
+      { name: 'Playera "Ola Nocturna" (100% Algodón)', price: '$349', desc: 'Serigrafía premium y tacto ultrasuave en teal y coral' },
+      { name: 'Playera "Sol de Tulum" Edición Arena', price: '$329', desc: 'Estampado con pigmentos ecológicos sobre tela crema' },
+      { name: 'Playera "MANGO Beach" Edición Festiva', price: '$339', desc: 'Algodón peinado con arte original caribeño y corte unisex' },
     ],
-    whatsappPreview: 'Hola Baakal! Solicito técnico para Destape de Drenaje con Sonda. Tarifa base: $850 MXN. Ubicación: Col. García Ginerés.',
+    whatsappPreview: 'Hola MAREA! 🌊 Quiero pedir la playera Ola Nocturna en talla L con envío a Cancún.',
   },
   {
-    id: 'gas',
-    icon: '🔥',
-    title: 'Gas LP & Boilers',
-    subtitle: 'Líneas de gas, calentadores y fugas',
-    sampleStore: 'baakal.ark.mx',
+    id: 'temozonia',
+    icon: '🥩',
+    title: 'Temozonia · Carnes Ahumadas',
+    subtitle: 'Ahumados lentos artesanales de Valladolid y embutidos regionales',
+    sampleStore: 'tiendas.arksystems.site/temozonia',
+    storeUrl: '/temozonia',
+    badge: 'GOURMET & ALIMENTOS',
     services: [
-      { name: 'Instalación de Boiler (Gas o Solar)', price: '$1,250', desc: 'Montaje con prueba de hermeticidad' },
-      { name: 'Prueba de Hermeticidad y Fuga de Gas', price: '$950', desc: 'Detección con manómetro y equipo certificado' },
-      { name: 'Cambio de Válvulas y Regulador de Tanque', price: '$750', desc: 'Regulador de alta y baja presión' },
+      { name: 'Pork Belly Ahumado en Jabín (500g)', price: '$269', desc: 'Horneado y ahumado lento empacado al vacío para entrega' },
+      { name: 'Costillas BBQ Ahumadas 12 Horas (1kg)', price: '$389', desc: 'Carne suave que se desprende del hueso con salsa artesanal' },
+      { name: 'Longaniza Tradicional de Valladolid (500g)', price: '$195', desc: 'Receta histórica con condimentos yucatecos seleccionados' },
     ],
-    whatsappPreview: 'Hola Baakal! Requiero instalación de Boiler con prueba de hermeticidad. Total: $1,250 MXN. ¿Tienen disponibilidad hoy?',
+    whatsappPreview: 'Hola Temozonia! 🥩 Me gustaría ordenar 1kg de Costillas BBQ y 500g de Pork Belly para este fin de semana.',
+  },
+  {
+    id: 'baakal',
+    icon: '🔧',
+    title: 'BAAKAL · Plomería & Gas LP',
+    subtitle: 'Técnicos certificados, desazolve de drenajes y redes hidráulicas',
+    sampleStore: 'tiendas.arksystems.site/baakal',
+    storeUrl: '/baakal',
+    badge: 'SERVICIOS TÉCNICOS',
+    services: [
+      { name: 'Destape de Drenaje con Sonda Eléctrica', price: '$850', desc: 'Desazolve profesional sin romper pisos ni tuberías' },
+      { name: 'Instalación de Boiler con Prueba Hermética', price: '$1,250', desc: 'Montaje seguro bajo norma oficial y prueba con manómetro' },
+      { name: 'Detección y Reparación de Fuga de Agua', price: '$650', desc: 'Diagnóstico en tubería de cobre, CPVC y termofusión PPR' },
+    ],
+    whatsappPreview: 'Hola Baakal! Solicito técnico para Destape de Drenaje con Sonda. Tarifa base: $850 MXN. Ubicación: Col. García Ginerés.',
   },
   {
     id: 'climas',
     icon: '❄️',
     title: 'Climas & Minisplits (HVAC)',
-    subtitle: 'Mantenimiento, lavado y recarga de gas',
-    sampleStore: 'climasdeleste.ark.mx',
+    subtitle: 'Mantenimiento preventivo, lavado profundo y recarga de gas',
+    sampleStore: 'climas.arksystems.site',
+    storeUrl: 'https://wa.me/529994918221?text=Hola!%20Requiero%20mantenimiento%20para%20minisplit.',
+    badge: 'CLIMATIZACIÓN',
     services: [
-      { name: 'Lavado Profundo de Minisplit', price: '$550', desc: 'Desinfección de turbina y serpentín' },
-      { name: 'Recarga de Gas Refrigerante R410A', price: '$850', desc: 'Carga completa con vacío previo' },
-      { name: 'Instalación Completa Minisplit Inverter', price: '$1,450', desc: 'Incluye kit de tubería y fijación de ménsulas' },
+      { name: 'Lavado Profundo de Minisplit', price: '$550', desc: 'Desinfección de turbina, charola y serpentín con hidrolavadora' },
+      { name: 'Recarga de Gas Refrigerante R410A', price: '$850', desc: 'Carga completa con vacío previo y balance de presiones' },
+      { name: 'Instalación Completa Minisplit Inverter', price: '$1,450', desc: 'Incluye kit de tubería, cableado y fijación de ménsulas' },
     ],
     whatsappPreview: 'Hola! Quiero agendar servicio de lavado profundo para 2 minisplits. Total: $1,100 MXN. Paso mi dirección.',
-  },
-  {
-    id: 'electricidad',
-    icon: '⚡',
-    title: 'Electricidad & Cuadros de Carga',
-    subtitle: 'Cortocircuitos, cableado y centros de carga',
-    sampleStore: 'voltia.ark.mx',
-    services: [
-      { name: 'Reparación de Cortocircuito y Falla Eléctrica', price: '$750', desc: 'Aislamiento de circuito y cambio de pastilla' },
-      { name: 'Instalación de Centro de Carga (2 a 4 pastillas)', price: '$1,350', desc: 'Norma técnica con tierra física' },
-      { name: 'Cableado y Balanceo de Cargas', price: '$1,800', desc: 'Para evitar sobrecalentamiento y caídas de voltaje' },
-    ],
-    whatsappPreview: 'Hola! Tengo una falla en el centro de carga principal de mi casa. Solicito electricista urgente.',
-  },
-  {
-    id: 'playeras',
-    icon: '👕',
-    title: 'Playeras & Moda del Sureste',
-    subtitle: 'Estampado textil, personalizadas y streetwear',
-    sampleStore: 'marea.ark.mx',
-    services: [
-      { name: 'Playera "Ola Nocturna" (100% Algodón)', price: '$349', desc: 'Serigrafía premium y tacto ultrasuave' },
-      { name: 'Playera "Sol de Tulum" Edición Coral', price: '$329', desc: 'Estampado con pigmento eco en tela arena' },
-      { name: 'Estampado con tu propio diseño', price: '$349', desc: 'Sube tu logo o arte, desde 1 pieza' },
-    ],
-    whatsappPreview: 'Hola MAREA! 🌊 Quiero pedir la playera Ola Nocturna en talla L con envío nacional.',
   },
 ];
 
 export default function ArkLanding() {
-  const [selectedCat, setSelectedCat] = useState(TRADE_CATEGORIES[0]);
+  const [selectedCat, setSelectedCat] = useState<TradeCategory>(TRADE_CATEGORIES[0]);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [copiedClabe, setCopiedClabe] = useState(false);
 
   const getWaLink = (msg: string) => {
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-  };
-
-  const handleCopyDemoClabe = () => {
-    try {
-      navigator.clipboard.writeText('012180012345678901');
-      setCopiedClabe(true);
-      setTimeout(() => setCopiedClabe(false), 2200);
-    } catch {}
   };
 
   const scrollTo = (id: string) => {
@@ -119,30 +117,30 @@ export default function ArkLanding() {
             </div>
             <div>
               <span className="font-display font-black text-lg tracking-tight text-white">
-                ARK<span className="text-[#B4FF00]">OFICIOS</span>
+                ARK<span className="text-[#B4FF00]">COMMERCE</span>
               </span>
-              <span className="hidden sm:inline-block ml-3 font-mono text-[11px] tracking-widest text-[#B4FF00] bg-[#B4FF00]/10 px-2 py-0.5 rounded border border-[#B4FF00]/20">
-                RED DE MANTENIMIENTO CON IA
+              <span className="hidden sm:inline-block ml-3 font-mono text-[10px] tracking-widest text-[#B4FF00] bg-[#B4FF00]/10 px-2 py-0.5 rounded border border-[#B4FF00]/20 uppercase">
+                Plataforma Multi-Tienda & Servicios
               </span>
             </div>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-[#A7AEB8]">
-            <button onClick={() => scrollTo('ai-concierge')} className="hover:text-white transition">Cotizador IA</button>
-            <button onClick={() => scrollTo('servicios')} className="hover:text-white transition">Especialidades</button>
-            <button onClick={() => scrollTo('comparativa')} className="hover:text-white transition">Garantía Ark</button>
-            <button onClick={() => scrollTo('como-funciona')} className="hover:text-white transition">Cómo funciona</button>
-            <button onClick={() => scrollTo('proveedores')} className="hover:text-white transition">Para Técnicos</button>
+            <button onClick={() => scrollTo('ai-concierge')} className="hover:text-white transition">Buscador IA</button>
+            <button onClick={() => scrollTo('tiendas')} className="hover:text-white transition">Tiendas & Catálogos</button>
+            <button onClick={() => scrollTo('ventajas')} className="hover:text-white transition">Ventajas Ark</button>
+            <button onClick={() => scrollTo('como-funciona')} className="hover:text-white transition">Cómo Funciona</button>
+            <button onClick={() => scrollTo('vende-con-ark')} className="hover:text-white transition">Abre tu Tienda ($299/mes)</button>
           </nav>
 
           <div className="flex items-center gap-3">
             <a
-              href={getWaLink('Hola Ark! Tengo una emergencia de mantenimiento en mi hogar/negocio.')}
+              href={getWaLink('Hola Ark Commerce! Me interesa abrir una tienda online para mi negocio.')}
               target="_blank"
               rel="noopener noreferrer"
               className="h-10 rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] px-5 flex items-center font-display text-[13px] font-bold text-[#0B0C0E] transition lima-glow active:scale-[0.98]"
             >
-              Pedir Técnico por WhatsApp →
+              Abrir Tienda por WhatsApp →
             </a>
           </div>
         </div>
@@ -160,26 +158,26 @@ export default function ArkLanding() {
             {/* Copy Principal */}
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-[#B4FF00]/30 bg-[#B4FF00]/10 px-3.5 py-1 text-xs font-mono font-bold text-[#B4FF00] mb-6">
-                <span>🇲🇽</span> TÉCNICOS VERIFICADOS EN EL SURESTE · EMERGENCIAS Y MANTENIMIENTO
+                <span>🇲🇽</span> INFRAESTRUCTURA DE COMERCIO & SERVICIOS · SURESTE MEXICANO
               </div>
 
-              <h1 className="font-display text-4xl sm:text-6xl lg:text-[60px] font-black tracking-tight leading-[1.04]">
-                El técnico que necesitas en tu casa o negocio.{' '}
-                <span className="text-[#B4FF00] block mt-1">Cotizado al instante por IA.</span>
+              <h1 className="font-display text-4xl sm:text-6xl lg:text-[58px] font-black tracking-tight leading-[1.05]">
+                Tiendas independientes y servicios del Sureste.{' '}
+                <span className="text-[#B4FF00] block mt-1">Conectados al instante por IA.</span>
               </h1>
 
               <p className="font-body mt-6 text-[16px] sm:text-[18px] leading-[1.65] text-[#A7AEB8] max-w-xl">
-                Olvídate de buscar números en postes o esperar horas sin saber cuánto te van a cobrar.
-                Describe tu problema en lenguaje natural; nuestra IA te entrega la cotización real y te conecta de inmediato con un técnico certificado en plomería, gas, climas o electricidad.
+                Desde carnes ahumadas artesanales y moda personalizada hasta servicios de mantenimiento para el hogar.
+                Compra directo a marcas y profesionales locales con <strong>0% comisiones abusivas</strong>, pagos inmediatos por SPEI y checkout fluido en 1 clic por WhatsApp.
               </p>
 
-              {/* Badges de servicio */}
+              {/* Badges de plataforma */}
               <div className="mt-6 flex flex-wrap gap-2 text-xs font-mono font-semibold text-zinc-300">
                 <span className="bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-                  <span className="text-[#B4FF00]">✓</span> Precios cerrados por catálogo
+                  <span className="text-[#B4FF00]">✓</span> 0% comisiones por venta
                 </span>
                 <span className="bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-                  <span className="text-[#B4FF00]">✓</span> Folio de servicio formal con garantía
+                  <span className="text-[#B4FF00]">✓</span> Envíos nacionales con Envia.com
                 </span>
                 <span className="bg-white/[0.05] border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
                   <span className="text-[#B4FF00]">✓</span> Pago directo por SPEI a tu banco
@@ -192,21 +190,21 @@ export default function ArkLanding() {
                   onClick={() => scrollTo('ai-concierge')}
                   className="h-14 px-8 rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] flex items-center justify-center font-display text-base font-bold text-[#0B0C0E] transition lima-glow active:scale-[0.98]"
                 >
-                  🤖 Cotizar mi reparación con IA ↓
+                  🤖 Buscar productos o servicios con IA ↓
                 </button>
                 <a
-                  href={getWaLink('Hola Ark! Soy técnico/contratista y me interesa unirme a la red de proveedores.')}
+                  href={getWaLink('Hola Ark Commerce! Tengo un negocio/marca y quiero abrir mi tienda oficial por $299/mes.')}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="h-14 px-6 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/30 flex items-center justify-center font-display text-sm font-semibold text-white transition gap-2"
                 >
-                  <span>👨‍🔧 ¿Eres técnico? Únete a la red</span>
+                  <span>🏪 Abre tu Tienda ($299/mes)</span>
                   <span>→</span>
                 </a>
               </div>
 
               <p className="mt-4 text-xs text-[#7C8590] font-mono">
-                Atención en Mérida, Cancún, Playa del Carmen y Sureste · Técnicos certificados
+                Tiendas activas: MAREA (Playeras) · Temozonia (Carnes Ahumadas) · BAAKAL (Plomería & Gas)
               </p>
             </div>
 
@@ -226,79 +224,79 @@ export default function ArkLanding() {
       </section>
 
       {/* =========================================================================
-          EL DOLOR DEL TÉCNICO INFORMAL
+          VENTAJAS ARK COMMERCE VS TRADICIONAL
          ========================================================================= */}
-      <section className="py-16 sm:py-24 border-b border-white/10 bg-[#0E1013]">
+      <section id="ventajas" className="py-16 sm:py-24 border-b border-white/10 bg-[#0E1013]">
         <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
-              La pesadilla de las reparaciones
+              Comercio Directo sin Intermediarios
             </span>
             <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
-              Deja de contratar técnicos del poste o de grupos de Facebook.
+              Dile adiós a las comisiones abusivas de los marketplaces.
             </h2>
             <p className="mt-4 text-[#A7AEB8] text-sm sm:text-base">
-              El 80% de los fraudes y malas reparaciones en el hogar ocurren por técnicos sin verificación que inventan precios sobre la marcha y desaparecen sin garantía.
+              Las plataformas tradicionales se quedan con hasta el 30% de tus ventas, retienen tu dinero durante semanas y canibalizan a tus clientes. Con Ark Commerce el negocio es 100% tuyo.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {/* El técnico informal */}
+            {/* Plataformas Tradicionales */}
             <div className="rounded-2xl border border-red-500/20 bg-red-950/[0.1] p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-4 text-red-400 font-display font-bold">
                 <span className="text-2xl">❌</span>
-                <span>Con el técnico informal tradicional:</span>
+                <span>Con Shopify, Mercado Libre o Delivery Apps:</span>
               </div>
               <ul className="space-y-3.5 text-sm text-[#A7AEB8]">
                 <li className="flex items-start gap-2">
                   <span className="text-red-400 mt-0.5">•</span>
-                  <span>Te dice "llego en 20 minutos" y aparece 4 horas después (o nunca).</span>
+                  <span>Te cobran entre 15% y 30% de comisión sobre cada producto vendido.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-400 mt-0.5">•</span>
-                  <span>No te da precio cerrado hasta que ya desarmó tu pared o tubería.</span>
+                  <span>Retienen tu dinero hasta 14 o 21 días antes de transferirlo a tu banco.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-400 mt-0.5">•</span>
-                  <span>Usa piezas de segunda mano o pegamento improvisado.</span>
+                  <span>Muestran anuncios de tu competencia en tus propios listados.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-400 mt-0.5">•</span>
-                  <span>Si la fuga regresa al día siguiente, bloquea tu número.</span>
+                  <span>Tienes que pagar suscripciones caras en dólares para conectar WhatsApp o paqueterías.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-400 mt-0.5">•</span>
-                  <strong className="text-red-300">Resultado: Pagas doble y tu casa se sigue inundando.</strong>
+                  <strong className="text-red-300">Resultado: Pierdes margen y nunca conoces realmente a tus compradores.</strong>
                 </li>
               </ul>
             </div>
 
-            {/* Con Ark Oficios */}
+            {/* Con Ark Commerce */}
             <div className="rounded-2xl border border-[#B4FF00]/30 bg-[#B4FF00]/[0.03] p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-4 text-[#B4FF00] font-display font-bold">
                 <span className="text-2xl">⚡</span>
-                <span>Con la Red Ark Oficios:</span>
+                <span>Con Ark Commerce:</span>
               </div>
               <ul className="space-y-3.5 text-sm text-zinc-200">
                 <li className="flex items-start gap-2">
                   <span className="text-[#B4FF00] mt-0.5">✓</span>
-                  <span>Nuestra IA te da el <strong>precio oficial de catálogo</strong> antes de que salga la unidad.</span>
+                  <span><strong>0% comisiones por venta:</strong> El 100% de lo que cobras entra directo a tu cuenta.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#B4FF00] mt-0.5">✓</span>
-                  <span>Técnico con herramienta especializada (detector de gas, cámara de video y sonda).</span>
+                  <span><strong>Cobro directo SPEI BBVA:</strong> El cliente te transfiere directo a tu CLABE en segundos.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#B4FF00] mt-0.5">✓</span>
-                  <span>Folio de servicio formal numerado (#PLM-2026-...) con orden por WhatsApp.</span>
+                  <span><strong>Cotizador de envíos con Envia.com:</strong> Tarifas en tiempo real por C.P. (Estafeta, FedEx, DHL, Redpack).</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#B4FF00] mt-0.5">✓</span>
-                  <span>Pagas por SPEI con CLABE bancaria verificada o terminal al terminar.</span>
+                  <span><strong>Venta y atención por WhatsApp:</strong> La IA cotiza y arma el pedido en 1 clic para cerrar la venta.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#B4FF00] mt-0.5">✓</span>
-                  <strong className="text-[#B4FF00]">Resultado: Fuga o avería solucionada con garantía por escrito.</strong>
+                  <strong className="text-[#B4FF00]">Resultado: Tu propia tienda web ultra-rápida en el Edge con control total.</strong>
                 </li>
               </ul>
             </div>
@@ -307,23 +305,23 @@ export default function ArkLanding() {
       </section>
 
       {/* =========================================================================
-          SHOWCASE DE ESPECIALIDADES TÉCNICAS
+          SHOWCASE DE TIENDAS Y CATÁLOGOS EN VIVO
          ========================================================================= */}
-      <section id="servicios" className="py-16 sm:py-24 border-b border-white/10">
+      <section id="tiendas" className="py-16 sm:py-24 border-b border-white/10">
         <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
-              Catálogo de Especialidades
+              Catálogos y Tiendas Activas
             </span>
             <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
-              Especialistas en mantenimiento para casa y empresa.
+              Explora las tiendas oficiales alojadas en Ark Commerce.
             </h2>
             <p className="mt-4 text-[#A7AEB8] text-sm sm:text-base">
-              Cada especialidad cuenta con estándares técnicos rigurosos, tarifas transparentes y herramientas industriales.
+              Cada negocio cuenta con su propia identidad gráfica, generador dinámico de productos y checkout optimizado para México.
             </p>
           </div>
 
-          {/* Selector de Especialidades */}
+          {/* Selector de Tiendas */}
           <div className="flex flex-wrap justify-center gap-2 mb-10">
             {TRADE_CATEGORIES.map((cat) => (
               <button
@@ -341,7 +339,7 @@ export default function ArkLanding() {
             ))}
           </div>
 
-          {/* Tarjeta de la especialidad activa */}
+          {/* Tarjeta de la tienda activa */}
           <div className="max-w-4xl mx-auto rounded-2xl border border-white/15 bg-[#121417] p-6 sm:p-10 shadow-2xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/10 pb-6 mb-6 gap-4">
               <div>
@@ -353,12 +351,21 @@ export default function ArkLanding() {
                   </div>
                 </div>
               </div>
-              <div className="font-mono text-xs text-[#B4FF00] bg-[#B4FF00]/10 px-3 py-1.5 rounded-lg border border-[#B4FF00]/20 self-start sm:self-auto">
-                Proveedor Insignia: {selectedCat.sampleStore}
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs text-[#B4FF00] bg-[#B4FF00]/10 px-3 py-1.5 rounded-lg border border-[#B4FF00]/20">
+                  {selectedCat.badge}
+                </span>
+                <a
+                  href={selectedCat.storeUrl}
+                  className="font-display font-bold text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg border border-white/15 transition flex items-center gap-1"
+                >
+                  <span>Ir a la Tienda</span>
+                  <span>→</span>
+                </a>
               </div>
             </div>
 
-            {/* Lista de servicios con tarifas */}
+            {/* Lista de productos con tarifas */}
             <div className="grid sm:grid-cols-3 gap-4 mb-6">
               {selectedCat.services.map((p, i) => (
                 <div key={i} className="rounded-xl border border-white/10 bg-white/[0.02] p-4 flex flex-col justify-between">
@@ -376,7 +383,7 @@ export default function ArkLanding() {
               <span className="text-xl">💬</span>
               <div>
                 <div className="text-[11px] font-mono text-emerald-400 font-bold uppercase tracking-wider">
-                  Así se formaliza la visita por WhatsApp:
+                  Así se formaliza la compra por WhatsApp:
                 </div>
                 <div className="text-sm text-zinc-200 mt-1 italic">
                   "{selectedCat.whatsappPreview}"
@@ -388,16 +395,16 @@ export default function ArkLanding() {
       </section>
 
       {/* =========================================================================
-          CÓMO FUNCIONA EL SERVICIO
+          CÓMO FUNCIONA EL ECOSISTEMA
          ========================================================================= */}
       <section id="como-funciona" className="py-16 sm:py-24 border-b border-white/10 bg-[#0E1013]">
         <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
-              Proceso Transparente
+              Flujo Directo y Seguro
             </span>
             <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white mt-2">
-              Cómo resolvemos tu emergencia técnica en 3 pasos.
+              Cómo comprar o contratar en Ark Commerce en 3 pasos.
             </h2>
           </div>
 
@@ -406,9 +413,9 @@ export default function ArkLanding() {
               <div className="w-14 h-14 rounded-2xl bg-[#B4FF00]/10 border border-[#B4FF00]/30 text-[#B4FF00] font-display font-black text-2xl flex items-center justify-center mx-auto mb-6">
                 1
               </div>
-              <h3 className="font-display font-bold text-lg text-white">Describes tu síntoma a la IA</h3>
+              <h3 className="font-display font-bold text-lg text-white">Eliges o consultas a la IA</h3>
               <p className="text-xs text-[#A7AEB8] mt-3 leading-relaxed">
-                Escribe: <em>"Huele a gas en el calentador"</em> o <em>"el agua no baja en la tarja"</em>. Nuestra IA calcula la tarifa estimada según el catálogo oficial.
+                Navega las tiendas de la red o escribe a Ark Concierge en lenguaje natural lo que necesitas: playeras, alimentos o servicios técnicos.
               </p>
             </div>
 
@@ -416,9 +423,9 @@ export default function ArkLanding() {
               <div className="w-14 h-14 rounded-2xl bg-[#B4FF00]/10 border border-[#B4FF00]/30 text-[#B4FF00] font-display font-black text-2xl flex items-center justify-center mx-auto mb-6">
                 2
               </div>
-              <h3 className="font-display font-bold text-lg text-white">Coordinas visita en WhatsApp</h3>
+              <h3 className="font-display font-bold text-lg text-white">Ticket y Envío por WhatsApp</h3>
               <p className="text-xs text-[#A7AEB8] mt-3 leading-relaxed">
-                El sistema te genera tu folio de servicio y abre el chat directo con el técnico certificado asignado para acordar hora de llegada.
+                El sistema cotiza el envío con tu Código Postal (Envia.com) o genera el folio formal de servicio y abre el chat oficial de la tienda.
               </p>
             </div>
 
@@ -426,9 +433,9 @@ export default function ArkLanding() {
               <div className="w-14 h-14 rounded-2xl bg-[#B4FF00]/10 border border-[#B4FF00]/30 text-[#B4FF00] font-display font-black text-2xl flex items-center justify-center mx-auto mb-6">
                 3
               </div>
-              <h3 className="font-display font-bold text-lg text-white">Trabajo con garantía & SPEI</h3>
+              <h3 className="font-display font-bold text-lg text-white">Pago Directo por SPEI</h3>
               <p className="text-xs text-[#A7AEB8] mt-3 leading-relaxed">
-                El técnico realiza el trabajo con herramienta profesional. Pagas por SPEI o tarjeta y recibes tu garantía por escrito.
+                Pagas directo a la CLABE de la tienda con 0% comisiones. Recibes tu guía de paquetería o confirmación de cita de inmediato.
               </p>
             </div>
           </div>
@@ -436,27 +443,31 @@ export default function ArkLanding() {
       </section>
 
       {/* =========================================================================
-          PARA TÉCNICOS Y CONTRATISTAS ($299/mes)
+          PARA TIENDAS, MARCAS Y TÉCNICOS ($299/mes)
          ========================================================================= */}
-      <section id="proveedores" className="py-16 sm:py-24 border-b border-white/10">
+      <section id="vende-con-ark" className="py-16 sm:py-24 border-b border-white/10">
         <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
           <div className="max-w-xl mx-auto rounded-3xl border-2 border-[#B4FF00] bg-gradient-to-b from-[#161a14] to-[#121417] p-8 sm:p-12 text-center shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 bg-[#B4FF00] text-[#0B0C0E] font-display font-bold text-[11px] px-4 py-1 rounded-bl-xl tracking-wider uppercase">
-              PARA TÉCNICOS & CONTRATISTAS
+              PARA MARCAS, TIENDAS Y CONTRATISTAS
             </div>
 
             <span className="font-mono text-xs font-bold text-[#B4FF00] tracking-widest uppercase">
-              Únete a la Red Ark
+              Lanza tu Tienda en Ark Commerce
             </span>
             <h2 className="font-display text-4xl sm:text-5xl font-black text-white mt-2">
               $299 <span className="text-base sm:text-lg font-normal text-[#A7AEB8]">MXN / mes</span>
             </h2>
-            <p className="mt-2 text-xs text-zinc-400 font-mono">Deja de perder trabajos por no contestar el WhatsApp mientras estás en una escalera</p>
+            <p className="mt-2 text-xs text-zinc-400 font-mono">Sin comisiones por venta. El 100% de tus ingresos cae directamente a tu cuenta bancaria.</p>
 
             <div className="my-8 border-t border-white/10 pt-8 text-left space-y-3.5 text-sm">
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Tu web profesional con diseño de autor</strong> (como Baakal o Marea)</span>
+                <span className="text-zinc-200"><strong>Tu web profesional con diseño de autor</strong> (como Temozonia, Baakal o Marea)</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[#B4FF00]">✓</span>
+                <span className="text-zinc-200"><strong>0% comisiones por transacción:</strong> no le pagas porcentaje a intermediarios</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>
@@ -464,33 +475,29 @@ export default function ArkLanding() {
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Presencia en el buscador Ark Concierge</strong> para recibir nuevos clientes</span>
+                <span className="text-zinc-200"><strong>Cotizador de envíos con Envia.com</strong> integrado por Código Postal</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Folios formales de cotización</strong> con desglose de IVA y materiales</span>
+                <span className="text-zinc-200"><strong>Presencia en el buscador Ark Concierge</strong> para atraer compradores locales</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Cobro directo a tu banco por SPEI</strong> (0% de comisiones)</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-[#B4FF00]">✓</span>
-                <span className="text-zinc-200"><strong>Panel de control móvil:</strong> edita tus precios y servicios en segundos</span>
+                <span className="text-zinc-200"><strong>Panel de control móvil:</strong> edita tus productos, precios y pedidos en segundos</span>
               </div>
             </div>
 
             <a
-              href={getWaLink('Hola Ark! Soy técnico independiente/empresa de mantenimiento y quiero unirme a la red por $299/mes.')}
+              href={getWaLink('Hola Ark Commerce! Quiero abrir una tienda para mi marca por $299/mes.')}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full h-14 rounded-xl bg-[#B4FF00] hover:bg-[#C6FF33] font-display font-bold text-base text-[#0B0C0E] flex items-center justify-center gap-2 transition lima-glow active:scale-[0.98]"
             >
-              👉 Quiero Unirme como Técnico Verificado
+              👉 Quiero Abrir mi Tienda en Ark Commerce
             </a>
 
             <p className="mt-4 text-[11px] text-[#7C8590] font-mono">
-              Validamos tu experiencia y te entregamos tu perfil activo hoy mismo.
+              Configuración en menos de 24 horas · Sin contratos forzosos.
             </p>
           </div>
         </div>
@@ -506,31 +513,31 @@ export default function ArkLanding() {
               Dudas Frecuentes
             </span>
             <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mt-2">
-              Preguntas Frecuentes de Clientes y Técnicos
+              Preguntas Frecuentes de Clientes y Negocios
             </h2>
           </div>
 
           <div className="space-y-3">
             {[
               {
-                q: '¿Cómo garantizan que el precio no cambiará al llegar el técnico?',
-                a: 'Nuestra IA y catálogo manejan tarifas oficiales fijas para diagnósticos y reparaciones estándar. Antes de iniciar cualquier trabajo mayor, el técnico te entrega un folio formal con el desglose exacto de mano de obra y refacciones, requiriendo tu autorización.',
+                q: '¿Qué tipo de negocios pueden usar Ark Commerce?',
+                a: 'Ark Commerce aloja tanto tiendas de productos físicos (alimentos artesanales como Temozonia, marcas de ropa como MAREA, repostería, café de especialidad) como empresas de servicios técnicos (plomería BAAKAL, gas LP, mantenimiento de climas, etc.).',
               },
               {
-                q: '¿En cuánto tiempo llega un técnico para una emergencia de gas o agua?',
-                a: 'En las zonas principales de cobertura (Mérida, Cancún y Sureste), las unidades de emergencia tienen un tiempo de respuesta promedio de 45 a 90 minutos según la disponibilidad.',
+                q: '¿Cuánto cobra Ark Commerce de comisión por venta?',
+                a: '0%. A diferencia de Shopify o Mercado Libre, Ark Commerce no cobra porcentaje sobre tus ventas. El 100% de los pagos va directo a tu cuenta bancaria vía transferencia SPEI o contra entrega.',
               },
               {
-                q: '¿Qué garantía tienen los trabajos realizados?',
-                a: 'Todos los servicios de la Red Ark cuentan con garantía por escrito de 30 a 90 días en mano de obra. Si la avería reincide por una mala instalación, el técnico regresa sin costo adicional.',
+                q: '¿Cómo funcionan los envíos de paquetería?',
+                a: 'La plataforma integra Envia.com de forma nativa. Al ingresar su Código Postal en el checkout, el cliente cotiza en tiempo real con FedEx, Estafeta, Redpack y DHL, sumando el costo al ticket y facilitando la generación de guías.',
               },
               {
-                q: '¿Cómo puedo pagar el servicio?',
-                a: 'Aceptamos transferencias inmediatas por SPEI (BBVA o cualquier banco), tarjetas de débito/crédito mediante terminal física del técnico, o efectivo contra entrega de comprobante.',
+                q: '¿Cómo pagan los clientes en las tiendas de Ark Commerce?',
+                a: 'Mediante transferencia bancaria inmediata por SPEI (con botón de copia de CLABE en 1 clic y confirmación bancaria), pago contra entrega en entregas locales, o tarjetas de crédito/débito.',
               },
               {
-                q: '¿Cómo me uno a la red si soy plomero, electricista o técnico en climas?',
-                a: 'Envíanos un mensaje por WhatsApp. Revisamos tu experiencia, herramientas de trabajo y comprobante de domicilio. Al ser aprobado, activamos tu perfil profesional en Ark por $299 MXN al mes.',
+                q: '¿Cómo funciona el buscador agéntico Ark Concierge?',
+                a: 'Nuestra IA en el Edge comprende consultas en lenguaje natural ("quiero playeras del Caribe" o "fuga de gas en la cocina"), consulta el inventario de todas las tiendas y cotiza automáticamente recomendando la mejor opción con enlace directo.',
               },
             ].map((item, i) => (
               <div key={i} className="rounded-xl border border-white/10 bg-[#121417] overflow-hidden">
@@ -558,17 +565,17 @@ export default function ArkLanding() {
       <footer className="py-12 bg-[#0B0C0E] text-zinc-500 text-xs">
         <div className="mx-auto max-w-[1240px] px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-display font-black text-white">ARK<span className="text-[#B4FF00]">OFICIOS</span></span>
-            <span>· Red de Mantenimiento & Servicios Técnicos en México</span>
+            <span className="font-display font-black text-white">ARK<span className="text-[#B4FF00]">COMMERCE</span></span>
+            <span>· Plataforma de Comercio Directo, Tiendas & Servicios en el Sureste Mexicano</span>
           </div>
           <div className="flex items-center gap-4">
             <a
-              href={getWaLink('Hola Ark! Tengo una duda sobre los servicios técnicos de mantenimiento.')}
+              href={getWaLink('Hola Ark Commerce! Tengo una consulta sobre la plataforma.')}
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#B4FF00] hover:underline"
             >
-              Contacto Urgencias WhatsApp
+              Contacto WhatsApp
             </a>
             <span>·</span>
             <a href="/admin/leads.html" className="hover:text-white transition">Panel de Leads</a>

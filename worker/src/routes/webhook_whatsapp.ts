@@ -61,7 +61,7 @@ async function generateAiReply(env: Env, senderName: string, text: string) {
   if (env.AI) {
     try {
       const systemPrompt = `Eres el asistente oficial de atención por WhatsApp de Ark Commerce en México.
-Atiendes clientes que buscan contratar servicios (plomería/gas, contabilidad/fiscal, carnes ahumadas gourmet, etc.).
+Atiendes clientes que buscan comprar productos o contratar servicios de la red Ark Commerce (playeras personalizadas con MAREA, carnes ahumadas con Temozonia, plomería y gas con BAAKAL, climas, etc.).
 
 CATÁLOGO EN VIVO EN D1:
 ${catalogList}
@@ -120,10 +120,10 @@ REGLAS DE RESPUESTA EN WHATSAPP:
       estimatedPrice = 349;
       replyText = `¡Hola *${senderName}*! 🌊 Gracias por escribir a *MAREA (Playeras del Sureste)*.\n\n👕 Estampamos playeras 100% algodón peinado con diseños del Caribe y personalizadas desde 1 pieza.\n\n💰 *Tarifa desde:* $${estimatedPrice.toLocaleString('es-MX', {minimumFractionDigits: 2})} MXN (Envío GRATIS en 2+ playeras).\n\n¿Tienes un diseño listo para estampar o quieres ver el catálogo oficial?`;
     } else {
-      matchedTenant = 'Ark Marketplace';
+      matchedTenant = 'Ark Commerce';
       matchedService = 'Atención General';
       estimatedPrice = 0;
-      replyText = `¡Hola *${senderName}*! 👋 Bienvenido a la red de servicios verificados de *Ark*.\n\nTe podemos conectar de inmediato con especialistas en:\n• 🔧 *Plomería & Gas (Baakal)*\n• 👕 *Playeras Personalizadas (Marea)*\n• 🥩 *Carnes Ahumadas (Temozonía)*\n\nCuéntame qué requieres y te cotizo al instante.`;
+      replyText = `¡Hola *${senderName}*! 👋 Bienvenido a la red de tiendas y servicios de *Ark Commerce*.\n\nTe conectamos directo con:\n• 👕 *Playeras Personalizadas (MAREA)*\n• 🥩 *Carnes Ahumadas (Temozonia)*\n• 🔧 *Plomería & Gas (BAAKAL)*\n\nCuéntame qué buscas y te cotizo al instante.`;
     }
   }
 

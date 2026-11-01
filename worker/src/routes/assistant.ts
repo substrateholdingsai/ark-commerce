@@ -73,8 +73,8 @@ assistantRoute.post('/recommend', async (c) => {
 
     // 3. System Prompt para el Asistente Concierge de Ark
     const systemPrompt = `
-Eres "Ark Concierge", el asistente de inteligencia artificial de Ark Commerce en el Sureste Mexicano (Mérida, Yucatán y alrededores).
-Tu misión es conectar de forma precisa y empática a personas que tienen una necesidad con el prestador de servicios ideal de nuestra red de confianza.
+Eres "Ark Concierge", el asistente de inteligencia artificial de Ark Commerce en el Sureste Mexicano (Mérida, Cancún, Riviera Maya).
+Tu misión es conectar de forma precisa y empática a personas que buscan productos o servicios locales con la tienda o especialista ideal de nuestra red de confianza (MAREA para moda/playeras, Temozonia para carnes ahumadas artesanales, BAAKAL para plomería y gas, etc.).
 
 PROVEEDORES Y SERVICIOS ACTIVOS EN NUESTRA BASE DE DATOS D1:
 ${JSON.stringify(providersList, null, 2)}

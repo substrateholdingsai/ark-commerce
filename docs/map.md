@@ -233,7 +233,7 @@ pnpm cf-typegen   # Generar tipos Cloudflare Env
 - **API**: Endpoints CRUD completos para products, checkout, store, admin con auth Bearer + sesiones KV; endpoints de cliente (auth, cart, magic link, direcciones, pedidos) y logística (quote/label/track) funcionales. Checkout persiste `shipping_cost`/carrier/service a partir de la tarifa seleccionada (Envia.com) y lo incluye en el total y en la notificación Arkangel.
 - **Logística**: Envia.com integrado con fallback simulado; checkout incluye selector de paquetería y desglose subtotal/envío/total
 - **Admin Panel**: React app funcional con login, gestión productos, tienda, pedidos + subida R2 + dashboard de leads
-- **Frontend**: Cuatro experiencias (Ark Oficios landing con cotizador IA, Temozonia storefront, Baakal store, Marea storefront) funcionales; auth de cliente integrada en Header (UserMenu/AuthModal); carrito persiste tarifa de envío
+- **Frontend**: Cuatro experiencias (Ark Commerce landing con buscador IA Concierge, Temozonia storefront, Baakal store, Marea storefront) funcionales; auth de cliente integrada en Header (UserMenu/AuthModal); carrito persiste tarifa de envío
 - **IA**: Ark Concierge (Workers AI) para recomendación/cotización de servicios técnicos y playeras personalizadas; webhook WhatsApp con cotización IA contextualizada y handoff WhatsApp
 - **Leads**: Dashboard de leads WhatsApp (`/admin/leads.html`) con métricas por tenant/canal y API `/api/admin/leads*`
 - **WhatsApp**: Webhook Meta Cloud API con cotización IA y persistencia en D1 (`whatsapp_messages`)
