@@ -1,6 +1,6 @@
 -- Provisioning Tenant: marea (MAREA — Playeras Personalizadas del Sureste)
 INSERT INTO tenants (id, name, slug, domain, whatsapp, clabe, bank, clabe_holder, btcpay_pos_url, sats_rate, logo_url, theme_color) 
-VALUES ('marea', 'MAREA · Playeras Personalizadas', 'marea', NULL, '5219992968446', '0121 8000 1234 5678 90', 'BBVA', 'Marea Playeras del Sureste', NULL, 1.0, '/images/marea/favicon.svg', '#0EA9A8') 
+VALUES ('marea', 'Skin Lab Clothing Club', 'marea', NULL, '5219992968446', '0121 8000 1234 5678 90', 'BBVA', 'Skin Lab Clothing Club', NULL, 1.0, '/images/marea/favicon.svg', '#0EA9A8') 
 ON CONFLICT(id) DO UPDATE SET 
   name=excluded.name, 
   whatsapp=excluded.whatsapp, 

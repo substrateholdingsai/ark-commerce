@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>MAREA · Playeras Personalizadas del Sureste</title>
+<title>Skin Lab Clothing Club</title>
 <meta name="description" content="Playeras personalizadas del Caribe mexicano. Diseña tu ola: sube tu diseño, elige tu talla y la hacemos realidad. Envío 24–48h en todo México.">
 <link rel="icon" type="image/svg+xml" href="/images/marea/favicon.svg">
 <link rel="manifest" href="/manifest.json?tenant=marea">
@@ -137,8 +137,8 @@ tailwind.config = {
     <a href="#" class="flex items-center gap-2.5 shrink-0">
       <img src="/images/marea/favicon.svg" alt="MAREA Logo" class="w-10 h-10 object-contain" onerror="this.outerHTML='<svg width=40 height=40 viewBox=\'0 0 64 64\'><rect width=64 height=64 rx=14 fill=\'#0EA9A8\'/><circle cx=32 cy=20 r=8 fill=\'#E94E49\'/><path d=\'M12 38 Q22 28, 32 38 T52 38\' fill=\'none\' stroke=\'#fff\' stroke-width=4 stroke-linecap=\'round\'/></svg>'">
       <div class="leading-none">
-        <div class="font-display font-800 text-2xl tracking-tight text-marea-tinta">MAREA</div>
-        <div class="font-mono text-[9px] tracking-[0.22em] text-marea-teal-dk uppercase">Playeras del Sureste</div>
+        <div class="font-display font-800 text-2xl tracking-tight text-marea-tinta">Skin Lab</div>
+        <div class="font-mono text-[9px] tracking-[0.22em] text-marea-teal-dk uppercase">Clothing Club</div>
       </div>
     </a>
 
@@ -361,7 +361,7 @@ tailwind.config = {
 <footer class="bg-marea-noche text-marea-bruma mt-auto">
   <div class="max-w-7xl mx-auto px-4 md:px-6 py-12 grid md:grid-cols-3 gap-10">
     <div>
-      <div class="font-display font-800 text-2xl text-marea-arena">MAREA</div>
+      <div class="font-display font-800 text-2xl text-marea-arena">Skin Lab Clothing Club</div>
       <p class="mt-2 text-sm text-marea-bruma/80 max-w-xs leading-relaxed">
         Playeras personalizadas del Sureste mexicano. Diseña tu ola, nosotros la estampamos con calidad premium.
       </p>
@@ -376,11 +376,11 @@ tailwind.config = {
       <div class="text-marea-arena font-700 tracking-widest text-xs uppercase mb-3">Datos de Pago</div>
       <p class="text-xs text-marea-bruma/80">Banco: <strong>BBVA México</strong></p>
       <p class="text-xs text-marea-bruma/80">CLABE: <strong class="select-all text-marea-teal-hi">0121 8000 1234 5678 90</strong></p>
-      <p class="text-xs text-marea-bruma/80">Beneficiario: Marea Playeras del Sureste</p>
+      <p class="text-xs text-marea-bruma/80">Beneficiario: Skin Lab Clothing Club</p>
     </div>
   </div>
   <div class="border-t border-marea-noche-2 py-5 text-center font-mono text-xs text-marea-bruma/60">
-    © <span id="anio">2026</span> MAREA · Plataforma Ark Commerce · Hecho con 🌊 en el Caribe mexicano
+    © <span id="anio">2026</span> Skin Lab Clothing Club · Plataforma Ark Commerce · Hecho con 🌊 en el Caribe mexicano
   </div>
 </footer>
 
@@ -460,7 +460,7 @@ tailwind.config = {
         <div id="cajaSpei" class="bg-marea-arena p-3.5 rounded-xl border border-marea-arena-b space-y-2 text-xs">
           <div class="flex justify-between items-center font-mono">
             <span class="text-marea-tinta-3">Banco: <strong>BBVA</strong></span>
-            <span class="text-marea-tinta-3">Beneficiario: <strong>Marea</strong></span>
+            <span class="text-marea-tinta-3">Beneficiario: <strong>Skin Lab Clothing Club</strong></span>
           </div>
           <div class="flex items-center justify-between bg-marea-blanco p-2 rounded-lg border border-marea-arena-b">
             <span class="font-mono font-bold select-all tracking-wider text-marea-tinta">0121 8000 1234 5678 90</span>
@@ -827,7 +827,7 @@ function renderCarrito(){
 async function procesarPagoOla(){
   if(carrito.length === 0) return;
 
-  const nombre = document.getElementById('clienteNombre').value.trim() || 'Cliente MAREA';
+  const nombre = document.getElementById('clienteNombre').value.trim() || 'Cliente Skin Lab';
   const telefono = document.getElementById('clienteTelefono').value.trim() || 'No especificado';
   const direccion = document.getElementById('clienteDireccion').value.trim() || 'Por confirmar en chat';
   const cp = document.getElementById('inputCp').value.trim() || '';
@@ -863,7 +863,7 @@ async function procesarPagoOla(){
   }[metodoPago] || 'SPEI BBVA';
 
   const ticketMsg = 
-`🌊 *NUEVO PEDIDO MAREA #${folio}*
+`🌊 *NUEVO PEDIDO SKIN LAB CLOTHING CLUB #${folio}*
 ----------------------------------------
 ${itemsTexto}
 ----------------------------------------
@@ -876,7 +876,7 @@ ${itemsTexto}
 *Teléfono:* ${telefono}
 *Dirección:* ${direccion}
 ----------------------------------------
-_Hola equipo MAREA! Confirmo mi pedido para que inicien el estampado de mi ola._`;
+_Hola equipo Skin Lab Clothing Club! Confirmo mi pedido para que inicien el estampado de mi ola._`;
 
   // Número oficial MAREA
   const whatsappOficial = "5219992968446";
@@ -887,7 +887,7 @@ _Hola equipo MAREA! Confirmo mi pedido para que inicien el estampado de mi ola._
 }
 
 function solicitarPersonalizada(){
-  const msg = `¡Hola MAREA! 🌊 Quiero cotizar una playera personalizada con mi propio diseño. ¿Me pueden apoyar con las especificaciones y precios?`;
+  const msg = `¡Hola Skin Lab Clothing Club! 🌊 Quiero cotizar una playera personalizada con mi propio diseño. ¿Me pueden apoyar con las especificaciones y precios?`;
   window.open(`https://wa.me/5219992968446?text=${encodeURIComponent(msg)}`, '_blank');
 }
 

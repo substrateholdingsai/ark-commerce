@@ -32,7 +32,7 @@
    - Paleta: Verde Selva (`#1A2F2A`), Agua Turquesa (`#2A7F9E`), Cobre (`#B87333`), Terracota (`#C86B4A`), Cal (`#F5F1E8`)
    - Cobro: Pago en sitio o Transferencia SPEI BBVA (`0121 8000 9988 7766 55`) y WhatsApp (`+52 999 123 4567`)
 
-4. **MAREA — Playeras Personalizadas** (`marea`): Tienda retail de moda y streetwear caribeño en `/marea` y `/stores/marea.html`.
+4. **Skin Lab Clothing Club** (`marea`): Tienda retail de moda y streetwear caribeño en `/marea` y `/stores/marea.html` (branding anterior "MAREA").
    - Catálogo: 5 prendas reales Cotexsa (Playera Clásica 64000, Dry Fit 950C, Polo Premier 700D, Hoodie 18600, Gorra G011) + 8 diseños de estampa (Ola Nocturna, Sol de Tulum, Espíritu Selva, Marea Tricolor, Coral Vivo, MANGO Beach, Máscara Marina, Ola Espuma)
    - Configurador interactivo: selector de prenda/color (swatches)/talla/técnica/diseño con preview y desglose de precio; carrito configurado con imagen y datos (color, talla, técnica, design_id, precio_calculado) sincronizado con el checkout SPEI/WhatsApp
    - Canon de diseño: **MAREA v1.0** (`docs/tienda-playeras-marea.md`)

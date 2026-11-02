@@ -13,7 +13,7 @@ export interface ServiceItem {
 export const SERVICES: ServiceItem[] = [
   {
     id: 'marea',
-    title: 'MAREA · Moda del Sureste',
+    title: 'Skin Lab Clothing Club',
     subtitle: 'Playeras personalizadas y serigrafía artesanal',
     image: '/images/marea/seo/og-image.png',
     store: 'tiendas.arksystems.site/marea',
@@ -24,7 +24,7 @@ export const SERVICES: ServiceItem[] = [
       { name: 'Playera "Sol de Tulum" Edición Coral', price: '$329' },
       { name: 'Playera "MANGO Beach" Edición Festiva', price: '$339' },
     ],
-    whatsappMsg: 'Hola MAREA! 🌊 Quiero pedir playeras personalizadas con envío a mi domicilio.',
+    whatsappMsg: 'Hola Skin Lab Clothing Club! 🌊 Quiero pedir playeras personalizadas con envío a mi domicilio.',
   },
   {
     id: 'temozonia',
