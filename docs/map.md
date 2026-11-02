@@ -33,7 +33,8 @@
    - Cobro: Pago en sitio o Transferencia SPEI BBVA (`0121 8000 9988 7766 55`) y WhatsApp (`+52 999 123 4567`)
 
 4. **MAREA — Playeras Personalizadas** (`marea`): Tienda retail de moda y streetwear caribeño en `/marea` y `/stores/marea.html`.
-   - Catálogo: 8 playeras personalizadas con generador SVG dinámico (Ola Nocturna, Sol de Tulum, Espíritu Selva, Marea Tricolor, Coral Vivo, MANGO Beach, Máscara Marina, Ola Espuma)
+   - Catálogo: 5 prendas reales Cotexsa (Playera Clásica 64000, Dry Fit 950C, Polo Premier 700D, Hoodie 18600, Gorra G011) + 8 diseños de estampa (Ola Nocturna, Sol de Tulum, Espíritu Selva, Marea Tricolor, Coral Vivo, MANGO Beach, Máscara Marina, Ola Espuma)
+   - Configurador interactivo: selector de prenda/color (swatches)/talla/técnica/diseño con preview y desglose de precio; carrito configurado con imagen y datos (color, talla, técnica, design_id, precio_calculado) sincronizado con el checkout SPEI/WhatsApp
    - Canon de diseño: **MAREA v1.0** (`docs/tienda-playeras-marea.md`)
    - Modelo UX: Retail joven y festivo, Regla del 12% festivo, selector de tallas S a XXL, personalizador de diseño propio
    - Paleta: Arena (`#FFF9F0`), Teal (`#0EA9A8` / `#087F7E`), Coral (`#E94E49` / `#C53732`), Mango (`#FFB947`), Noche (`#0F2E2C`)
@@ -83,6 +84,7 @@ temozonia/
 │   │   ├── checkout/         # Carrito y checkout (CartDrawer.astro, CheckoutCalculator.astro con envío Envia.com)
 │   │   ├── layout/           # Header, Footer, Hero
 │   │   └── product/          # ProductCard
+│   │   └── marea/            # ProductConfigurator.tsx, DesignGallery.tsx (islands React del configurador MAREA)
 │   ├── data/                 # Datos estáticos (products.ts, services.ts)
 │   ├── layouts/              # Layout principal (Layout.astro con inyección de widget.js)
 │   ├── pages/                # Páginas Astro (index, temozonia, baakal, marea, admin, contacto, etc.)
@@ -195,7 +197,7 @@ Tablas: `tenants`, `tenant_users`, `customers`, `carts`, `store_sessions`, `acti
 | `index.astro` | `/` | Landing Ark Commerce (`ArkLanding` React `client:load`). Auto-redirige si `?tenant=temozonia|baakal|marea` o subdominio |
 | `temozonia.astro` | `/temozonia` | Tienda Temozonia (Layout + Hero + ProductCard grid + CheckoutCalculator con envío Envia.com) |
 | `baakal.astro` | `/baakal` | Tienda Baakal (Layout + servicios técnicos + CheckoutCalculator) |
-| `marea.astro` | `/marea` | Tienda MAREA Playeras Personalizadas (Hero caribeño + generador SVG + tallas S-XXL + checkout SPEI/WhatsApp) |
+| `marea.astro` | `/marea` | Tienda MAREA Playeras Personalizadas (Hero caribeño + configurador interactivo React: 5 prendas reales Cotexsa con swatches de color/talla/técnica + galería de 8 diseños + carrito configurado con imagen/precio + checkout SPEI/WhatsApp) |
 | `admin.astro` | `/admin` | Panel admin multi-tenant (`AdminApp` React `client:only`) |
 | `test.astro` | `/test` | Página de pruebas |
 | `contacto.astro` | `/contacto` | Contacto |
@@ -218,6 +220,7 @@ pnpm cf-typegen   # Generar tipos Cloudflare Env
 
 **Python (`scripts/python`):**
 - `marea_vector_forge.py`, `marea_raster_forge.py`: generación de assets SVG y capa raster SEO/PWA para MAREA
+- `generate_marea_assets.py`: generación de imágenes de prendas (tee-64000, dryfit-950c, polo-700d, hoodie-18600, gorra-g011) y diseños de estampas para MAREA
 - `smoke_amber_forge.py`, `ark_pulse_forge.py`, `forge_baakal.py`: generación de assets visuales
 - `onboard_tenant.py`: CLI interactivo de onboarding de tenants
 - `excel_to_d1.py`: importador universal Excel/CSV → D1 (imágenes + upsert)
@@ -258,4 +261,5 @@ pnpm cf-typegen   # Generar tipos Cloudflare Env
 - **Multi-tenant**: Resolución por slug/subdominio/query param + caché KV funcionando (`ark`, `temozonia`, `baakal`, `marea`)
 - **API & Hardening**: Endpoints CRUD y de negocio operativos y blindados con Geofencing, Rate Limiting por IP, Anti-Prompt Injection y sesiones Admin/Cliente
 - **Asistente 3D Ark**: Widget universal (`public/widget.js`) y buscador principal (`AiSearchConcierge.tsx`) unificados con escena interactiva **Spline 3D**, dictado por voz (`es-MX`) y cerebro multi-tienda (`TENANT_CONTEXT`)
+- **Configurador MAREA**: Islands React `ProductConfigurator` + `DesignGallery` integrados en `/marea` con fallbacks offline, selección cruzada de diseño (evento `marea:select-design`) y carrito configurado sincronizado con el storefront (evento `marea:cart-add`)
 - **Automatización**: Scripts de onboarding, importación de catálogos, validación de tenants, smoke test de checkout y facturación PDF disponibles
