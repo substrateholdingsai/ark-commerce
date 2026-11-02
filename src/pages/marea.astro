@@ -347,6 +347,78 @@ tailwind.config = {
 </section>
 
 <!-- ═══════════ FOOTER ═══════════ -->
+<!-- ═══════════ MAYOREO ═══════════ -->
+<section id="mayoreo" class="bg-marea-arena-2 border-t-2 border-marea-arena-b py-16 md:py-20">
+  <div class="max-w-7xl mx-auto px-4 md:px-6">
+    <div class="text-center max-w-2xl mx-auto mb-10">
+      <span class="font-mono text-xs tracking-[0.22em] uppercase text-marea-coral-dk font-bold">Ofertas para Negocios y Equipos</span>
+      <h2 class="font-display font-800 text-4xl md:text-5xl mt-2 text-marea-tinta">Mayoreo · <span class="text-marea-teal">Paquetes personalizados</span></h2>
+      <p class="text-marea-tinta-2 mt-3 text-base md:text-lg">
+        Uniformes, eventos, marcas y equipos: entre más piezas, mejor precio por unidad. Cotiza tu paquete y recibe asesoría dedicada.
+      </p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6 items-stretch">
+      <!-- Tier 1 -->
+      <div class="bg-marea-blanco rounded-3xl border-2 border-marea-arena-b p-6 flex flex-col">
+        <div class="font-mono text-xs uppercase tracking-widest text-marea-tinta-3 font-bold">Starter</div>
+        <div class="font-display font-800 text-2xl text-marea-tinta mt-1">1 – 12 piezas</div>
+        <div class="mt-4">
+          <span class="font-mono font-800 text-3xl text-marea-tinta">$299</span>
+          <span class="text-marea-tinta-2 text-sm"> MXN / pieza</span>
+        </div>
+        <p class="text-xs text-marea-tinta-3 mt-1">Precio retail estándar</p>
+        <ul class="mt-5 space-y-2 text-sm text-marea-tinta-2 flex-1">
+          <li>✓ Elige prenda, color y talla</li>
+          <li>✓ Estampa de la colección o diseño propio</li>
+          <li>✓ Envío Sureste $99 MXN (gratis en 2+)</li>
+        </ul>
+        <button onclick="cotizarMayoreo(12)" class="mt-6 w-full py-3 rounded-full border-2 border-marea-teal text-marea-teal-dk font-bold hover:bg-marea-teal/10 transition-all">Cotizar 12 piezas</button>
+      </div>
+
+      <!-- Tier 2 -->
+      <div class="bg-marea-blanco rounded-3xl border-2 border-marea-arena-b p-6 flex flex-col">
+        <div class="font-mono text-xs uppercase tracking-widest text-marea-tinta-3 font-bold">Equipo</div>
+        <div class="font-display font-800 text-2xl text-marea-tinta mt-1">13 – 24 piezas</div>
+        <div class="mt-4">
+          <span class="font-mono font-800 text-3xl text-marea-tinta">$249</span>
+          <span class="text-marea-tinta-2 text-sm"> MXN / pieza</span>
+        </div>
+        <p class="text-xs text-emerald-600 font-bold mt-1">Ahorra 17% vs retail</p>
+        <ul class="mt-5 space-y-2 text-sm text-marea-tinta-2 flex-1">
+          <li>✓ Todo lo del plan Starter</li>
+          <li>✓ Asesoría de diseño incluida</li>
+          <li>✓ Muestra de color sin costo</li>
+        </ul>
+        <button onclick="cotizarMayoreo(24)" class="mt-6 w-full py-3 rounded-full border-2 border-marea-teal text-marea-teal-dk font-bold hover:bg-marea-teal/10 transition-all">Cotizar 24 piezas</button>
+      </div>
+
+      <!-- Tier 3 (destacado) -->
+      <div class="relative bg-marea-tinta text-marea-arena rounded-3xl border-2 border-marea-coral p-6 flex flex-col shadow-coral scale-[1.02]">
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-marea-coral text-white text-xs font-bold">Más popular</span>
+        <div class="font-mono text-xs uppercase tracking-widest text-marea-teal-hi font-bold">Mayoreo</div>
+        <div class="font-display font-800 text-2xl mt-1">25+ piezas</div>
+        <div class="mt-4">
+          <span class="font-mono font-800 text-3xl">$199</span>
+          <span class="text-marea-bruma/80 text-sm"> MXN / pieza</span>
+        </div>
+        <p class="text-xs text-marea-teal-hi font-bold mt-1">Ahorra 33% vs retail · Envío gratis</p>
+        <ul class="mt-5 space-y-2 text-sm text-marea-bruma/90 flex-1">
+          <li>✓ Todo lo del plan Equipo</li>
+          <li>✓ Envío gratis a todo México</li>
+          <li>✓ Atención dedicada por WhatsApp</li>
+          <li>✓ Paquete de 25 piezas personalizadas</li>
+        </ul>
+        <button onclick="cotizarMayoreo(25)" class="mt-6 w-full py-3 rounded-full bg-marea-coral text-white font-800 hover:bg-marea-coral-dk transition-all">Cotizar paquete de 25</button>
+      </div>
+    </div>
+
+    <p class="text-center text-xs text-marea-tinta-3 mt-8 font-mono">
+      *Precios por pieza en impresión DTF sobre algodón 100%. Diseños propios o de la colección. Cotización final según prenda y técnica. Mínimo 25 piezas para tarifa mayoreo.
+    </p>
+  </div>
+</section>
+
 <footer class="bg-marea-noche text-marea-bruma mt-auto">
   <div class="max-w-7xl mx-auto px-4 md:px-6 py-12 grid md:grid-cols-3 gap-10">
     <div>
@@ -878,6 +950,11 @@ _Hola equipo Skin Lab Clothing Club! Confirmo mi pedido para que inicien el esta
   window.open(urlWa, '_blank');
 
   toast(`🌊 ¡Pedido #${folio} generado con éxito!`);
+}
+
+function cotizarMayoreo(cantidad){
+  const msg = `¡Hola Skin Lab Clothing Club! 🌊 Quiero cotizar un paquete de mayoreo de ${cantidad} playeras personalizadas. ¿Me pueden apoyar con precios, tiempos de entrega y opciones de diseño?`;
+  window.open(`https://wa.me/5219992968446?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
 function solicitarPersonalizada(){
