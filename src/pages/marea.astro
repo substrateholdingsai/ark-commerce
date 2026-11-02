@@ -1,6 +1,8 @@
 ---
 // src/pages/marea.astro — Tenant Oficial: MAREA (Playeras Personalizadas del Sureste)
 // Design System: MAREA v1.0
+import ProductConfigurator from '@/components/marea/ProductConfigurator';
+import DesignGallery from '@/components/marea/DesignGallery';
 ---
 
 <!DOCTYPE html>
@@ -941,6 +943,14 @@ actualizarBadge();
 if(window.lucide) lucide.createIcons();
 cargarSpline();
 </script>
+
+<section id="marea-configurator" class="mx-auto max-w-6xl px-4 py-12">
+  <h2 class="mb-6 text-2xl font-bold">Diseña tu prenda</h2>
+  <div class="grid gap-8 md:grid-cols-2">
+    <ProductConfigurator client:load tenant="marea" />
+    <DesignGallery client:load tenant="marea" />
+  </div>
+</section>
 
 <script is:inline src="/widget.js" data-tenant="marea"></script>
 </body>
