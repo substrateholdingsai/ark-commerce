@@ -24,7 +24,7 @@ interface MareaMetadata {
 export const FALLBACK_PRODUCTS: Product[] = [
   {
     id: 'MAREA-TEE-64000',
-    name: 'Playera Marea Clásica',
+    name: 'Playera Skin Lab Clásica',
     weight: '153g',
     price: 299.00,
     desc: 'Playera Gildan Softstyle 64000, 100% algodón peinado 153g. Estampado full-color. Tacto ultrasuave.',
@@ -49,7 +49,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
   },
   {
     id: 'MAREA-DF-950C',
-    name: 'Playera Marea Dry Fit',
+    name: 'Playera Skin Lab Dry Fit',
     weight: '150g',
     price: 339.00,
     desc: 'Playera deportiva Dry Fit Playerytees 950C, 100% poliéster 150g. Secado rápido, colores flúor. Sublimación full-color.',
@@ -74,7 +74,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
   },
   {
     id: 'MAREA-POLO-700D',
-    name: 'Polo Marea Premier',
+    name: 'Polo Skin Lab Premier',
     weight: '230g',
     price: 449.00,
     desc: 'Polo Playerytees 700D Premier, 50% poliéster / 50% algodón, 230g. Manga corta deportiva, ideal para bordado premium.',
@@ -99,7 +99,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
   },
   {
     id: 'MAREA-HOODIE-18600',
-    name: 'Sudadera Marea con Capucha',
+    name: 'Sudadera Skin Lab con Capucha',
     weight: '271g',
     price: 599.00,
     desc: 'Sudadera Gildan 18600 con capucha y cremallera, 50/50, 271 g/m². Unisex. Ideal para bordado o DTF.',
@@ -124,7 +124,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
   },
   {
     id: 'MAREA-GORRA-G011',
-    name: 'Gorra Marea Dry Fit',
+    name: 'Gorra Skin Lab Dry Fit',
     weight: 'Unitalle',
     price: 299.00,
     desc: 'Gorra deportiva dry fit Club Cabo G011, 100% poliéster, unitalle. Frente estructurado.',
@@ -293,7 +293,7 @@ export default function ProductConfigurator({ tenant = 'marea' }: { tenant?: str
       {/* Encabezado */}
       <div className="flex items-center justify-between pb-4 border-b border-marea-arena-b">
         <div>
-          <span className="font-mono text-xs uppercase tracking-widest text-marea-teal-dk font-bold">Personalizador Oficial</span>
+          <span className="font-mono text-xs uppercase tracking-widest text-marea-teal-dk font-bold">Skin Lab Clothing Club</span>
           <h3 className="font-display font-800 text-2xl text-marea-tinta">Configura tu prenda</h3>
         </div>
         <span className="px-3 py-1 rounded-full bg-marea-teal/15 text-marea-teal-dk font-mono text-xs font-bold border border-marea-teal/30">
@@ -339,6 +339,12 @@ export default function ProductConfigurator({ tenant = 'marea' }: { tenant?: str
                 src={selectedDesign.image_url}
                 alt={selectedDesign.name}
                 className="absolute inset-0 m-auto w-7 h-7 object-cover rounded-full border border-white shadow-sm"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src.endsWith('.png')) {
+                    target.src = target.src.replace(/\.png$/, '.jpg');
+                  }
+                }}
               />
             )}
           </div>
