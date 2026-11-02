@@ -40,7 +40,7 @@ El resto es legibilidad y producto.
 | Token | HEX | HSL | Uso original | Regla |
 |---|---:|---|---|---|
 | `teal-logo` | `#0EA9A8` | `hsl(180 87% 36%)` | Círculo exterior del logo | Solo para botones/fondos grandes |
-| `coral-logo` | `#E94E49` | `hsl(2 81% 60%)` | Círculo interior del logo | Solo para botones/fondos grandes |
+| `coral-logo` | `#EC4899` | `hsl(2 81% 60%)` | Círculo interior del logo | Solo para botones/fondos grandes |
 
 **⚠️ Ninguno funciona como texto pequeño sobre blanco.** Usar solo como fondo de botón o decoración.
 
@@ -60,9 +60,9 @@ El resto es legibilidad y producto.
 | Acento primario | `teal-500` | `#0EA9A8` | `hsl(180 87% 36%)` | Botón "Agregar al carrito", badges | `2.88:1` FAIL (texto) |
 | Teal oscuro (texto) | `teal-dk` | `#087F7E` | `hsl(180 91% 26%)` | Enlaces, texto teal seguro | `4.84:1` AA ✅ |
 | Teal luminoso | `teal-hi` | `#3FD4D2` | `hsl(180 61% 54%)` | Hover, dark mode | — |
-| Acento secundario | `coral-500` | `#E94E49` | `hsl(2 81% 60%)` | Botón "Comprar ahora", alertas | `3.72:1` AA-large |
-| Coral oscuro (texto) | `coral-dk` | `#C53732` | `hsl(2 60% 48%)` | Texto coral seguro | `5.30:1` AA ✅ |
-| Coral luminoso | `coral-hi` | `#FF7B76` | `hsl(2 100% 73%)` | Hover, dark mode | — |
+| Acento secundario | `coral-500` | `#EC4899` | `hsl(2 81% 60%)` | Botón "Comprar ahora", alertas | `3.72:1` AA-large |
+| Coral oscuro (texto) | `coral-dk` | `#DB2777` | `hsl(2 60% 48%)` | Texto coral seguro | `5.30:1` AA ✅ |
+| Coral luminoso | `coral-hi` | `#F472B6` | `hsl(2 100% 73%)` | Hover, dark mode | — |
 
 ### 2.4 · Paleta festiva extendida (nuevos colores MAREA)
 
@@ -98,7 +98,7 @@ El resto es legibilidad y producto.
 |---|---|---|---|
 | Disponible / éxito | `#2FA060` | Badge semitransparente + texto verde oscuro | Producto en stock |
 | Alerta / descuento | `#FFB947` | Badge semitransparente + texto mango oscuro | Oferta, pocas unidades |
-| Error / eliminar | `#E94E49` | Badge semitransparente + texto coral oscuro | Carrito vacío, error |
+| Error / eliminar | `#EC4899` | Badge semitransparente + texto coral oscuro | Carrito vacío, error |
 | Info / nuevo | `#0EA9A8` | Badge semitransparente + texto teal oscuro | Nuevo diseño |
 | Agotado | `#6B8280` | Badge gris neutro | Sin stock |
 
@@ -111,21 +111,21 @@ El resto es legibilidad y producto.
 | Tinta 3 `#6B8280` / Arena `#FFF9F0` | **4.52:1** | AA | Texto mínimo |
 | Teal `#0EA9A8` / Blanco (texto) | **2.88:1** | FAIL | ❌ Nunca como texto pequeño |
 | Teal dk `#087F7E` / Blanco | **4.84:1** | AA | ✅ Texto teal seguro |
-| Coral `#E94E49` / Blanco (texto) | **3.72:1** | AA-large | Solo ≥24px |
-| Coral dk `#C53732` / Blanco | **5.30:1** | AA | ✅ Texto coral seguro |
+| Coral `#EC4899` / Blanco (texto) | **3.72:1** | AA-large | Solo ≥24px |
+| Coral dk `#DB2777` / Blanco | **5.30:1** | AA | ✅ Texto coral seguro |
 | Blanco / Teal `#0EA9A8` (botón) | **2.88:1** | FAIL | ⚠️ Usar texto oscuro o botón grande |
-| Blanco / Coral `#E94E49` (botón grande) | **3.72:1** | AA-large | Solo CTA ≥24px |
+| Blanco / Coral `#EC4899` (botón grande) | **3.72:1** | AA-large | Solo CTA ≥24px |
 | Tinta / Teal (botón) | **11.52:1** | AAA | ✅ Texto oscuro sobre botón teal |
 | Blanco / Noche `#0F2E2C` | **13.18:1** | AAA | Texto en footer oscuro |
 | Teal hi `#3FD4D2` / Noche | **8.47:1** | AAA | Acento sobre oscuro |
-| Coral hi `#FF7B76` / Noche | **6.89:1** | AA | Acento sobre oscuro |
+| Coral hi `#F472B6` / Noche | **6.89:1** | AA | Acento sobre oscuro |
 | Mango `#FFB947` / Tinta | **9.12:1** | AAA | Texto oscuro sobre botón mango |
 
 ### 2.9 · Regla WCAG explícita
 
-- **Nunca** usar teal `#0EA9A8` o coral `#E94E49` como texto pequeño sobre blanco (fallan contraste).
+- **Nunca** usar teal `#0EA9A8` o coral `#EC4899` como texto pequeño sobre blanco (fallan contraste).
 - Texto teal pequeño: usar SIEMPRE el gemelo `teal-dk` `#087F7E`.
-- Texto coral pequeño: usar SIEMPRE el gemelo `coral-dk` `#C53732`.
+- Texto coral pequeño: usar SIEMPRE el gemelo `coral-dk` `#DB2777`.
 - Botones teal/coral: usar texto oscuro `#1A3B38` o blanco solo en botones grandes (≥24px, bold).
 - Badges de estado: fondo semitransparente + texto del color oscuro.
 - En modo oscuro: texto `#FFF9F0` sobre noche `#0F2E2C` da 13.18:1 AAA.
@@ -146,9 +146,9 @@ export default {
           teal: "#0EA9A8",
           "teal-dk": "#087F7E",
           "teal-hi": "#3FD4D2",
-          coral: "#E94E49",
-          "coral-dk": "#C53732",
-          "coral-hi": "#FF7B76",
+          coral: "#EC4899",
+          "coral-dk": "#DB2777",
+          "coral-hi": "#F472B6",
           mango: "#FFB947",
           "mango-dk": "#C98F1F",
           selva: "#2FA060",
@@ -175,7 +175,7 @@ export default {
       },
       boxShadow: {
         ola: '0 8px 24px -6px rgba(14, 169, 168, 0.18)',
-        coral: '0 8px 24px -6px rgba(233, 78, 73, 0.20)',
+        coral: '0 8px 24px -6px rgba(236, 72, 153, 0.20)',
         fiesta: '0 12px 32px -8px rgba(255, 185, 71, 0.30)',
       },
     },
@@ -319,8 +319,8 @@ Pero el producto siempre es protagonista.
   --marea-arena-b: #F0E5D0;
   --marea-teal: #0EA9A8;
   --marea-teal-dk: #087F7E;
-  --marea-coral: #E94E49;
-  --marea-coral-dk: #C53732;
+  --marea-coral: #EC4899;
+  --marea-coral-dk: #DB2777;
   --marea-mango: #FFB947;
   --marea-tinta: #1A3B38;
   --marea-radius: 20px;
@@ -337,7 +337,7 @@ Pero el producto siempre es protagonista.
 }
 .marea-producto:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px -8px rgba(233, 78, 73, 0.20);
+  box-shadow: 0 12px 32px -8px rgba(236, 72, 153, 0.20);
 }
 .marea-producto__imagen { aspect-ratio: 1/1; object-fit: cover; }
 .marea-producto__precio {

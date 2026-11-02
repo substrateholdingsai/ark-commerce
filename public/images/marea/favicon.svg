@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="64" height="64">
   <circle cx="250" cy="250" r="235" fill="none" stroke="#0EA9A8" stroke-width="18" />
   <circle cx="250" cy="250" r="215" fill="white"/>
-  <circle cx="250" cy="255" r="185" fill="#E94E49"/>
+  <circle cx="250" cy="255" r="185" fill="#EC4899"/>
   <path d="M 145 185 Q 145 155 175 150 L 285 130 Q 315 125 325 145 Q 330 180 300 210 Q 255 245 200 245 Q 145 240 145 185 Z
            M 190 185 Q 190 200 210 210 Q 240 220 265 200 Q 275 190 275 175 L 250 175 Q 250 190 235 197 Q 210 205 195 190 Q 188 180 190 185 Z" 
         fill="white" fill-rule="evenodd"/>
