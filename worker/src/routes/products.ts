@@ -8,7 +8,7 @@ products.get('/', async (c) => {
   if (!tenantId) return c.json({ success: false, error: 'Tenant not found' }, 404);
   try {
     const { results } = await c.env.DB.prepare(
-      `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order
+      `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order, metadata
        FROM products
        WHERE tenant_id = ? AND active = 1
        ORDER BY display_order, name`
@@ -27,7 +27,7 @@ products.get('/:id', async (c) => {
   if (!tenantId) return c.json({ success: false, error: 'Tenant not found' }, 404);
   try {
     const product = await c.env.DB.prepare(
-      `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order
+      `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order, metadata
        FROM products
        WHERE id = ? AND tenant_id = ? AND active = 1`
     ).bind(id, tenantId).first();

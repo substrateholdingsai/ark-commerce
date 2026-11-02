@@ -8,9 +8,20 @@ export interface Product {
   badge?: string;
   stock: number;
   category?: string;
+  metadata?: Record<string, unknown>;
 }
 
-export interface CartItem extends Product {
+export interface CartItemConfig {
+  design_id?: string;
+  talla?: string;
+  color?: string;
+  tecnica?: string;
+  precio_calculado?: number;
+  breakdown?: { base: number; print: number; total: number; totalConIva: number };
+  configured?: boolean;
+}
+
+export interface CartItem extends Product, CartItemConfig {
   quantity: number;
 }
 

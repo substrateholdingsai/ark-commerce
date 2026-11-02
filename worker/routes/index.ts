@@ -6,7 +6,7 @@ import adminRoute from '../src/routes/admin';
 import authRoute from '../src/routes/auth';
 import cartRoute from '../src/routes/cart';
 import shippingRoute from '../src/routes/shipping';
-import assistantRoute from '../src/routes/assistant';
+import designsRoute from '../src/routes/designs';
 import whatsappWebhookRoute from '../src/routes/webhook_whatsapp';
 
 export const apiRoutes = new Hono();
@@ -18,5 +18,5 @@ apiRoutes.route('/admin', adminRoute);
 apiRoutes.route('/auth', authRoute);
 apiRoutes.route('/cart', cartRoute);
 apiRoutes.route('/shipping', shippingRoute);
-apiRoutes.route('/assistant', assistantRoute);
+apiRoutes.route('/designs', designsRoute);
 apiRoutes.route('/webhook/whatsapp', whatsappWebhookRoute);

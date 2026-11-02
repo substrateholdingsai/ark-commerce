@@ -14,7 +14,7 @@ pattern = "tiendas.arksystems.site/*"
 zone_name = "arksystems.site"
 [vars]
 SITE_NAME = "Ark Systems"
-SITE_URL = "https://ark-commerce.substrateholdingsai.workers.dev/"
+SITE_URL = "https://dev.blink.sv/"
 WHATSAPP_NUMBER = "529994918221"
 BTCPAY_POS_URL = "https://btcpay.arksystems.ai"
 CLABE = "012180012345678901"

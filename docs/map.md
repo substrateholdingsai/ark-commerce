@@ -145,7 +145,7 @@ Base URL: `/api/*`
 | `/api/cart/merge` | POST | Cookie cliente | Fusiona items entrantes con carrito actual |
 | `/api/shipping/quote` | POST | Público + Geo + Rate Limit (15/min) | Cotiza tarifas Envia.com por CP/destino/peso |
 | `/api/shipping/label` | POST | **Bearer token (Admin)** | Genera guía PDF/tracking y actualiza la orden en D1 (`status = 'shipped'`). Protegido contra generación no autorizada. |
-| `/api/shipping/track/:carrier/:trackingNumber` | GET | Público (tenant) | Rastrea envío por transportista y guía |
+| `/api/designs` | GET | Público (tenant) | Lista diseños/estampas activos del tenant (tabla `designs`) |
 | `/api/assistant/recommend` | POST | Público + Geo + Rate Limit (12/min) + Anti-Injection | Recomendación/cotización de tiendas, productos y servicios con Workers AI y precios oficiales desde D1 |
 | `/api/assistant/chat` | POST | Público + Geo + Rate Limit (12/min) + Anti-Injection | Chat conversacional con el robot 3D **Ark** (`TENANT_CONTEXT` retail/servicios + precios D1) |
 | `/api/webhook/whatsapp` | GET/POST | Meta HMAC-SHA256 + Rate Limit (30/min) | Webhook Meta Cloud API WhatsApp (verificación + mensajes con sanitización IA) |

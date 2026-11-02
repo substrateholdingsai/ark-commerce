@@ -3,6 +3,16 @@ import type { Product } from './product';
 export interface CartItem {
   id: string;
   qty: number;
+  configured?: boolean;
+  design_id?: string;
+  talla?: string;
+  color?: string;
+  tecnica?: string;
+  precio_calculado?: number;
+  breakdown?: { base: number; print: number; total: number; totalConIva: number };
+  name?: string;
+  image?: string;
+  price?: number;
 }
 
 export interface CartItemWithProduct extends CartItem {

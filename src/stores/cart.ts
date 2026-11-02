@@ -18,6 +18,16 @@ interface CartState {
 
   // ============ ACCIONES DEL CARRITO ============
   addItem: (id: string, qty?: number) => void;
+  addItemConfigured: (config: {
+    product: Product;
+    design_id?: string;
+    talla: string;
+    color: string;
+    tecnica: string;
+    precio_calculado: number;
+    breakdown?: { base: number; print: number; total: number; totalConIva: number };
+    qty?: number;
+  }) => void;
   updateQuantity: (id: string, delta: number) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
@@ -89,6 +99,40 @@ export const useCartStore = create<CartState>()(
         });
       },
 
+      addItemConfigured: (config) => {
+        const qty = config.qty ?? 1;
+        const compositeId = `cfg:${config.product.id}|${config.design_id || ''}|${config.talla}|${config.color}|${config.tecnica}`;
+        set((state) => {
+          const existing = state.items.find((item) => item.id === compositeId);
+          if (existing) {
+            return {
+              items: state.items.map((item) =>
+                item.id === compositeId ? { ...item, qty: item.qty + qty } : item
+              ),
+              isCartOpen: true,
+            };
+          }
+          return {
+            items: [
+              ...state.items,
+              {
+                ...config.product,
+                id: compositeId,
+                qty,
+                configured: true,
+                design_id: config.design_id,
+                talla: config.talla,
+                color: config.color,
+                tecnica: config.tecnica,
+                precio_calculado: config.precio_calculado,
+                breakdown: config.breakdown,
+              },
+            ],
+            isCartOpen: true,
+          };
+        });
+      },
+
       updateQuantity: (id, delta) => {
         set((state) => ({
           items: state.items
@@ -140,6 +184,7 @@ export const useCartStore = create<CartState>()(
       getSubtotal: () => {
         const { items } = get();
         return items.reduce((sum, item) => {
+          if (item.precio_calculado) return sum + item.precio_calculado * item.qty;
           const product = getProducts().find((p: any) => p.id === item.id);
           return sum + (product ? product.price * item.qty : 0);
         }, 0);
@@ -165,6 +210,13 @@ export const useCartStore = create<CartState>()(
         const { items } = get();
         return items
           .map((item) => {
+            if (item.configured) {
+              return {
+                ...item,
+                product: item as any,
+                subtotal: (item.precio_calculado || 0) * item.qty,
+              };
+            }
             const product = getProducts().find((p: any) => p.id === item.id);
             if (!product) return null;
             return {

@@ -29,5 +29,5 @@
     "scripts/**/*",
     "astro/**/*"
   ],
-  "exclude": ["node_modules", "dist", ".astro"]
+  "exclude": ["node_modules", "dist", ".astro", "**/*.test.ts", "**/*.test.tsx"]
 }

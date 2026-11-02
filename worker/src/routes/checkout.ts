@@ -6,8 +6,9 @@ import { checkGeoAllowed, checkRateLimit } from '../lib/security';
 import type { Env, CheckoutMessage } from '../types/env';
 import type { CustomerSessionData } from '../types/auth';
 import { notificarArkangel } from '../lib/arkangel';
+import { calcularPrecio } from '../lib/pricing';
 
-type ProductRow = { id: string; name: string; price: number };
+type ProductRow = { id: string; name: string; price: number; metadata?: string | null };
 
 const checkout = new Hono<{ Bindings: Env; Variables: { tenant: any; tenantId: string | null } }>();
 const CUSTOMER_COOKIE = 'customer_session';
@@ -67,8 +68,8 @@ checkout.post('/', async (c) => {
     const productIds = [...new Set(items.map((item) => item.productId))];
     const placeholders = productIds.map(() => '?').join(', ');
     const { results } = await c.env.DB.prepare(
-      `SELECT id, name, price FROM products WHERE id IN (${placeholders}) AND tenant_id = ? AND active = 1`
-    ).bind(...productIds, tenantId).all<ProductRow>();
+      `SELECT id, name, price, metadata FROM products WHERE id IN (${placeholders}) AND tenant_id = ? AND active = 1`
+    ).bind(...productIds, tenantId).all<ProductRow & { metadata?: string | null }>();
 
     const productsById = new Map(results.map((p) => [p.id, p]));
     if (productsById.size !== productIds.length) {
@@ -76,11 +77,53 @@ checkout.post('/', async (c) => {
     }
 
     let total = 0;
-    const orderItems = items.map((item) => {
-      const product = productsById.get(item.productId)!;
-      total += product.price * item.quantity;
-      return { productId: product.id, name: product.name, quantity: item.quantity, price: product.price };
-    });
+    const orderItems: Array<{
+      productId: string;
+      name: string;
+      quantity: number;
+      price: number;
+      design_id?: string;
+      talla?: string;
+      color?: string;
+      tecnica?: string;
+      base_cost?: number;
+      print_cost?: number;
+      precio_final?: number;
+    }> = [];
+    for (const item of items) {
+      const product = productsById.get(item.productId);
+      if (!product) continue;
+      let price = product.price;
+      let baseCost: number | undefined;
+      let printCost: number | undefined;
+      if (item.tecnica) {
+        const md = typeof product.metadata === 'string' ? JSON.parse(product.metadata) : product.metadata;
+        const bp = calcularPrecio({ product: { metadata: md }, talla: item.talla || '', color: item.color || '', tecnica: item.tecnica });
+        if (!bp.valid) {
+          return c.json({ success: false, error: bp.error || 'Configuración inválida' }, 400);
+        }
+        if (typeof item.precio_calculado === 'number' && Math.abs(item.precio_calculado - bp.totalConIva) > 0.05) {
+          return c.json({ success: false, error: 'Precio manipulado o no coincide con el catálogo' }, 400);
+        }
+        price = bp.totalConIva;
+        baseCost = bp.base;
+        printCost = bp.print;
+      }
+      total += price * item.quantity;
+      orderItems.push({
+        productId: product.id,
+        name: product.name,
+        quantity: item.quantity,
+        price,
+        design_id: item.design_id,
+        talla: item.talla,
+        color: item.color,
+        tecnica: item.tecnica,
+        base_cost: baseCost,
+        print_cost: printCost,
+        precio_final: price,
+      });
+    }
 
     const shippingAmount = typeof shippingCost === 'number' && shippingCost > 0 ? shippingCost : 0;
     total += shippingAmount;
@@ -91,8 +134,8 @@ checkout.post('/', async (c) => {
       c.env.DB.prepare(`INSERT INTO orders (id, order_number, tenant_id, customer_id, customer_name, customer_address, customer_phone, customer_email, customer_notes, payment_method, total, shipping_cost, shipping_carrier, shipping_service, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "pending")`)
         .bind(orderId, orderNumber, tenantId, customerId, customerName, customerAddress, customerPhone, customerEmail, notes ?? null, paymentMethod, total, shippingAmount, shippingCarrier ?? null, shippingService ?? null),
       ...orderItems.map((item) =>
-        c.env.DB.prepare(`INSERT INTO order_items (id, order_id, product_id, quantity, price, name) VALUES (?, ?, ?, ?, ?, ?)`)
-          .bind(crypto.randomUUID(), orderId, item.productId, item.quantity, item.price, item.name)
+        c.env.DB.prepare(`INSERT INTO order_items (id, order_id, product_id, quantity, price, name, design_id, talla, color, tecnica, base_cost, print_cost, precio_final) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+          .bind(crypto.randomUUID(), orderId, item.productId, item.quantity, item.price, item.name, item.design_id ?? null, item.talla ?? null, item.color ?? null, item.tecnica ?? null, item.base_cost ?? null, item.print_cost ?? null, item.precio_final ?? null)
       ),
     ];
     await c.env.DB.batch(statements);
