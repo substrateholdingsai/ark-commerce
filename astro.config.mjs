@@ -21,6 +21,9 @@ export default defineConfig({
   build: {
     inlineStylesheets: config.astro.build.inlineStylesheets,
   },
+  redirects: {
+    "/marea": "/skinlabclothing",
+  },
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],

@@ -16,9 +16,9 @@ export const SERVICES: ServiceItem[] = [
     title: 'Skin Lab Clothing Club',
     subtitle: 'Playeras personalizadas y serigrafía artesanal',
     image: '/images/marea/seo/og-image.png',
-    store: 'tiendas.arksystems.site/marea',
+    store: 'tiendas.arksystems.site/skinlabclothing',
     badge: 'RETAIL & MODA',
-    url: '/marea',
+    url: '/skinlabclothing',
     services: [
       { name: 'Playera "Ola Nocturna" (100% Algodón)', price: '$349' },
       { name: 'Playera "Sol de Tulum" Edición Coral', price: '$329' },

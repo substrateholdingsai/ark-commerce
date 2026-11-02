@@ -197,7 +197,7 @@ Tablas: `tenants`, `tenant_users`, `customers`, `carts`, `store_sessions`, `acti
 | `index.astro` | `/` | Landing Ark Commerce (`ArkLanding` React `client:load`). Auto-redirige si `?tenant=temozonia|baakal|marea` o subdominio |
 | `temozonia.astro` | `/temozonia` | Tienda Temozonia (Layout + Hero + ProductCard grid + CheckoutCalculator con envío Envia.com) |
 | `baakal.astro` | `/baakal` | Tienda Baakal (Layout + servicios técnicos + CheckoutCalculator) |
-| `marea.astro` | `/marea` | Tienda MAREA Playeras Personalizadas (Hero caribeño + configurador interactivo React: 5 prendas reales Cotexsa con swatches de color/talla/técnica + galería de 8 diseños + carrito configurado con imagen/precio + checkout SPEI/WhatsApp) |
+| `skinlabclothing.astro` | `/skinlabclothing` (redirect `/marea` → `/skinlabclothing`) | Tienda Skin Lab Clothing Club (Hero caribeño + configurador interactivo React: 5 prendas reales Cotexsa con swatches de color/talla/técnica + galería de 8 diseños + carrito configurado con imagen/precio + checkout SPEI/WhatsApp) |
 | `admin.astro` | `/admin` | Panel admin multi-tenant (`AdminApp` React `client:only`) |
 | `test.astro` | `/test` | Página de pruebas |
 | `contacto.astro` | `/contacto` | Contacto |
