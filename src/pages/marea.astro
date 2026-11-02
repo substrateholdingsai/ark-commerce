@@ -177,51 +177,138 @@ tailwind.config = {
     <canvas id="splineCanvas" class="w-full h-full"></canvas>
   </div>
 
-  <div class="relative z-20 max-w-7xl mx-auto px-4 md:px-6 pt-12 md:pt-20 pb-6 grid md:grid-cols-2 gap-10 items-center">
+  <div class="relative z-20 max-w-7xl mx-auto px-4 md:px-6 pt-12 md:pt-16 pb-8 grid md:grid-cols-2 gap-10 lg:gap-12 items-center">
+    <!-- Columna Izquierda: Mensaje y Filosofía Skin Lab -->
     <div class="aparece">
       <div class="inline-flex items-center gap-2 bg-marea-blanco border-2 border-marea-arena-b rounded-full px-4 py-1.5 mb-5 shadow-ola">
         <span class="w-2.5 h-2.5 rounded-full bg-marea-coral animate-pulse"></span>
-        <span class="font-mono text-xs tracking-widest uppercase text-marea-teal-dk font-bold">Hecho en el Sureste · Envíos a todo México</span>
+        <span class="font-mono text-xs tracking-widest uppercase text-marea-teal-dk font-bold">🇲🇽 ¡Mi Casa es tu Casa! · Envíos a todo México</span>
       </div>
 
-      <h1 class="font-display font-800 text-5xl md:text-7xl leading-[0.95] tracking-tight text-marea-tinta">
-        Diseña tu <span class="text-marea-teal">ola</span>.<br>
-        Nosotros la <span class="text-marea-coral">estampamos</span>.
+      <h1 class="font-display font-800 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight text-marea-tinta">
+        We believe in <span class="text-marea-teal">freedom</span>.<br>
+        Creamos prendas con <span class="text-marea-coral">significado</span>.
       </h1>
 
-      <p class="mt-5 text-lg md:text-xl text-marea-tinta-2 max-w-md leading-relaxed">
-        Playeras personalizadas con toda la vibra del Caribe mexicano. Sube tu diseño o elige uno de la colección. <strong>Pagos fáciles vía SPEI, Efectivo o WhatsApp</strong>.
+      <p class="mt-5 text-base md:text-lg text-marea-tinta-2 max-w-lg leading-relaxed">
+        <strong>Playeras personalizadas con toda la vibra de México.</strong> Sube tu propio diseño o elige uno de la colección exclusiva del club. Prendas premium en algodón peinado con estampado de alta duración. Pagos fáciles vía <strong>SPEI BBVA, Tarjeta o WhatsApp</strong>.
       </p>
 
       <div class="mt-8 flex flex-wrap items-center gap-3">
-        <a href="#disenos" class="group inline-flex items-center gap-2 bg-marea-teal text-marea-tinta font-800 text-lg px-7 py-4 rounded-full shadow-ola hover:bg-marea-teal-hi transition-all hover:scale-[1.02]">
-          Ver diseños <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+        <a href="#disenos" class="group inline-flex items-center gap-2 bg-marea-teal text-marea-tinta font-800 text-base md:text-lg px-7 py-3.5 rounded-full shadow-ola hover:bg-marea-teal-hi transition-all hover:scale-[1.02]">
+          Ver colección <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
         </a>
-        <a href="#personaliza" class="inline-flex items-center gap-2 bg-marea-blanco border-2 border-marea-coral text-marea-coral-dk font-800 px-6 py-[14px] rounded-full hover:bg-marea-coral hover:text-white transition-colors">
-          <i data-lucide="paintbrush" class="w-5 h-5"></i> Crear la mía
+        <a href="#personaliza" class="inline-flex items-center gap-2 bg-marea-blanco border-2 border-marea-coral text-marea-coral-dk font-800 px-6 py-3 rounded-full hover:bg-marea-coral hover:text-white transition-colors">
+          <i data-lucide="paintbrush" class="w-5 h-5"></i> Diseñar mi prenda
         </a>
       </div>
 
       <div class="mt-8 flex flex-wrap items-center gap-6 font-mono text-xs text-marea-tinta-2">
         <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-marea-selva-dk"></i> SPEI Seguro BBVA</span>
         <span class="flex items-center gap-1.5"><i data-lucide="truck" class="w-4 h-4 text-marea-teal-dk"></i> Estafeta / FedEx 24-48h</span>
-        <span class="flex items-center gap-1.5"><i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i> Soporte WhatsApp directo</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i> WhatsApp directo</span>
       </div>
     </div>
 
-    <div id="heroVisual" class="relative flex items-center justify-center py-6">
-      <div class="absolute top-0 right-4 sol-gira pointer-events-none">
-        <svg width="100" height="100" viewBox="0 0 90 90">
-          <circle cx="45" cy="45" r="18" fill="#FFB947"/>
-          <g stroke="#FFB947" stroke-width="4" stroke-linecap="round" opacity="0.75">
-            <line x1="45" y1="6" x2="45" y2="16"/><line x1="45" y1="74" x2="45" y2="84"/>
-            <line x1="6" y1="45" x2="16" y2="45"/><line x1="74" y1="45" x2="84" y2="45"/>
-            <line x1="17" y1="17" x2="24" y2="24"/><line x1="66" y1="66" x2="73" y2="73"/>
-            <line x1="17" y1="73" x2="24" y2="66"/><line x1="66" y1="24" x2="73" y2="17"/>
-          </g>
-        </svg>
+    <!-- Columna Derecha: Mini-Probador Rápido en Vivo -->
+    <div id="heroProbador" class="relative aparece">
+      <div class="absolute -inset-1.5 bg-gradient-to-r from-marea-teal via-marea-coral to-marea-mango rounded-[36px] blur-xl opacity-25 pointer-events-none"></div>
+
+      <div class="relative bg-marea-blanco rounded-3xl border-2 border-marea-arena-b p-5 md:p-6 shadow-2xl space-y-4">
+        <!-- Header del Probador -->
+        <div class="flex items-center justify-between pb-3 border-b border-marea-arena-b">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="font-mono text-xs font-bold uppercase tracking-wider text-marea-tinta">Probador Rápido en Vivo</span>
+          </div>
+          <span class="px-2.5 py-0.5 rounded-full bg-marea-teal/15 text-marea-teal-dk font-mono text-[11px] font-bold">
+            Skin Lab Studio
+          </span>
+        </div>
+
+        <!-- Ventana Visual: Prenda + Estampa en Tiempo Real -->
+        <div class="relative bg-marea-arena-2 rounded-2xl p-4 flex items-center justify-center min-h-[220px] overflow-hidden border border-marea-arena-b">
+          <img id="heroPrendaImg" src="/images/marea/tee-64000.png" alt="Prenda Base" class="h-44 object-contain transition-all duration-300 drop-shadow-md" />
+          
+          <div id="heroEstampaBox" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <img id="heroEstampaImg" src="/images/marea/designs/ola-nocturna.jpg" alt="Estampa" class="w-16 h-16 object-cover rounded-xl shadow-md border-2 border-white/90 transition-all duration-300 transform -translate-y-2" />
+          </div>
+
+          <div class="absolute top-3 left-3 flex flex-col gap-1">
+            <span id="heroPrendaLabel" class="bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-lg font-display font-bold text-xs text-marea-tinta shadow-xs">Playera Clásica</span>
+            <span id="heroColorLabel" class="bg-marea-tinta/80 text-white backdrop-blur-xs px-2 py-0.5 rounded-md font-mono text-[10px] font-bold">Blanco</span>
+          </div>
+
+          <div class="absolute bottom-3 right-3">
+            <span id="heroPrecioLabel" class="bg-marea-coral text-white font-mono font-bold text-xs px-2.5 py-1 rounded-full shadow-xs">$299 MXN</span>
+          </div>
+        </div>
+
+        <!-- Controles Rápidos -->
+        <div class="space-y-3">
+          <!-- 1. Prenda rápida -->
+          <div>
+            <div class="flex justify-between items-center text-xs font-mono font-bold text-marea-tinta-2 mb-1.5">
+              <span>1. PRENDA BASE</span>
+              <span id="heroGsmLabel" class="text-marea-teal-dk text-[11px]">Gildan 153g Peinado</span>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5 text-xs font-mono font-bold">
+              <button type="button" onclick="heroSelectPrenda('MAREA-TEE-64000', 'Playera Clásica', '/images/marea/tee-64000.png', 299, 'Gildan 153g Peinado', this)" class="hero-prenda-btn p-2 rounded-xl border-2 border-marea-teal bg-marea-teal/10 text-marea-tinta text-center transition-all">Playera</button>
+              <button type="button" onclick="heroSelectPrenda('MAREA-DF-950C', 'Playera Dry Fit', '/images/marea/dryfit-950c.png', 339, 'Playerytees 150g Deportiva', this)" class="hero-prenda-btn p-2 rounded-xl border-2 border-marea-arena-b bg-marea-arena text-marea-tinta-2 text-center transition-all">Dry Fit</button>
+              <button type="button" onclick="heroSelectPrenda('MAREA-HOODIE-18600', 'Sudadera Hoodie', '/images/marea/hoodie-18600.png', 599, 'Gildan 271g con Cierre', this)" class="hero-prenda-btn p-2 rounded-xl border-2 border-marea-arena-b bg-marea-arena text-marea-tinta-2 text-center transition-all">Hoodie</button>
+            </div>
+          </div>
+
+          <!-- 2. Swatches de color -->
+          <div>
+            <div class="text-xs font-mono font-bold text-marea-tinta-2 mb-1.5 flex justify-between">
+              <span>2. COLOR DE TELA</span>
+              <span id="heroColorName" class="text-marea-teal-dk font-bold">Blanco</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="heroSelectColor('Blanco', '#FFFFFF', this)" class="hero-color-btn w-7 h-7 rounded-full border-2 border-marea-coral ring-2 ring-marea-coral/40 transition-transform scale-110 shadow-xs" style="background:#FFFFFF" title="Blanco"></button>
+              <button type="button" onclick="heroSelectColor('Negro', '#18181B', this)" class="hero-color-btn w-7 h-7 rounded-full border border-gray-300 transition-transform hover:scale-105 shadow-xs" style="background:#18181B" title="Negro"></button>
+              <button type="button" onclick="heroSelectColor('Marino', '#1E3A8A', this)" class="hero-color-btn w-7 h-7 rounded-full border border-gray-300 transition-transform hover:scale-105 shadow-xs" style="background:#1E3A8A" title="Marino"></button>
+              <button type="button" onclick="heroSelectColor('Coral', '#E94E49', this)" class="hero-color-btn w-7 h-7 rounded-full border border-gray-300 transition-transform hover:scale-105 shadow-xs" style="background:#E94E49" title="Coral"></button>
+              <button type="button" onclick="heroSelectColor('Teal', '#0EA9A8', this)" class="hero-color-btn w-7 h-7 rounded-full border border-gray-300 transition-transform hover:scale-105 shadow-xs" style="background:#0EA9A8" title="Teal"></button>
+              <button type="button" onclick="heroSelectColor('Jaspe', '#94A3B8', this)" class="hero-color-btn w-7 h-7 rounded-full border border-gray-300 transition-transform hover:scale-105 shadow-xs" style="background:#94A3B8" title="Jaspe"></button>
+            </div>
+          </div>
+
+          <!-- 3. Mini selector de estampa top -->
+          <div>
+            <div class="text-xs font-mono font-bold text-marea-tinta-2 mb-1.5 flex justify-between">
+              <span>3. ESTAMPA DE MUESTRA</span>
+              <span id="heroEstampaName" class="text-marea-teal-dk font-bold">Ola Nocturna</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <button type="button" onclick="heroSelectEstampa('Ola Nocturna', '/images/marea/designs/ola-nocturna.jpg', 'design-ola-nocturna', this)" class="hero-estampa-btn flex items-center gap-1.5 p-1.5 rounded-xl border-2 border-marea-teal bg-marea-teal/10 transition-all text-left">
+                <img src="/images/marea/designs/ola-nocturna.jpg" class="w-7 h-7 object-cover rounded-lg" />
+                <span class="text-[11px] font-bold text-marea-tinta truncate">Ola Nocturna</span>
+              </button>
+              <button type="button" onclick="heroSelectEstampa('Skin Lab Tricolor', '/images/marea/designs/marea-tricolor.jpg', 'design-marea-tricolor', this)" class="hero-estampa-btn flex items-center gap-1.5 p-1.5 rounded-xl border-2 border-marea-arena-b bg-marea-arena transition-all text-left">
+                <img src="/images/marea/designs/marea-tricolor.jpg" class="w-7 h-7 object-cover rounded-lg" />
+                <span class="text-[11px] font-bold text-marea-tinta-2 truncate">Tricolor</span>
+              </button>
+              <button type="button" onclick="heroSelectEstampa('Sol de Tulum', '/images/marea/designs/sol-de-tulum.jpg', 'design-sol-de-tulum', this)" class="hero-estampa-btn flex items-center gap-1.5 p-1.5 rounded-xl border-2 border-marea-arena-b bg-marea-arena transition-all text-left">
+                <img src="/images/marea/designs/sol-de-tulum.jpg" class="w-7 h-7 object-cover rounded-lg" />
+                <span class="text-[11px] font-bold text-marea-tinta-2 truncate">Sol Tulum</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="pt-2 flex gap-2">
+          <a href="#personaliza" class="flex-1 py-3 px-4 rounded-full bg-marea-teal text-marea-tinta font-display font-800 text-sm text-center shadow-ola hover:bg-marea-teal-hi transition-all">
+            Personalizar a mi talla →
+          </a>
+          <button type="button" onclick="heroAgregarAlCarrito()" class="py-3 px-4 rounded-full bg-marea-coral text-white font-bold text-sm hover:bg-marea-coral-dk transition-all flex items-center gap-1.5 shadow-coral" title="Comprar esta combinación">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            <span>Comprar</span>
+          </button>
+        </div>
       </div>
-      <div class="ola-flota" id="playeraHero"></div>
     </div>
   </div>
 
@@ -1032,11 +1119,90 @@ async function cargarSpline(){
 }
 
 document.getElementById('anio').textContent = new Date().getFullYear();
-document.getElementById('playeraHero').innerHTML = svgPlayera(PRODUCTOS[0], 280);
 render('todos');
 actualizarBadge();
 if(window.lucide) lucide.createIcons();
 cargarSpline();
+
+// ── Mini-Probador Interactivo del Hero ──
+let heroState = {
+  id: 'MAREA-TEE-64000',
+  nombre: 'Playera Clásica',
+  img: '/images/marea/tee-64000.png',
+  precio: 299,
+  color: 'Blanco',
+  estampa: 'Ola Nocturna',
+  estampaImg: '/images/marea/designs/ola-nocturna.jpg',
+  designId: 'design-ola-nocturna'
+};
+
+function heroSelectPrenda(id, nombre, img, precio, gsm, btn){
+  heroState.id = id;
+  heroState.nombre = nombre;
+  heroState.img = img;
+  heroState.precio = precio;
+  document.getElementById('heroPrendaImg').src = img;
+  document.getElementById('heroPrendaLabel').textContent = nombre;
+  document.getElementById('heroGsmLabel').textContent = gsm;
+  document.getElementById('heroPrecioLabel').textContent = `$${precio} MXN`;
+  document.querySelectorAll('.hero-prenda-btn').forEach(b => {
+    b.className = 'hero-prenda-btn p-2 rounded-xl border-2 border-marea-arena-b bg-marea-arena text-marea-tinta-2 text-center transition-all';
+  });
+  if(btn) btn.className = 'hero-prenda-btn p-2 rounded-xl border-2 border-marea-teal bg-marea-teal/10 text-marea-tinta text-center transition-all';
+}
+
+function heroSelectColor(color, hex, btn){
+  heroState.color = color;
+  document.getElementById('heroColorLabel').textContent = color;
+  document.getElementById('heroColorName').textContent = color;
+  document.querySelectorAll('.hero-color-btn').forEach(b => {
+    b.className = 'hero-color-btn w-7 h-7 rounded-full border border-gray-300 transition-transform hover:scale-105 shadow-xs';
+  });
+  if(btn) btn.className = 'hero-color-btn w-7 h-7 rounded-full border-2 border-marea-coral ring-2 ring-marea-coral/40 transition-transform scale-110 shadow-xs';
+}
+
+function heroSelectEstampa(nombre, img, designId, btn){
+  heroState.estampa = nombre;
+  heroState.estampaImg = img;
+  heroState.designId = designId;
+  document.getElementById('heroEstampaImg').src = img;
+  document.getElementById('heroEstampaName').textContent = nombre;
+  document.querySelectorAll('.hero-estampa-btn').forEach(b => {
+    b.className = 'hero-estampa-btn flex items-center gap-1.5 p-1.5 rounded-xl border-2 border-marea-arena-b bg-marea-arena transition-all text-left';
+    const span = b.querySelector('span');
+    if(span) span.className = 'text-[11px] font-bold text-marea-tinta-2 truncate';
+  });
+  if(btn){
+    btn.className = 'hero-estampa-btn flex items-center gap-1.5 p-1.5 rounded-xl border-2 border-marea-teal bg-marea-teal/10 transition-all text-left';
+    const span = btn.querySelector('span');
+    if(span) span.className = 'text-[11px] font-bold text-marea-tinta truncate';
+  }
+}
+
+function heroAgregarAlCarrito(){
+  const key = `hero-${heroState.id}-${heroState.designId}-${heroState.color}-L`;
+  const ex = carrito.find(i => i.key === key);
+  if(ex){
+    ex.qty++;
+  } else {
+    carrito.push({
+      key,
+      id: heroState.id,
+      nombre: `${heroState.nombre} (${heroState.estampa})`,
+      talla: 'L',
+      color: heroState.color,
+      tecnica: 'DTF',
+      design_id: heroState.designId,
+      precio: heroState.precio,
+      qty: 1,
+      configured: true,
+      image: heroState.img
+    });
+  }
+  guardarCarrito();
+  abrirCarrito();
+  toast(`🌊 ¡${heroState.nombre} agregada a tu carrito!`);
+}
 
 // Sincronización con el configurador React (ProductConfigurator)
 window.addEventListener('marea:cart-add', (e) => {
