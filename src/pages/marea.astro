@@ -513,14 +513,14 @@ tailwind.config = {
 
 <script is:inline>
 const PRODUCTOS = [
-  {id:"marea-1", nombre:"Ola Nocturna",     precio:349, tela:"#0EA9A8", print:"#FFF9F0", diseno:"ola",       cat:"olas",      badge:"nuevo",     tallas:["S","M","L","XL"]},
-  {id:"marea-2", nombre:"Sol de Tulum",     precio:329, tela:"#FFF9F0", print:"#E94E49", diseno:"sol",       cat:"sol",       badge:null,        tallas:["S","M","L","XL","XXL"]},
-  {id:"marea-3", nombre:"Espíritu Selva",   precio:359, tela:"#2FA060", print:"#FFF9F0", diseno:"palmera",   cat:"selva",     badge:null,        tallas:["M","L","XL"]},
-  {id:"marea-4", nombre:"Marea Tricolor",   precio:379, tela:"#1A3B38", print:"#FFB947", diseno:"triangulos",cat:"limitadas", badge:"limitada",  tallas:["S","M","L"]},
-  {id:"marea-5", nombre:"Coral Vivo",       precio:349, tela:"#E94E49", print:"#FFF9F0", diseno:"ola",       cat:"olas",      badge:null,        tallas:["S","M","L","XL"]},
-  {id:"marea-6", nombre:"MANGO Beach",      precio:339, tela:"#FFB947", print:"#1A3B38", diseno:"mareaTexto",cat:"sol",       badge:"oferta", antes:399, tallas:["S","M","L","XL","XXL"]},
-  {id:"marea-7", nombre:"Máscara Marina",   precio:399, tela:"#8B6FC9", print:"#FFF9F0", diseno:"mascara",   cat:"limitadas", badge:"limitada",  tallas:["M","L","XL"]},
-  {id:"marea-8", nombre:"Ola Espuma",       precio:329, tela:"#FFFFFF", print:"#0EA9A8", diseno:"ola",       cat:"olas",      badge:null,        tallas:["S","M","L","XL","XXL"]},
+  {id:"marea-1", nombre:"Ola Nocturna",     image:"/images/marea/designs/ola-nocturna.jpg", precio:349, tela:"#0EA9A8", print:"#FFF9F0", diseno:"ola",       cat:"olas",      badge:"nuevo",     tallas:["S","M","L","XL"]},
+  {id:"marea-2", nombre:"Sol de Tulum",     image:"/images/marea/designs/sol-de-tulum.jpg", precio:329, tela:"#FFF9F0", print:"#E94E49", diseno:"sol",       cat:"sol",       badge:null,        tallas:["S","M","L","XL","XXL"]},
+  {id:"marea-3", nombre:"Espíritu Selva",   image:"/images/marea/designs/espiritu-selva.jpg", precio:359, tela:"#2FA060", print:"#FFF9F0", diseno:"palmera",   cat:"selva",     badge:null,        tallas:["M","L","XL"]},
+  {id:"marea-4", nombre:"Skin Lab Tricolor",image:"/images/marea/designs/marea-tricolor.jpg", precio:379, tela:"#1A3B38", print:"#FFB947", diseno:"triangulos",cat:"limitadas", badge:"limitada",  tallas:["S","M","L"]},
+  {id:"marea-5", nombre:"Coral Vivo",       image:"/images/marea/designs/coral-vivo.jpg", precio:349, tela:"#E94E49", print:"#FFF9F0", diseno:"ola",       cat:"olas",      badge:null,        tallas:["S","M","L","XL"]},
+  {id:"marea-6", nombre:"MANGO Beach",      image:"/images/marea/designs/mango-beach.jpg", precio:339, tela:"#FFB947", print:"#1A3B38", diseno:"mareaTexto",cat:"sol",       badge:"oferta", antes:399, tallas:["S","M","L","XL","XXL"]},
+  {id:"marea-7", nombre:"Máscara Marina",   image:"/images/marea/designs/mascara-marina.jpg", precio:399, tela:"#8B6FC9", print:"#FFF9F0", diseno:"mascara",   cat:"limitadas", badge:"limitada",  tallas:["M","L","XL"]},
+  {id:"marea-8", nombre:"Ola Espuma",       image:"/images/marea/designs/ola-espuma.jpg", precio:329, tela:"#FFFFFF", print:"#0EA9A8", diseno:"ola",       cat:"olas",      badge:null,        tallas:["S","M","L","XL","XXL"]},
 ];
 
 function svgPlayera(p, size=220){
@@ -589,8 +589,10 @@ function precioHTML(p){
 function render(filtro='todos'){
   const lista = filtro==='todos' ? PRODUCTOS : PRODUCTOS.filter(p=>p.cat===filtro);
   grid.innerHTML = lista.map(p=>`
-    <div class="bg-marea-blanco rounded-[24px] border-2 border-marea-arena-b overflow-hidden cursor-pointer transition-all hover:-translate-y-1.5 hover:shadow-ola hover:border-marea-teal aparece flex flex-col justify-between" onclick="abrirModal('${p.id}')">
-      <div class="bg-marea-arena-2 flex items-center justify-center pt-6 pb-2">${svgPlayera(p,180)}</div>
+    <div class="bg-marea-blanco rounded-[24px] border-2 border-marea-arena-b overflow-hidden cursor-pointer transition-all hover:-translate-y-1.5 hover:shadow-ola hover:border-marea-teal aparece flex flex-col justify-between group" onclick="abrirModal('${p.id}')">
+      <div class="bg-marea-arena-2 flex items-center justify-center p-3 relative aspect-square overflow-hidden">
+        <img src="${p.image}" alt="${p.nombre}" class="w-full h-full object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105 shadow-sm" onerror="this.outerHTML=svgPlayera(PRODUCTOS.find(x=>x.id==='${p.id}'),180)" />
+      </div>
       <div class="p-5 flex-1 flex flex-col justify-between">
         <div>
           <div class="flex items-start justify-between gap-2">
@@ -891,7 +893,9 @@ function abrirModal(id){
   if(!prodActual) return;
   tallaSel = prodActual.tallas[Math.floor(prodActual.tallas.length/2)];
   
-  document.getElementById('modalImg').innerHTML = svgPlayera(prodActual, 240);
+  document.getElementById('modalImg').innerHTML = prodActual.image 
+    ? `<img src="${prodActual.image}" alt="${prodActual.nombre}" class="w-full h-full max-h-[360px] object-cover rounded-2xl shadow-md" onerror="this.outerHTML=svgPlayera(prodActual, 240)" />`
+    : svgPlayera(prodActual, 240);
   document.getElementById('modalNombre').textContent = prodActual.nombre;
   document.getElementById('modalPrecio').innerHTML = precioHTML(prodActual);
   

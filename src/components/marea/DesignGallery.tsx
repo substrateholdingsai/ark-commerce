@@ -9,14 +9,14 @@ export interface Design {
 }
 
 export const FALLBACK_DESIGNS: Design[] = [
-  { id: 'design-ola-nocturna', slug: 'ola-nocturna', name: 'Ola Nocturna', image_url: '/images/marea/designs/ola-nocturna.png', technique_recommended: 'DTF' },
-  { id: 'design-sol-de-tulum', slug: 'sol-de-tulum', name: 'Sol de Tulum', image_url: '/images/marea/designs/sol-de-tulum.png', technique_recommended: 'DTF' },
-  { id: 'design-espiritu-selva', slug: 'espiritu-selva', name: 'Espíritu Selva', image_url: '/images/marea/designs/espiritu-selva.png', technique_recommended: 'DTG' },
-  { id: 'design-marea-tricolor', slug: 'marea-tricolor', name: 'Skin Lab Tricolor', image_url: '/images/marea/designs/marea-tricolor.png', technique_recommended: 'DTF' },
-  { id: 'design-coral-vivo', slug: 'coral-vivo', name: 'Coral Vivo', image_url: '/images/marea/designs/coral-vivo.png', technique_recommended: 'DTG' },
-  { id: 'design-mango-beach', slug: 'mango-beach', name: 'MANGO Beach', image_url: '/images/marea/designs/mango-beach.png', technique_recommended: 'DTF' },
-  { id: 'design-mascara-marina', slug: 'mascara-marina', name: 'Máscara Marina', image_url: '/images/marea/designs/mascara-marina.png', technique_recommended: 'DTG' },
-  { id: 'design-ola-espuma', slug: 'ola-espuma', name: 'Ola Espuma', image_url: '/images/marea/designs/ola-espuma.png', technique_recommended: 'DTF' },
+  { id: 'design-ola-nocturna', slug: 'ola-nocturna', name: 'Ola Nocturna', image_url: '/images/marea/designs/ola-nocturna.jpg', technique_recommended: 'DTF' },
+  { id: 'design-sol-de-tulum', slug: 'sol-de-tulum', name: 'Sol de Tulum', image_url: '/images/marea/designs/sol-de-tulum.jpg', technique_recommended: 'DTF' },
+  { id: 'design-espiritu-selva', slug: 'espiritu-selva', name: 'Espíritu Selva', image_url: '/images/marea/designs/espiritu-selva.jpg', technique_recommended: 'DTG' },
+  { id: 'design-marea-tricolor', slug: 'marea-tricolor', name: 'Skin Lab Tricolor', image_url: '/images/marea/designs/marea-tricolor.jpg', technique_recommended: 'DTF' },
+  { id: 'design-coral-vivo', slug: 'coral-vivo', name: 'Coral Vivo', image_url: '/images/marea/designs/coral-vivo.jpg', technique_recommended: 'DTG' },
+  { id: 'design-mango-beach', slug: 'mango-beach', name: 'MANGO Beach', image_url: '/images/marea/designs/mango-beach.jpg', technique_recommended: 'DTF' },
+  { id: 'design-mascara-marina', slug: 'mascara-marina', name: 'Máscara Marina', image_url: '/images/marea/designs/mascara-marina.jpg', technique_recommended: 'DTG' },
+  { id: 'design-ola-espuma', slug: 'ola-espuma', name: 'Ola Espuma', image_url: '/images/marea/designs/ola-espuma.jpg', technique_recommended: 'DTF' },
 ];
 
 export default function DesignGallery({ tenant = 'marea' }: { tenant?: string }) {
