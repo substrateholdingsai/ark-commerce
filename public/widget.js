@@ -55,22 +55,21 @@
   const THEMES = {
     marea: {
       primary: '#0EA9A8',
-      accent: '#E94E49',
-      pillLabel: 'Ark 3D · MAREA',
-      pillSub: 'Playeras & Tallas S–XXL',
-      title: 'MAREA · Ark 3D',
+      accent: '#EC4899',
+      pillLabel: 'Skin Lab · Ark 3D',
+      pillSub: 'Asistente 24/7 a la orden',
+      title: 'Skin Lab · Ark 3D',
       subtitle: 'Asesor de Playeras & Diseños',
       badge: 'MODA CARIBEÑA',
       priceLabel: 'Total estimado: ',
       actionLabel: '💬 Pedir por WhatsApp →',
       placeholder: 'Pregunta por tallas, modelos o tu diseño...',
       greeting:
-        '¡Hola! 🌊 Soy Ark, tu robot asesor 3D en MAREA. Te ayudo a elegir playeras 100% algodón peinado (tallas S a XXL), estampar tu propio diseño ($349 MXN) o aprovechar envío GRATIS en 2+ piezas.',
+        '¡Hola! 🌊 Soy Ark, tu asistente 24/7 a la orden. ¿En qué te ayudo hoy?',
       chips: [
         '👕 Ver playeras más vendidas',
         '🎨 Estampar mi propio diseño',
-        '📏 Guía de tallas S a XXL',
-        '🚚 ¿Cómo tengo envío gratis?'
+        '📏 Guía de tallas S a XXL'
       ]
     },
     temozonia: {
