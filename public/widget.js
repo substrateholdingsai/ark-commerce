@@ -56,9 +56,9 @@
     marea: {
       primary: '#0EA9A8',
       accent: '#EC4899',
-      pillLabel: 'Skin Lab · Ark 3D',
+      pillLabel: 'Skin Lab',
       pillSub: 'Asistente 24/7 a la orden',
-      title: 'Skin Lab · Ark 3D',
+      title: 'Skin Lab',
       subtitle: 'Asesor de Playeras & Diseños',
       badge: 'MODA CARIBEÑA',
       priceLabel: 'Total estimado: ',
@@ -585,8 +585,6 @@
       <div class="ark-bot-stage">
         <div class="ark-bot-stage-topbar">
           <div class="ark-bot-stage-pill">
-            <span>✨ Ark 3D Live</span>
-            <span style="opacity:0.6">·</span>
             <span>${theme.badge}</span>
           </div>
           <button type="button" class="ark-bot-close-btn" id="ark-bot-close" aria-label="Cerrar asistente">&times;</button>
@@ -643,7 +641,6 @@
       <div class="ark-bot-launcher-text">
         <div class="ark-bot-launcher-title">
           <span>${theme.pillLabel}</span>
-          <span class="ark-bot-launcher-badge">IA 3D</span>
         </div>
         <div class="ark-bot-launcher-sub">${theme.pillSub}</div>
       </div>
