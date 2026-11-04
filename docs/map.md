@@ -32,10 +32,10 @@
    - Paleta: Verde Selva (`#1A2F2A`), Agua Turquesa (`#2A7F9E`), Cobre (`#B87333`), Terracota (`#C86B4A`), Cal (`#F5F1E8`)
    - Cobro: Pago en sitio o Transferencia SPEI BBVA (`0121 8000 9988 7766 55`) y WhatsApp (`+52 999 123 4567`)
 
-4. **Skin Lab Clothing Club** (`marea`): Tienda retail de moda y streetwear caribeño en `/marea` y `/stores/marea.html` (branding anterior "MAREA").
+4. **Skin Lab Clothing Club** (`marea`): Tienda retail de moda y streetwear caribeño en `/skinlabclothing` (redirect `/marea`) y `/stores/skinlabclothing.html`.
    - Catálogo: 5 prendas reales Cotexsa (Playera Clásica 64000, Dry Fit 950C, Polo Premier 700D, Hoodie 18600, Gorra G011) + 8 diseños de estampa (Ola Nocturna, Sol de Tulum, Espíritu Selva, Marea Tricolor, Coral Vivo, MANGO Beach, Máscara Marina, Ola Espuma)
    - Configurador interactivo: selector de prenda/color (swatches)/talla/técnica/diseño con preview y desglose de precio; carrito configurado con imagen y datos (color, talla, técnica, design_id, precio_calculado) sincronizado con el checkout SPEI/WhatsApp
-   - Canon de diseño: **MAREA v1.0** (`docs/tienda-playeras-marea.md`)
+   - Canon de diseño: **Skin Lab Clothing Club v1.0** (`docs/tienda-playeras-marea.md`)
    - Modelo UX: Retail joven y festivo, Regla del 12% festivo, selector de tallas S a XXL, personalizador de diseño propio
    - Paleta: Arena (`#FFF9F0`), Teal (`#0EA9A8` / `#087F7E`), Coral (`#E94E49` / `#C53732`), Mango (`#FFB947`), Noche (`#0F2E2C`)
    - Cobro: Transferencia SPEI BBVA (`0121 8000 1234 5678 90`), Ticket WhatsApp en 1 clic, Cotización C.P. Envia.com y pago contra entrega local en Riviera Maya / Mérida
@@ -87,7 +87,7 @@ temozonia/
 │   │   └── marea/            # ProductConfigurator.tsx, DesignGallery.tsx (islands React del configurador MAREA)
 │   ├── data/                 # Datos estáticos (products.ts, services.ts)
 │   ├── layouts/              # Layout principal (Layout.astro con inyección de widget.js)
-│   ├── pages/                # Páginas Astro (index, temozonia, baakal, marea, admin, contacto, etc.)
+│   ├── pages/                # Páginas Astro (index, temozonia, baakal, skinlabclothing, admin, contacto, etc.)
 │   ├── stores/               # Zustand stores (cart, customerAuth, productsCache, storeConfig)
 │   ├── styles/               # CSS global (globals.css)
 │   ├── types/                # Types TypeScript (product.ts, cart.ts incl. ShippingRate)
@@ -112,7 +112,7 @@ temozonia/
 Cliente (Navegador)
   ↓
 Cloudflare CDN & Edge Security (cf-ipcountry + Rate Limit + Security Headers)
-  ├─→ Astro Static (Pages: /, /temozonia, /baakal, /marea, /admin, etc.)
+  ├─→ Astro Static (Pages: /, /temozonia, /baakal, /skinlabclothing, /admin, etc.)
   └─→ Worker API (/api/*, /health)
        ├─→ security.ts (Geofencing LATAM/NA/ES, IP Sliding Window, Prompt Injection Shield)
        ├─→ D1 (tenants, tenant_users, customers, carts, store_sessions, action_tokens, customer_addresses, products, orders, order_items, whatsapp_messages)
@@ -261,5 +261,5 @@ pnpm cf-typegen   # Generar tipos Cloudflare Env
 - **Multi-tenant**: Resolución por slug/subdominio/query param + caché KV funcionando (`ark`, `temozonia`, `baakal`, `marea`)
 - **API & Hardening**: Endpoints CRUD y de negocio operativos y blindados con Geofencing, Rate Limiting por IP, Anti-Prompt Injection y sesiones Admin/Cliente
 - **Asistente 3D Ark**: Widget universal (`public/widget.js`) y buscador principal (`AiSearchConcierge.tsx`) unificados con escena interactiva **Spline 3D**, dictado por voz (`es-MX`) y cerebro multi-tienda (`TENANT_CONTEXT`)
-- **Configurador MAREA**: Islands React `ProductConfigurator` + `DesignGallery` integrados en `/marea` con fallbacks offline, selección cruzada de diseño (evento `marea:select-design`) y carrito configurado sincronizado con el storefront (evento `marea:cart-add`)
+- **Configurador Skin Lab**: Islands React `ProductConfigurator` + `DesignGallery` integrados en `/skinlabclothing` con fallbacks offline, selección cruzada de diseño (evento `marea:select-design`) y carrito configurado sincronizado con el storefront (evento `marea:cart-add`)
 - **Automatización**: Scripts de onboarding, importación de catálogos, validación de tenants, smoke test de checkout y facturación PDF disponibles
