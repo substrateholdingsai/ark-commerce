@@ -196,7 +196,7 @@ tailwind.config = {
 
       <!-- Métricas / Pruebas de Confianza México -->
       <div class="mt-8 flex flex-wrap items-center gap-6 font-mono text-xs text-marea-tinta-2">
-        <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-marea-selva-dk"></i> SPEI Seguro BBVA</span>
+        <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-marea-selva-dk"></i> SPEI Seguro Bancomer</span>
         <span class="flex items-center gap-1.5"><i data-lucide="truck" class="w-4 h-4 text-marea-teal-dk"></i> Estafeta / FedEx 24-48h</span>
         <span class="flex items-center gap-1.5"><i data-lucide="message-circle" class="w-4 h-4 text-emerald-600"></i> Soporte WhatsApp directo</span>
       </div>
@@ -334,7 +334,7 @@ tailwind.config = {
         <div class="w-12 h-12 rounded-full bg-marea-teal/15 text-marea-teal-dk flex items-center justify-center mb-4">
           <i data-lucide="landmark" class="w-6 h-6"></i>
         </div>
-        <h3 class="font-display font-700 text-xl text-marea-tinta">Transferencia SPEI (BBVA)</h3>
+        <h3 class="font-display font-700 text-xl text-marea-tinta">Transferencia SPEI (Bancomer)</h3>
         <p class="text-sm text-marea-tinta-2 mt-2 leading-relaxed">Transfiere directo desde cualquier app bancaria sin comisiones extra. Copias la CLABE en un clic en el carrito.</p>
       </div>
 
@@ -374,8 +374,8 @@ tailwind.config = {
     </div>
     <div class="font-mono text-sm space-y-2">
       <div class="text-marea-arena font-700 tracking-widest text-xs uppercase mb-3">Datos de Pago</div>
-      <p class="text-xs text-marea-bruma/80">Banco: <strong>BBVA México</strong></p>
-      <p class="text-xs text-marea-bruma/80">CLABE: <strong class="select-all text-marea-teal-hi">0121 8000 1234 5678 90</strong></p>
+      <p class="text-xs text-marea-bruma/80">Banco: <strong>Bancomer México</strong></p>
+      <p class="text-xs text-marea-bruma/80">CLABE: <strong class="select-all text-marea-teal-hi">012 910 0155 7460 8483</strong></p>
       <p class="text-xs text-marea-bruma/80">Beneficiario: Skin Lab Clothing Club</p>
     </div>
   </div>
@@ -440,7 +440,7 @@ tailwind.config = {
         <div class="grid grid-cols-2 gap-2 text-xs font-bold font-mono">
           <button type="button" onclick="seleccionarPago('spei')" id="btnPagoSpei" class="pago-btn p-3 rounded-xl border-2 border-marea-teal bg-marea-teal/10 text-marea-tinta flex flex-col items-center gap-1">
             <i data-lucide="landmark" class="w-5 h-5 text-marea-teal-dk"></i>
-            <span>SPEI BBVA</span>
+            <span>SPEI Bancomer</span>
           </button>
           <button type="button" onclick="seleccionarPago('whatsapp')" id="btnPagoWa" class="pago-btn p-3 rounded-xl border-2 border-marea-arena-b bg-marea-arena text-marea-tinta-2 flex flex-col items-center gap-1">
             <i data-lucide="message-circle" class="w-5 h-5 text-emerald-600"></i>
@@ -459,11 +459,11 @@ tailwind.config = {
         <!-- Caja de ayuda SPEI (visible si SPEI está activo) -->
         <div id="cajaSpei" class="bg-marea-arena p-3.5 rounded-xl border border-marea-arena-b space-y-2 text-xs">
           <div class="flex justify-between items-center font-mono">
-            <span class="text-marea-tinta-3">Banco: <strong>BBVA</strong></span>
+            <span class="text-marea-tinta-3">Banco: <strong>Bancomer</strong></span>
             <span class="text-marea-tinta-3">Beneficiario: <strong>Skin Lab Clothing Club</strong></span>
           </div>
           <div class="flex items-center justify-between bg-marea-blanco p-2 rounded-lg border border-marea-arena-b">
-            <span class="font-mono font-bold select-all tracking-wider text-marea-tinta">0121 8000 1234 5678 90</span>
+            <span class="font-mono font-bold select-all tracking-wider text-marea-tinta">012 910 0155 7460 8483</span>
             <button onclick="copiarClabe()" id="btnCopiarClabe" class="px-2.5 py-1 rounded bg-marea-teal text-marea-tinta font-bold text-[11px] hover:bg-marea-teal-hi transition-colors flex items-center gap-1">
               <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
             </button>
@@ -754,7 +754,7 @@ function copiarClabe(){
     const btn = document.getElementById('btnCopiarClabe');
     btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i> ¡Copiada!`;
     if(window.lucide) lucide.createIcons();
-    toast('📋 CLABE BBVA copiada al portapapeles');
+    toast('📋 CLABE Bancomer copiada al portapapeles');
     setTimeout(()=>{
       btn.innerHTML = `<i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar`;
       if(window.lucide) lucide.createIcons();
@@ -856,11 +856,11 @@ async function procesarPagoOla(){
   const itemsTexto = carrito.map(i => `• ${i.qty}x *${i.nombre}* (Talla ${i.talla}) — $${i.precio * i.qty} MXN`).join('\n');
   const envioTexto = envio === 0 ? 'GRATIS (Promoción 2+ playeras)' : `$${envio} MXN`;
   const metodoLabel = {
-    spei: 'Transferencia SPEI (BBVA)',
+    spei: 'Transferencia SPEI (Bancomer)',
     whatsapp: 'Acordar en WhatsApp',
     efectivo: 'Pago contra entrega / Local',
     tarjeta: 'Tarjeta bancaria / Link de pago'
-  }[metodoPago] || 'SPEI BBVA';
+  }[metodoPago] || 'SPEI Bancomer';
 
   const ticketMsg = 
 `🌊 *NUEVO PEDIDO SKIN LAB CLOTHING CLUB #${folio}*
