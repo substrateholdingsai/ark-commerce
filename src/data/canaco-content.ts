@@ -31,6 +31,19 @@ export interface ContactoGeneral {
   telefonos_expo_feria: string[];
 }
 
+export interface ServicioContacto {
+  telefono?: string;
+  email?: string;
+  persona?: string;
+}
+
+export interface Servicio {
+  categoria: string;
+  descripcion: string;
+  departamento: string;
+  contacto?: ServicioContacto;
+}
+
 export interface CanacoContent {
   camara: string;
   anio: number;
@@ -180,4 +193,121 @@ export const CANACO_CONTENT: CanacoContent = {
     telefono: "9993-010423",
     telefonos_expo_feria: ["999 301 0416", "999 225 1621", "999 128 2591"],
   },
+  catalogo_servicios: [
+    {
+      categoria: "Representación Institucional",
+      descripcion:
+        "Representación ante instituciones públicas como IMSS, INFONAVIT, SAT, PROFECO, entre otras.",
+      departamento: "General",
+    },
+    {
+      categoria: "Red de Afiliados",
+      descripcion:
+        "Vinculación entre empresas afiliadas para fomentar oportunidades de negocio y colaboración estratégica.",
+      departamento: "General",
+    },
+    {
+      categoria: "Pago recuperable y deducible",
+      descripcion:
+        "Cuota de afiliación 100% recuperable y deducible de impuestos.",
+      departamento: "Registro",
+    },
+    {
+      categoria: "Expansión y Vinculación",
+      descripcion:
+        "Expande red de contactos y alianzas empresariales a través de CANACO Networking y Leader Session.",
+      departamento: "Desarrollo Comercial",
+      contacto: {
+        telefono: "999 942 8850 Ext. 1109 / 999 593 9889",
+        email: "coordinador.socios@canacomerida.com",
+      },
+    },
+    {
+      categoria: "Expansión y Vinculación Turística",
+      descripcion:
+        "Programa 'Sabor a Yucatán' (promoción de negocios y vinculación con clientes y proveedores). Portafolio en Tianguis Turístico y Yucatán Travel Mart (promoción a nivel nacional e internacional).",
+      departamento: "Coordinación de Atención a Socios",
+      contacto: {
+        telefono: "999 942 8850 Ext. 1109 / 999 593 9889",
+        email: "coordinador.socios@canacomerida.com",
+      },
+    },
+    {
+      categoria: "Crecimiento y Posicionamiento",
+      descripcion:
+        "Organización de Eventos comerciales, Carreras, Ferias y Exposiciones (EXPO FORO AMBIENTAL, EXPO FERIA DEL COMERCIO). Precios preferenciales y posicionamiento para socios.",
+      departamento: "Dirección de Desarrollo Comercial",
+      contacto: {
+        telefono: "999 942 8850 Ext. 1126 / 999 301 0416",
+        email: "desarrollocomercial@canacomerida.com",
+      },
+    },
+    {
+      categoria: "Renta de Salones",
+      descripcion:
+        "Salones adaptados a la medida de su evento. #SocioCanaco cuenta con tarifa preferencial. (Convenciones hasta 800 personas, Capacitación 18 personas, Lobby 150 personas, Consejo 70 personas).",
+      departamento: "Salones",
+      contacto: {
+        telefono: "999 942 8850 Ext. 1146",
+        email: "salones@canacomerida.com",
+      },
+    },
+    {
+      categoria: "Publicidad y Promoción",
+      descripcion:
+        "Difusión y promoción empresarial en medios: Mailing masivo, Servicio de mensajería (WhatsApp), Redes Sociales (@canacomerida, Canaco Mérida) y portal web.",
+      departamento: "Comunicación",
+      contacto: {
+        telefono: "999 942 8850 Ext. 1132",
+        email: "comunicacion@canacomerida.com",
+      },
+    },
+    {
+      categoria: "Capacitación",
+      descripcion:
+        "Cursos, conferencias y pláticas presenciales y online a precio preferencial para socios. Temas: Atención a clientes, Ventas, Entrevista laboral, Reformas fiscales, Habilidades administrativas, Productividad, Especializados en turismo. Cursos privados a la medida.",
+      departamento: "Capacitación",
+      contacto: {
+        telefono: "999 942 8850 Ext. 1133",
+        email: "capacitacion@canacomerida.com",
+      },
+    },
+    {
+      categoria: "Delegaciones",
+      descripcion:
+        "Presencia y representación en el interior del Estado con 6 delegaciones: Valladolid, Tizimín, Ticul, Tekax, Peto y Motul.",
+      departamento: "Delegaciones",
+    },
+    {
+      categoria: "Asuntos Legales",
+      descripcion:
+        "Asesoría y representación legal en materia laboral, mercantil, civil y administrativo. Difusión de disposiciones legales. Asesoría especializada sobre el IMSS. Representación ante Juntas Especiales Tres y Cuatro y Conciliación y Arbitraje.",
+      departamento: "Dirección de Asuntos Jurídicos",
+      contacto: {
+        telefono: "999 942 8850 Ext. 1114 / 999 301 0415",
+        email: "juridico@canacomerida.com",
+      },
+    },
+    {
+      categoria: "Bienestar Social",
+      descripcion:
+        "Guardería participativa gratuita para hijos de padres trabajadores inscritos al IMSS (Manzana 115). Enlaces con asociaciones de beneficencia a través de Fundación Yucatán, A.C.",
+      departamento: "Dirección de Bienestar Social",
+      contacto: {
+        telefono: "999 942 8850 Ext. 1110 / 999 301 0424",
+        email: "bienestarsocial@canacomerida.com",
+      },
+    },
+    {
+      categoria: "Registro y Afiliación",
+      descripcion:
+        "Atención para el alta de nuevos socios y gestión de registro.",
+      departamento: "Registro",
+      contacto: {
+        persona: "Lic. Karen Lizama (Encargada de Registro)",
+        telefono: "999 942 8850 Ext. 1108",
+        email: "registro@canacomerida.com",
+      },
+    },
+  ],
 };
