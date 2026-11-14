@@ -134,7 +134,11 @@
     }
   };
 
-  const theme = THEMES[currentTenant] || THEMES.ark;
+  const baseTheme = THEMES[currentTenant] || THEMES.ark;
+  const theme =
+    currentTenant === 'canaco'
+      ? { ...baseTheme, pillLabel: 'CANACO', pillSub: 'Asistencia 24/7' }
+      : baseTheme;
 
   // 3. Contenedor y estilos encapsulados
   const container = document.createElement('div');
