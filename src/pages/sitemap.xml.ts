@@ -35,6 +35,21 @@ export const GET: APIRoute = async () => {
       changefreq: 'monthly',
       priority: '0.5',
     },
+    {
+      url: 'https://canaco.arksystems.site/',
+      changefreq: 'weekly',
+      priority: '0.8',
+    },
+    {
+      url: 'https://canaco.arksystems.site/eventos',
+      changefreq: 'weekly',
+      priority: '0.7',
+    },
+    {
+      url: 'https://canaco.arksystems.site/admin',
+      changefreq: 'monthly',
+      priority: '0.4',
+    },
   ];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

@@ -9,9 +9,20 @@ import { config } from '@config/config';
 interface Props {
   title?: string;
   description?: string;
+  url?: string;
+  image?: string;
 }
 
-const { title = 'CANACO SERVYTUR Mérida', description = 'Cámara Nacional de Comercio, Servicios y Turismo · Mérida, Yucatán' } = Astro.props;
+const { 
+  title = 'CANACO SERVYTUR Mérida', 
+  description = 'Cámara Nacional de Comercio, Servicios y Turismo · Mérida, Yucatán',
+  url = 'https://canaco.arksystems.site/',
+  image = '/ark-mascot.jpg',
+} = Astro.props;
+
+const siteUrl = 'https://canaco.arksystems.site';
+const ogImage = `${siteUrl}${image.startsWith('/') ? image : '/' + image}`;
+const canonical = `${siteUrl}${url.startsWith('/') ? url.slice(1) : url}`;
 ---
 
 <!doctype html>
@@ -30,6 +41,55 @@ const { title = 'CANACO SERVYTUR Mérida', description = 'Cámara Nacional de Co
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <link rel="apple-touch-icon" href="/ark-mascot.jpg" />
     <link rel="mask-icon" href="/favicon.svg" color="#1A3A5C" />
+    <!-- SEO: canonical + Open Graph + Twitter Cards -->
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="CANACO SERVYTUR Mérida" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="es_MX" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <!-- JSON-LD LocalBusiness structured data -->
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "@id": "{canonical}#organization",
+        "name": "CANACO SERVYTUR Mérida",
+        "url": "{canonical}",
+        "telephone": "+529999428850",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Mérida, Yucatán",
+          "addressLocality": "Mérida",
+          "addressRegion": "Yucatán",
+          "addressCountry": "MX"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 20.9674,
+          "longitude": -89.5925
+        },
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "09:00",
+          "closes": "18:00"
+        },
+        "sameAs": [
+          "https://wa.me/529999428850"
+        ],
+        "logo": "{ogImage}",
+        "image": "{ogImage}"
+      }
+    </script>
     <!-- Fuente: Fraunces (HENEQUÉN canon) -->
     <link
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&display=swap"
