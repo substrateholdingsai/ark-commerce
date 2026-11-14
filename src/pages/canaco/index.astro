@@ -1,8 +1,7 @@
 ---
 // src/pages/canaco/index.astro — Landing CANACO SERVYTUR Mérida
 import CanacoLayout from '../../layouts/CanacoLayout.astro';
-import ProductCard from '../../components/product/ProductCard.astro';
-import CheckoutCalculator from '../../components/checkout/CheckoutCalculator.astro';
+import CanacoOfferCard from '../../components/product/CanacoOfferCard.astro';
 
 const CANACO_PRODUCTS = [
   {
@@ -11,7 +10,6 @@ const CANACO_PRODUCTS = [
     weight: 'Unidad',
     price: 8000,
     desc: 'Expo Feria del Comercio 2026 — Stand estándar 2x2 metros',
-    image: '/images/canaco/stand-2x2.jpg',
     badge: 'ESTÁNDAR',
     stock: 99,
   },
@@ -21,7 +19,6 @@ const CANACO_PRODUCTS = [
     weight: 'Paquete',
     price: 9500,
     desc: '10 min de presentación + Banner en desayuno networking',
-    image: '/images/canaco/sponsor-oro.jpg',
     badge: 'PATROCINIO',
     stock: 10,
   },
@@ -39,20 +36,20 @@ const CANACO_PRODUCTS = [
         EXPO FERIA DEL COMERCIO 2026
       </span>
       <h1 class="font-canaco font-black text-5xl font-bold leading-[1.05] md:text-7xl lg:text-8xl tracking-tight">
-        CANACO SERVYTUR<br class="hidden md:block" />Mérida
+        CANACO SERVYTUR <span class="block">Mérida</span>
       </h1>
       <p class="mx-auto max-w-2xl font-canaco text-lg leading-relaxed text-canaco-accent/80 md:text-xl">
         Reserva tu stand o patrocinio para la Expo Feria del Comercio 2026. Conéctate con cientos de comerciantes y empresas de Mérida y el sureste.
       </p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
-        <a href="https://ledger.arksystems.site/?brand=canaco" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-10 py-5 rounded-full bg-canaco-accent text-canaco-primary font-canaco font-black text-base uppercase tracking-widest shadow-[0_0_30px_rgba(26,58,92,0.4)] hover:bg-canaco-accent-dk transition">
+        <a href="https://ledger.arksystems.site/?brand=canaco" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-full bg-canaco-accent text-canaco-primary font-canaco font-black text-sm uppercase tracking-widest shadow-[0_0_30px_rgba(26,58,92,0.4)] hover:bg-canaco-accent-dk transition md:px-10 md:py-5 md:text-base">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           Solicitar Afiliación (Ventanilla CANACO)
         </a>
-        <a href="#productos" class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-canaco-accent text-canaco-accent font-canaco font-bold text-base hover:bg-canaco-accent/10 transition">
+        <a href="#productos" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full border-2 border-canaco-accent text-canaco-accent font-canaco font-bold text-sm hover:bg-canaco-accent/10 transition md:px-8 md:py-4 md:text-base">
           Ver Ofertas de Stand
         </a>
-        <a href="https://wa.me/529999428850" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-8 py-4 rounded-full border-2 border-canaco-accent text-canaco-accent font-canaco font-bold text-base hover:bg-canaco-accent/10 transition">
+        <a href="https://wa.me/529999428850" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-5 py-3 rounded-full border-2 border-canaco-accent text-canaco-accent font-canaco font-bold text-sm hover:bg-canaco-accent/10 transition md:px-8 md:py-4 md:text-base">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
           WhatsApp CANACO
         </a>
@@ -68,18 +65,23 @@ const CANACO_PRODUCTS = [
           Ofertas para tu negocio
         </h2>
         <p class="text-sm mt-1 font-canaco text-canaco-accent/60">
-          {CANACO_PRODUCTS.length} opciones · Precios en MXN · Pago por transferencia SPEI o efectivo
+          {CANACO_PRODUCTS.length} opciones · Precios en MXN · Solicita información por WhatsApp
         </p>
       </div>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {CANACO_PRODUCTS.map((product) => (
-        <ProductCard product={product} />
+        <CanacoOfferCard product={product} />
       ))}
     </div>
   </section>
 
-  <!-- Checkout Calculator -->
-  <CheckoutCalculator />
+  <section class="border-t border-canaco-accent/10 bg-white px-4 py-12 text-center">
+    <h2 class="font-canaco text-2xl font-black text-canaco-accent">¿Necesitas una propuesta personalizada?</h2>
+    <p class="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-canaco-accent/70">Nuestro equipo puede ayudarte a elegir el espacio o patrocinio ideal para tu negocio.</p>
+    <a href="https://wa.me/529999428850?text=Hola%20CANACO%20SERVYTUR%20M%C3%A9rida.%20Quiero%20informaci%C3%B3n%20sobre%20la%20Expo%20Feria%20del%20Comercio%202026." target="_blank" rel="noopener noreferrer" class="mt-5 inline-flex min-h-11 items-center justify-center rounded-full border border-canaco-accent/20 px-6 py-3 text-sm font-bold text-canaco-accent transition hover:bg-canaco-accent/5">
+      Contactar a CANACO
+    </a>
+  </section>
 
 </CanacoLayout>

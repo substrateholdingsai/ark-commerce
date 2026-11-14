@@ -33,6 +33,13 @@
   --font-script: "Playfair Display", Georgia, serif;
   --font-body: "Inter", system-ui, sans-serif;
   --font-mono: "Orbitron", monospace;
+  --font-canaco: "Fraunces", Georgia, serif;
+
+  /* === CANACO === */
+  --color-canaco-primary: #FAF8F5;
+  --color-canaco-accent: #1A3A5C;
+  --color-canaco-accent-dk: #112B46;
+  --color-canaco-gold: #E9D8A6;
 
   /* === Sombras === */
   --shadow-gold-glow: 0 0 20px rgba(212,175,55,0.3);
