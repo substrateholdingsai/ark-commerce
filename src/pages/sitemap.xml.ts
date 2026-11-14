@@ -50,6 +50,11 @@ export const GET: APIRoute = async () => {
       changefreq: 'monthly',
       priority: '0.4',
     },
+    {
+      url: 'https://canaco.arksystems.site/contenido',
+      changefreq: 'monthly',
+      priority: '0.7',
+    },
   ];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
