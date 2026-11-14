@@ -225,6 +225,26 @@ function freshCanned(): Canned {
         updated_at: baseNow,
         updated_by: 'staypuft',
       },
+      {
+        id: 'cs_offer_1',
+        tenant_id: 'ten_canaco_01',
+        page: 'home',
+        section_type: 'offers',
+        title: 'Oferta de ejemplo',
+        subtitle: 'Sección de oferta vinculada a producto real',
+        body: 'Historia de la oferta, precio y stock viven en products.',
+        cta_label: 'Comprar stand',
+        cta_link: '/canaco/contenido',
+        product_id: 'prod_stand_2x2',
+        image: null,
+        display_order: 2,
+        active: 1,
+        version: '1',
+        source_note: 'placeholder — contenido de ejemplo, sin datos oficiales',
+        created_at: baseNow,
+        updated_at: baseNow,
+        updated_by: 'staypuft',
+      },
     ],
     content_eventos: [
       {
@@ -546,10 +566,27 @@ describe('StayPuft connector — routes and data', () => {
     expect(json.data.eventos[0].nombre).toBe('Evento de ejemplo');
     expect(json.data.contacto_general.departamento).toBe('Departamento de ejemplo');
     expect(json.data.catalogo_servicios[0].categoria).toBe('Categoría de ejemplo');
+    // High-ticket offer links to a real product (price/stock live in products, not free-floating)
+    const offer = json.data.pages.find((p: any) => p.section_type === 'offers');
+    expect(offer).toBeTruthy();
+    expect(offer.product_id).toBe('prod_stand_2x2');
     // pagination envelope present
     expect(json.pagination.page).toBe(1);
     expect(json.pagination.perPage).toBe(20);
     expect(typeof json.pagination.total).toBe('number');
+  });
+
+  it('content sections product_id references real products (high-ticket linkage)', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/canaco/content', undefined, { 'X-Tenant-ID': 'canaco' }));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    const linked = json.data.pages.filter((p: any) => p.product_id);
+    expect(linked.length).toBeGreaterThan(0);
+    for (const section of linked) {
+      // product_id must point to a real canaco product
+      expect(canned.products.some((p: any) => p.id === section.product_id && p.tenant_id === 'ten_canaco_01')).toBe(true);
+    }
   });
 
   it('GET /tenants/ten_canaco_01/content by id -> 200 (canaco id != slug)', async () => {

@@ -520,7 +520,7 @@ internal.get('/tenants/:slug/content', async (c) => {
     const tenant = pathTenant;
     const { page, perPage, offset } = parsePagination(c);
     const { results: sections } = await c.env.DB.prepare(
-      `SELECT id, page, section_type, title, subtitle, body, cta_label, cta_link, image,
+      `SELECT id, page, section_type, title, subtitle, body, cta_label, cta_link, product_id, image,
               display_order, active, version, source_note, created_at, updated_at, updated_by
        FROM content_sections
        WHERE tenant_id = ?

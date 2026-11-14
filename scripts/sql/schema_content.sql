@@ -23,12 +23,13 @@ CREATE TABLE IF NOT EXISTS content_sections (
   id TEXT PRIMARY KEY,
   tenant_id TEXT NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
   page TEXT NOT NULL DEFAULT 'home',
-  section_type TEXT NOT NULL, -- 'hero' | 'experience' | 'offers' | 'program' | 'location' | 'affiliation' | 'faq'
+  section_type TEXT NOT NULL, -- 'hero' | 'experience' | 'offers' | 'program' | 'location' | 'affiliation' | 'faq' | 'services' (Ark services showcase)
   title TEXT,
   subtitle TEXT,
   body TEXT,
   cta_label TEXT,
   cta_link TEXT,
+  product_id TEXT REFERENCES products(id), -- high-ticket offer link: price/stock live in products, not free-floating here
   image TEXT,
   display_order INTEGER NOT NULL DEFAULT 0,
   active INTEGER NOT NULL DEFAULT 1,
