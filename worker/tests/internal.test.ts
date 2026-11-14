@@ -180,6 +180,7 @@ function freshCanned(): Canned {
       { id: 'prod_sponsor_oro', tenant_id: 'ten_canaco_01', name: 'Patrocinio Oro — Desayuno Networking', weight: 'Paquete', price: 9500, desc: '10 min de presentación + Banner en desayuno networking', image: '/images/canaco/sponsor-oro.jpg', badge: null, stock: 10, active: 1, display_order: 2, metadata: null, created_at: baseNow, updated_at: baseNow },
       { id: 'prod_tem_carne', tenant_id: 'temozonia', name: 'Carne Ahumada', weight: '1kg', price: 380, desc: 'Brisquet ahumado', image: '/x.jpg', badge: null, stock: 12, active: 1, display_order: 1, metadata: null, created_at: baseNow, updated_at: baseNow },
       { id: 'prod_tem_off', tenant_id: 'temozonia', name: 'Producto Antiguo', weight: '1kg', price: 10, desc: 'inactivo', image: '/x.jpg', badge: null, stock: 0, active: 0, display_order: 9, metadata: null, created_at: baseNow, updated_at: baseNow },
+      { id: 'prod_null_fields', tenant_id: 'ten_canaco_01', name: 'Producto Campos Nulos', weight: null, price: null, desc: null, image: null, badge: null, stock: null, active: 1, display_order: 3, metadata: null, created_at: baseNow, updated_at: baseNow },
     ],
     orders: [
       { id: 'o-paid', order_number: 'CAN-0001', tenant_id: 'ten_canaco_01', customer_id: 'c-1', customer_name: 'Juan Pérez', customer_address: 'Calle 1', customer_phone: '52999111222', customer_email: 'juan@example.com', payment_method: 'SPEI', total: 8000, status: 'paid', shipping_carrier: 'Estafeta', shipping_service: 'Estándar', shipping_tracking_number: 'TRACK001', shipping_tracking_url: 'https://track/001', shipping_label_url: null, shipping_cost: 0, customer_notes: null, created_at: '2026-11-01T10:00:00Z', updated_at: '2026-11-01T10:00:00Z' },
@@ -311,7 +312,7 @@ describe('StayPuft connector — routes and data', () => {
     expect(json.service).toBe('ark-commerce');
     expect(json.version).toBe('1.0.0');
     expect(json.counts.tenants).toBe(3);
-    expect(json.counts.products).toBe(4);
+    expect(json.counts.products).toBe(5);
     expect(json.counts.orders).toBe(4);
     expect(json.services.db.status).toBe('ok');
     expect(json.services.session.status).toBe('ok');
@@ -367,7 +368,7 @@ describe('StayPuft connector — routes and data', () => {
     const res = await fetchApp(app, req('/api/internal/tenants/canaco/products', undefined, { 'X-Tenant-ID': 'canaco' }));
     expect(res.status).toBe(200);
     const json = await res.json();
-    expect(json.pagination.total).toBe(2);
+    expect(json.pagination.total).toBe(3);
     const byName = Object.fromEntries(json.data.map((p: any) => [p.name, p]));
     expect(byName['Stand Estándar 2x2'].price).toBe(8000);
     expect(byName['Stand Estándar 2x2'].stock).toBe(99);
@@ -631,7 +632,7 @@ describe('StayPuft connector — tenant-scoped regression (path-param only)', ()
     const res = await fetchApp(app, req('/api/internal/tenants/canaco/products'));
     expect(res.status).toBe(200);
     const json = await res.json();
-    expect(json.pagination.total).toBe(2);
+    expect(json.pagination.total).toBe(3);
     const byName = Object.fromEntries(json.data.map((p: any) => [p.name, p]));
     expect(byName['Stand Estándar 2x2'].price).toBe(8000);
     expect(byName['Stand Estándar 2x2'].stock).toBe(99);
@@ -725,4 +726,111 @@ describe('StayPuft connector — tenant-scoped regression (path-param only)', ()
     expect(entry.result).toBe('ok');
   });
 });
+
+// =========================================================================
+// Regression: products 500 fix (round 2)
+// Root cause: production D1 products table has no `metadata` column
+// (schema_designs.sql ALTER TABLE never applied to production). The products
+// handler selected `metadata`, causing `no such column: metadata` -> 500 on
+// every tenant. The local mock passed because it re-implements SQL filtering
+// instead of running real D1 SQL, so it never surfaced a missing-column error.
+// =========================================================================
+describe('StayPuft connector — products regression (live 500 fix)', () => {
+  let canned: Canned;
+  let writes: string[];
+
+  beforeEach(() => {
+    canned = freshCanned();
+    writes = [];
+  });
+
+  it('GET /api/internal/tenants/canaco/products by slug -> 200, Stand $8,000/99 and Patrocinio $9,500/10', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/canaco/products'));
+    expect(res.status).toBe(200), `route returned ${res.status}`;
+    const json = await res.json();
+    expect(json.pagination.total).toBe(3);
+    const byName = Object.fromEntries(json.data.map((p: any) => [p.name, p]));
+    expect(byName['Stand Estándar 2x2'].price).toBe(8000);
+    expect(byName['Stand Estándar 2x2'].stock).toBe(99);
+    expect(byName['Patrocinio Oro — Desayuno Networking'].price).toBe(9500);
+    expect(byName['Patrocinio Oro — Desayuno Networking'].stock).toBe(10);
+    // metadata column is missing in production D1; handler no longer selects it
+    for (const p of json.data) {
+      expect(p.price).toBeDefined();
+      expect(p.stock).toBeDefined();
+    }
+  });
+
+  it('GET /api/internal/tenants/canaco/products by id (ten_canaco_01) -> 200', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/ten_canaco_01/products'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.pagination.total).toBe(3);
+    expect(json.data.some((p: any) => p.name === 'Stand Estándar 2x2')).toBe(true);
+  });
+
+  it('GET /api/internal/tenants/temozonia/products by slug -> 200, no 500', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/temozonia/products'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.data.some((p: any) => p.name === 'Carne Ahumada')).toBe(true);
+  });
+
+  it('GET /api/internal/tenants/ark/products by slug -> 200, no 500', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/ark/products'));
+    expect(res.status).toBe(200);
+  });
+
+  it('GET /api/internal/tenants/canaco/products/prod_stand_2x2 -> 200 product detail', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/canaco/products/prod_stand_2x2'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.data.id).toBe('prod_stand_2x2');
+    expect(json.data.name).toBe('Stand Estándar 2x2');
+    expect(json.data.price).toBe(8000);
+    expect(json.data.stock).toBe(99);
+  });
+
+  it('GET /api/internal/tenants/unknown/products -> 404, no data leaked', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/unknown/products'));
+    expect(res.status).toBe(404);
+    const text = await res.text();
+    expect(text).not.toContain('Stand Estándar 2x2');
+    expect(text).not.toContain('Carne Ahumada');
+  });
+
+  it('Products with null optional fields (price, stock, image, desc) -> 200, never 500', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/canaco/products'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    const nullProduct = json.data.find((p: any) => p.id === 'prod_null_fields');
+    expect(nullProduct).toBeTruthy();
+    expect(nullProduct.price).toBeNull();
+    expect(nullProduct.stock).toBeNull();
+    expect(nullProduct.image).toBeNull();
+    expect(nullProduct.desc).toBeNull();
+    expect(nullProduct.name).toBe('Producto Campos Nulos');
+  });
+
+  it('products exercise in diagnostics does not 500 (products_query check present)', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/diagnostics'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(Array.isArray(json.data.products_query)).toBe(true);
+    for (const check of json.data.products_query) {
+      expect(check.products_query).toBe('ok');
+      expect(check).toHaveProperty('tenant_id');
+      expect(check).toHaveProperty('tenant_slug');
+    }
+  });
+});
+
 

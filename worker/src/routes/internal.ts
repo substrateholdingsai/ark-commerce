@@ -288,7 +288,7 @@ internal.get('/tenants/:slug/products', async (c) => {
     const tenant = pathTenant;
     const { page, perPage, offset } = parsePagination(c);
     const { results } = await c.env.DB.prepare(
-      `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order, metadata, created_at, updated_at
+      `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order, created_at, updated_at
        FROM products
        WHERE tenant_id = ?
        ORDER BY active DESC, display_order, name
@@ -318,7 +318,7 @@ internal.get('/tenants/:slug/products/:id', async (c) => {
     const tenant = pathTenant;
     const id = c.req.param('id');
     const product = await c.env.DB.prepare(
-      `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order, metadata, created_at, updated_at
+      `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order, created_at, updated_at
        FROM products WHERE id = ? AND tenant_id = ?`
     ).bind(id, tenant.id).first<any>();
     if (!product) return notFound(c);
@@ -594,6 +594,26 @@ internal.get('/diagnostics', async (c) => {
        HAVING COUNT(p.id) = 0`
     ).all<any>();
 
+    // Exercise the same products query the tenant-scoped routes use, per tenant,
+    // so diagnostics surfaces a 500ing products route instead of hiding it.
+    const { results: allTenants } = await c.env.DB.prepare('SELECT id, slug FROM tenants').all<any>();
+    const productsQueryCheck = (allTenants || []).map((t: any) => {
+      try {
+        c.env.DB.prepare(
+          `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order, created_at, updated_at
+           FROM products
+           WHERE tenant_id = ?
+           ORDER BY active DESC, display_order, name
+           LIMIT 1 OFFSET 0`
+        )
+          .bind(t.id)
+          .all<any>();
+        return { tenant_id: t.id, tenant_slug: t.slug, products_query: 'ok' };
+      } catch (err: any) {
+        return { tenant_id: t.id, tenant_slug: t.slug, products_query: 'error', error: String(err?.message ?? err) };
+      }
+    });
+
     return c.json({
       success: true,
       operator: STAYPUFT_OPERATOR,
@@ -604,6 +624,7 @@ internal.get('/diagnostics', async (c) => {
         stuck_orders_pending_7d: stuckOrders || [],
         shipped_without_tracking: missingTracking || [],
         tenants_without_products: tenantsNoProducts || [],
+        products_query: productsQueryCheck,
       },
     });
   });
