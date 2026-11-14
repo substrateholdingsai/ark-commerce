@@ -2,7 +2,7 @@
 // src/layouts/CanacoLayout.astro — Layout dedicado al tenant CANACO SERVYTUR Mérida
 // HENEQUÉN design system: Fraunces tipografía, #FAF8F5 primario, #1A3A5C acento
 import Header from '../components/layout/Header.astro';
-import Footer from '../components/layout/Footer.astro';
+import CanacoFooter from '../components/layout/CanacoFooter.astro';
 import CartDrawer from '../components/checkout/CartDrawer.astro';
 import { config } from '@config/config';
 
@@ -117,7 +117,7 @@ const canonical = `${siteUrl}${url.startsWith('/') ? url.slice(1) : url}`;
   <body>
     <Header />
     <slot />
-    <Footer />
+    <CanacoFooter />
     <CartDrawer />
     <script is:inline src="/widget.js" data-tenant="canaco"></script>
     <script is:inline>
