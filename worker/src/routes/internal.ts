@@ -3,12 +3,10 @@ import { z } from 'zod';
 import type { Env, Tenant } from '../types/env';
 import {
   verifyStayPuftKey,
-  getStayPuftKey,
   logStayPuftAction,
   maskSecret,
   STAYPUFT_OPERATOR,
 } from '../lib/staypuft';
-import { timingSafeEqualStr } from '../lib/security';
 
 type Variables = {
   tenant: Tenant | null;
@@ -59,15 +57,8 @@ function operatorTenant(c: any): Tenant | null {
   return c.get('tenant');
 }
 
-function tenantScopeMatch(c: any, slug: string): boolean {
-  const t = operatorTenant(c);
-  return !!t && t.slug === slug;
-}
-
 function targetForPath(path: string): { type: string | null; id: string | null } {
   const segments = path.split('/').filter(Boolean);
-  // /api/internal/tenants/:slug/products/:id
-  // /api/internal/tenants/:slug/orders/:id
   const idx = segments.indexOf('products');
   if (idx !== -1 && segments[idx + 1]) return { type: 'product', id: segments[idx + 1] };
   const idx2 = segments.indexOf('orders');
@@ -77,13 +68,27 @@ function targetForPath(path: string): { type: string | null; id: string | null }
   return { type: null, id: null };
 }
 
+/**
+ * Resolves the tenant addressed by the :slug path param.
+ * Accepts both a tenant slug and a tenant id (CANACO's id `ten_canaco_01`
+ * differs from its slug `canaco`). This is the lookup key used by tenant-scoped
+ * routes, independent of the request-context tenant (which defaults to `ark`
+ * when no ?tenant= / X-Tenant-ID / subdomain matches).
+ */
+async function resolvePathTenant(c: any): Promise<Tenant | null> {
+  const slug = c.req.param('slug');
+  if (!slug) return null;
+  return c.env.DB.prepare('SELECT * FROM tenants WHERE slug = ? OR id = ?').bind(slug, slug).first<any>();
+}
+
 async function withAudit(
   c: any,
-  fn: () => Promise<Response>
+  fn: () => Promise<Response>,
+  pathTenant: Tenant | null = null
 ): Promise<Response> {
   const method = c.req.method;
   const path = c.req.path;
-  const tenant = operatorTenant(c);
+  const tenant = pathTenant ?? operatorTenant(c);
   const target = targetForPath(path);
   try {
     const res = await fn();
@@ -234,11 +239,10 @@ internal.get('/tenants', async (c) => {
 // GET /api/internal/tenants/:slug
 // =========================================================================
 internal.get('/tenants/:slug', async (c) => {
+  const pathTenant = await resolvePathTenant(c);
+  if (!pathTenant) return notFound(c);
   return withAudit(c, async () => {
-    const slug = c.req.param('slug');
-    if (!tenantScopeMatch(c, slug)) return notFound(c);
-    const tenant = await c.env.DB.prepare('SELECT * FROM tenants WHERE slug = ?').bind(slug).first<any>();
-    if (!tenant) return notFound(c);
+    const tenant = pathTenant;
     return c.json({
       success: true,
       operator: STAYPUFT_OPERATOR,
@@ -271,18 +275,17 @@ internal.get('/tenants/:slug', async (c) => {
         },
       },
     });
-  });
+  }, pathTenant);
 });
 
 // =========================================================================
 // GET /api/internal/tenants/:slug/products
 // =========================================================================
 internal.get('/tenants/:slug/products', async (c) => {
+  const pathTenant = await resolvePathTenant(c);
+  if (!pathTenant) return notFound(c);
   return withAudit(c, async () => {
-    const slug = c.req.param('slug');
-    if (!tenantScopeMatch(c, slug)) return notFound(c);
-    const tenant = await c.env.DB.prepare('SELECT id FROM tenants WHERE slug = ?').bind(slug).first<any>();
-    if (!tenant) return notFound(c);
+    const tenant = pathTenant;
     const { page, perPage, offset } = parsePagination(c);
     const { results } = await c.env.DB.prepare(
       `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order, metadata, created_at, updated_at
@@ -299,40 +302,38 @@ internal.get('/tenants/:slug/products', async (c) => {
     return c.json({
       success: true,
       operator: STAYPUFT_OPERATOR,
-      tenant: slug,
+      tenant: tenant.slug,
       ...paginated(results || [], { page, perPage, offset }, totalRow?.n ?? 0),
     });
-  });
+  }, pathTenant);
 });
 
 // =========================================================================
 // GET /api/internal/tenants/:slug/products/:id
 // =========================================================================
 internal.get('/tenants/:slug/products/:id', async (c) => {
+  const pathTenant = await resolvePathTenant(c);
+  if (!pathTenant) return notFound(c);
   return withAudit(c, async () => {
-    const slug = c.req.param('slug');
+    const tenant = pathTenant;
     const id = c.req.param('id');
-    if (!tenantScopeMatch(c, slug)) return notFound(c);
-    const tenant = await c.env.DB.prepare('SELECT id FROM tenants WHERE slug = ?').bind(slug).first<any>();
-    if (!tenant) return notFound(c);
     const product = await c.env.DB.prepare(
       `SELECT id, name, weight, price, "desc", image, badge, stock, active, display_order, metadata, created_at, updated_at
        FROM products WHERE id = ? AND tenant_id = ?`
     ).bind(id, tenant.id).first<any>();
     if (!product) return notFound(c);
-    return c.json({ success: true, operator: STAYPUFT_OPERATOR, tenant: slug, data: product });
-  });
+    return c.json({ success: true, operator: STAYPUFT_OPERATOR, tenant: tenant.slug, data: product });
+  }, pathTenant);
 });
 
 // =========================================================================
 // GET /api/internal/tenants/:slug/orders
 // =========================================================================
 internal.get('/tenants/:slug/orders', async (c) => {
+  const pathTenant = await resolvePathTenant(c);
+  if (!pathTenant) return notFound(c);
   return withAudit(c, async () => {
-    const slug = c.req.param('slug');
-    if (!tenantScopeMatch(c, slug)) return notFound(c);
-    const tenant = await c.env.DB.prepare('SELECT id FROM tenants WHERE slug = ?').bind(slug).first<any>();
-    if (!tenant) return notFound(c);
+    const tenant = pathTenant;
     const { page, perPage, offset } = parsePagination(c);
     const status = c.req.query('status');
     let sql = `SELECT id, order_number, customer_id, customer_name, customer_address, customer_phone,
@@ -355,28 +356,27 @@ internal.get('/tenants/:slug/orders', async (c) => {
     return c.json({
       success: true,
       operator: STAYPUFT_OPERATOR,
-      tenant: slug,
+      tenant: tenant.slug,
       ...paginated(results || [], { page, perPage, offset }, totalRow?.n ?? 0),
     });
-  });
+  }, pathTenant);
 });
 
 // =========================================================================
 // GET /api/internal/tenants/:slug/orders/:id
 // =========================================================================
 internal.get('/tenants/:slug/orders/:id', async (c) => {
+  const pathTenant = await resolvePathTenant(c);
+  if (!pathTenant) return notFound(c);
   return withAudit(c, async () => {
-    const slug = c.req.param('slug');
+    const tenant = pathTenant;
     const id = c.req.param('id');
-    if (!tenantScopeMatch(c, slug)) return notFound(c);
-    const tenant = await c.env.DB.prepare('SELECT id FROM tenants WHERE slug = ?').bind(slug).first<any>();
-    if (!tenant) return notFound(c);
     const order = await c.env.DB.prepare(
       `SELECT id, order_number, customer_id, customer_name, customer_address, customer_phone,
                       customer_email, customer_notes, payment_method, total, status, shipping_carrier,
                       shipping_service, shipping_tracking_number, shipping_tracking_url, shipping_label_url,
                       shipping_cost, created_at, updated_at
-       FROM orders WHERE id = ? AND tenant_id = ?`
+        FROM orders WHERE id = ? AND tenant_id = ?`
     ).bind(id, tenant.id).first<any>();
     if (!order) return notFound(c);
     const { results: items } = await c.env.DB.prepare(
@@ -386,21 +386,20 @@ internal.get('/tenants/:slug/orders/:id', async (c) => {
     return c.json({
       success: true,
       operator: STAYPUFT_OPERATOR,
-      tenant: slug,
+      tenant: tenant.slug,
       data: { ...order, items: items || [] },
     });
-  });
+  }, pathTenant);
 });
 
 // =========================================================================
 // GET /api/internal/tenants/:slug/customers
 // =========================================================================
 internal.get('/tenants/:slug/customers', async (c) => {
+  const pathTenant = await resolvePathTenant(c);
+  if (!pathTenant) return notFound(c);
   return withAudit(c, async () => {
-    const slug = c.req.param('slug');
-    if (!tenantScopeMatch(c, slug)) return notFound(c);
-    const tenant = await c.env.DB.prepare('SELECT id FROM tenants WHERE slug = ?').bind(slug).first<any>();
-    if (!tenant) return notFound(c);
+    const tenant = pathTenant;
     const { page, perPage, offset } = parsePagination(c);
     const { results } = await c.env.DB.prepare(
       `SELECT id, email, full_name, phone, email_verified_at, created_at, updated_at
@@ -426,21 +425,20 @@ internal.get('/tenants/:slug/customers', async (c) => {
     return c.json({
       success: true,
       operator: STAYPUFT_OPERATOR,
-      tenant: slug,
+      tenant: tenant.slug,
       ...paginated(data, { page, perPage, offset }, totalRow?.n ?? 0),
     });
-  });
+  }, pathTenant);
 });
 
 // =========================================================================
 // GET /api/internal/tenants/:slug/leads
 // =========================================================================
 internal.get('/tenants/:slug/leads', async (c) => {
+  const pathTenant = await resolvePathTenant(c);
+  if (!pathTenant) return notFound(c);
   return withAudit(c, async () => {
-    const slug = c.req.param('slug');
-    if (!tenantScopeMatch(c, slug)) return notFound(c);
-    const tenant = await c.env.DB.prepare('SELECT id FROM tenants WHERE slug = ?').bind(slug).first<any>();
-    if (!tenant) return notFound(c);
+    const tenant = pathTenant;
     const { page, perPage, offset } = parsePagination(c);
     const { results } = await c.env.DB.prepare(
       `SELECT id, phone, sender_name, direction, message_text, matched_tenant, matched_service,
@@ -458,21 +456,20 @@ internal.get('/tenants/:slug/leads', async (c) => {
     return c.json({
       success: true,
       operator: STAYPUFT_OPERATOR,
-      tenant: slug,
+      tenant: tenant.slug,
       ...paginated(results || [], { page, perPage, offset }, totalRow?.n ?? 0),
     });
-  });
+  }, pathTenant);
 });
 
 // =========================================================================
 // GET /api/internal/tenants/:slug/leads/summary
 // =========================================================================
 internal.get('/tenants/:slug/leads/summary', async (c) => {
+  const pathTenant = await resolvePathTenant(c);
+  if (!pathTenant) return notFound(c);
   return withAudit(c, async () => {
-    const slug = c.req.param('slug');
-    if (!tenantScopeMatch(c, slug)) return notFound(c);
-    const tenant = await c.env.DB.prepare('SELECT id FROM tenants WHERE slug = ?').bind(slug).first<any>();
-    if (!tenant) return notFound(c);
+    const tenant = pathTenant;
     const binds: any[] = [tenant.id];
     const where = 'WHERE tenant_id = ?';
 
@@ -499,7 +496,7 @@ internal.get('/tenants/:slug/leads/summary', async (c) => {
     return c.json({
       success: true,
       operator: STAYPUFT_OPERATOR,
-      tenant: slug,
+      tenant: tenant.slug,
       data: {
         totals: {
           leads: totalRow?.total_leads ?? 0,
@@ -510,7 +507,7 @@ internal.get('/tenants/:slug/leads/summary', async (c) => {
         recent_leads: recentLeads || [],
       },
     });
-  });
+  }, pathTenant);
 });
 
 // =========================================================================
@@ -564,8 +561,6 @@ internal.get('/audit', async (c) => {
 // =========================================================================
 internal.get('/diagnostics', async (c) => {
   return withAudit(c, async () => {
-    const now = Math.floor(Date.now() / 1000);
-
     const { results: brokenProducts } = await c.env.DB.prepare(
       `SELECT id, tenant_id, name, price, stock, active
        FROM products

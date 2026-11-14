@@ -52,14 +52,21 @@ function makeDb(canned: Canned, writes: string[]) {
   function applyFilters(rows: any[], sql: string, binds: any[]): any[] {
     let out = rows.slice();
     const s = sql.toUpperCase();
-    const tenantBind = bindFor(sql, binds, 'tenant_id');
-    if (tenantBind !== undefined) out = out.filter((r) => String(r.tenant_id) === String(tenantBind));
-    const slugBind = bindFor(sql, binds, 'slug');
-    if (slugBind !== undefined) out = out.filter((r) => r.slug === slugBind);
-    const idBind = bindFor(sql, binds, 'id');
-    if (idBind !== undefined) {
-      if (/\btenant_id\b/i.test(s)) out = out.filter((r) => String(r.id) === String(idBind) && String(r.tenant_id) === String(bindFor(sql, binds, 'tenant_id')));
-      else out = out.filter((r) => String(r.id) === String(idBind));
+    // resolvePathTenant uses WHERE slug = ? OR id = ? with identical binds:
+    // match on slug OR id so both slug and id lookups work.
+    if (/\bslug\s*=\s*\?\s*OR\s*id\s*=\s*\?/i.test(s)) {
+      const v = binds[0];
+      out = out.filter((r) => String(r.slug) === String(v) || String(r.id) === String(v));
+    } else {
+      const tenantBind = bindFor(sql, binds, 'tenant_id');
+      if (tenantBind !== undefined) out = out.filter((r) => String(r.tenant_id) === String(tenantBind));
+      const slugBind = bindFor(sql, binds, 'slug');
+      if (slugBind !== undefined) out = out.filter((r) => r.slug === slugBind);
+      const idBind = bindFor(sql, binds, 'id');
+      if (idBind !== undefined) {
+        if (/\btenant_id\b/i.test(s)) out = out.filter((r) => String(r.id) === String(idBind) && String(r.tenant_id) === String(bindFor(sql, binds, 'tenant_id')));
+        else out = out.filter((r) => String(r.id) === String(idBind));
+      }
     }
     const orderIdBind = bindFor(sql, binds, 'order_id');
     if (orderIdBind !== undefined) out = out.filter((r) => String(r.order_id) === String(orderIdBind));
@@ -480,23 +487,25 @@ describe('StayPuft connector — routes and data', () => {
     expect(json.data.shipped_without_tracking.some((o: any) => o.id === 'o-shipped-notrack')).toBe(true);
   });
 
-  it('cross-tenant read returns 404 and leaks no data (canaco vs temozonia)', async () => {
+  it('cross-tenant read: StayPuft can access any tenant, but a response never mixes tenants', async () => {
     const app = makeApp(makeEnv(canned, writes));
-    // Resolved tenant is canaco; asking for temozonia scoped data must 404
+    // StayPuft has total access: requesting temozonia returns temozonia (200), not 404.
     const res = await fetchApp(app, req('/api/internal/tenants/temozonia/products', undefined, { 'X-Tenant-ID': 'canaco' }));
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(200);
     const text = await res.text();
-    expect(text).not.toContain('Carne Ahumada');
-    expect(text).not.toContain('temozonia');
+    expect(text).toContain('Carne Ahumada'); // temozonia's own product is present
+    expect(text).not.toContain('Stand Estándar 2x2'); // but no canaco data mixed in
 
-    const res2 = await fetchApp(app, req('/api/internal/tenants/temozonia/orders/o-tem', undefined, { 'X-Tenant-ID': 'canaco' }));
+    // An order belonging to another tenant is not found within canaco's scope (404, no leak).
+    const res2 = await fetchApp(app, req('/api/internal/tenants/canaco/orders/o-tem', undefined, { 'X-Tenant-ID': 'canaco' }));
     expect(res2.status).toBe(404);
 
-    const res3 = await fetchApp(app, req('/api/internal/tenants/canaco/orders/o-tem', undefined, { 'X-Tenant-ID': 'canaco' }));
-    expect(res3.status).toBe(404);
-
+    // Unknown tenant -> 404, no data leaked.
     const res4 = await fetchApp(app, req('/api/internal/tenants/unknown/products', undefined, { 'X-Tenant-ID': 'canaco' }));
     expect(res4.status).toBe(404);
+    const text4 = await res4.text();
+    expect(text4).not.toContain('Carne Ahumada');
+    expect(text4).not.toContain('Stand Estándar 2x2');
   });
 
   it('no StayPuft call creates orders, changes status, generates labels or changes prices', async () => {
@@ -566,3 +575,154 @@ describe('StayPuft connector — pagination defaults and caps on lists', () => {
     expect(json.pagination.perPage).toBe(100);
   });
 });
+
+// =========================================================================
+// Regression: tenant-scoped routes resolved by :slug path param ONLY
+// (no X-Tenant-ID / ?tenant= header). Reproduces the live production 404
+// where Marina calls tiendas.arksystems.site/api/internal/tenants/canaco
+// without any tenant header and the context tenant defaults to 'ark'.
+// =========================================================================
+describe('StayPuft connector — tenant-scoped regression (path-param only)', () => {
+  let canned: Canned;
+  let writes: string[];
+
+  beforeEach(() => {
+    canned = freshCanned();
+    writes = [];
+  });
+
+  // No X-Tenant-ID header: the context tenant defaults to 'ark', so the OLD
+  // tenantScopeMatch(c, 'canaco') failed. The fix resolves the tenant from the
+  // :slug path param (slug OR id), independent of the context tenant.
+  const bySlugCases = [
+    ['/api/internal/tenants/canaco', { id: 'ten_canaco_01', name: 'CANACO SERVYTUR Mérida', slug: 'canaco', whatsapp: '+529999428850' }],
+    ['/api/internal/tenants/temozonia', { id: 'temozonia', name: 'Temozonia Carnes Ahumadas', slug: 'temozonia' }],
+    ['/api/internal/tenants/ark', { id: 'ark', name: 'Ark Systems', slug: 'ark' }],
+  ];
+
+  it.each(bySlugCases)('GET %s by slug -> 200 with correct tenant', async (path, expected) => {
+    const app = makeApp(makeEnv(canned, writes));
+    // Intentionally NO X-Tenant-ID header (context tenant defaults to 'ark').
+    const res = await fetchApp(app, req(path));
+    expect(res.status).toBe(200), `route ${path} returned ${res.status}`;
+    const json = await res.json();
+    expect(json.success).toBe(true);
+    expect(json.data.id).toBe(expected.id);
+    expect(json.data.name).toBe(expected.name);
+    expect(json.data.slug).toBe(expected.slug);
+    if (expected.whatsapp) expect(json.data.whatsapp).toBe(expected.whatsapp);
+    // secrets masked, never returned in full
+    expect(json.data.clabe).not.toMatch(/^\d{18}$/);
+    expect(json.data.envia.api_key).not.toBe('sk_live_envia_canaco_secret');
+  });
+
+  it('GET /api/internal/tenants/ten_canaco_01 by id -> 200 (canaco id != slug)', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/ten_canaco_01'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.data.id).toBe('ten_canaco_01');
+    expect(json.data.slug).toBe('canaco');
+    expect(json.data.name).toBe('CANACO SERVYTUR Mérida');
+  });
+
+  it('GET /api/internal/tenants/canaco/products by slug -> 200, Stand $8,000 / Patrocinio $9,500 live', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/canaco/products'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.pagination.total).toBe(2);
+    const byName = Object.fromEntries(json.data.map((p: any) => [p.name, p]));
+    expect(byName['Stand Estándar 2x2'].price).toBe(8000);
+    expect(byName['Stand Estándar 2x2'].stock).toBe(99);
+    expect(byName['Patrocinio Oro — Desayuno Networking'].price).toBe(9500);
+    expect(byName['Patrocinio Oro — Desayuno Networking'].stock).toBe(10);
+  });
+
+  it('GET /api/internal/tenants/temozonia/products by slug -> 200 (no 500)', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/temozonia/products'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.data.some((p: any) => p.name === 'Carne Ahumada')).toBe(true);
+  });
+
+  it('GET /api/internal/tenants/ark/products by slug -> 200 (no 500)', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/ark/products'));
+    expect(res.status).toBe(200);
+  });
+
+  it('GET /api/internal/tenants/canaco/orders by slug -> 200', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/canaco/orders'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(Array.isArray(json.data)).toBe(true);
+    expect(json.data.every((o: any) => o.tenant_id === 'ten_canaco_01')).toBe(true);
+  });
+
+  it('GET /api/internal/tenants/canaco/customers by slug -> 200', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/canaco/customers'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(Array.isArray(json.data)).toBe(true);
+    for (const cust of json.data) {
+      expect(cust).not.toHaveProperty('password_hash');
+    }
+  });
+
+  it('GET /api/internal/tenants/canaco/leads by slug -> 200', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/canaco/leads'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(Array.isArray(json.data)).toBe(true);
+    expect(json.data.every((m: any) => String(m.tenant_id) === 'ten_canaco_01')).toBe(true);
+  });
+
+  it('GET /api/internal/tenants/canaco/leads/summary by slug -> 200', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/canaco/leads/summary'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.data.totals.leads).toBe(2);
+    expect(json.data.totals.value).toBe(16000);
+  });
+
+  it('GET /api/internal/tenants/unknown -> 404, no data leaked', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/unknown'));
+    expect(res.status).toBe(404);
+    const text = await res.text();
+    expect(text).not.toContain('CANACO');
+    expect(text).not.toContain('Carne Ahumada');
+  });
+
+  it('cross-tenant isolation: a canaco-scoped response contains only canaco data (never temozonia/baakal/marea)', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/canaco/products'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.data.every((p: any) => String(p.tenant_id) === 'ten_canaco_01')).toBe(true);
+    expect(json.data.find((p: any) => p.name === 'Carne Ahumada')).toBeUndefined();
+    const res2 = await fetchApp(app, req('/api/internal/tenants/temozonia/products'));
+    const json2 = await res2.json();
+    expect(res2.status).toBe(200);
+    expect(json2.data.find((p: any) => p.name === 'Stand Estándar 2x2')).toBeUndefined();
+  });
+
+  it('audit log records tenant_slug from path (canaco), not default ark', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    await fetchApp(app, req('/api/internal/tenants/canaco/products'));
+    const entry = canned.staypuft_audit_log.find((e) => e.path === '/api/internal/tenants/canaco/products');
+    expect(entry).toBeTruthy();
+    expect(entry.tenant_slug).toBe('canaco');
+    expect(entry.tenant_slug).not.toBe('ark');
+    expect(entry.method).toBe('GET');
+    expect(entry.status_code).toBe(200);
+    expect(entry.result).toBe('ok');
+  });
+});
+
