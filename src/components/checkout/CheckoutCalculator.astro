@@ -512,7 +512,7 @@ import { useCustomerAuth } from '@/stores/customerAuth';
     renderItems();
   };
 
-  const fetchShippingQuotes = async (postalCode: string, state: string) => {
+  const fetchShippingQuotes = async (postalCode: string, state: string, tenantSlug: string = 'temozonia') => {
     if (!/^\d{5}$/.test(postalCode)) {
       zipIndicator.classList.add('hidden');
       shippingOptionsContainer.innerHTML = `
@@ -537,7 +537,7 @@ import { useCustomerAuth } from '@/stores/customerAuth';
     `;
 
     try {
-      const res = await fetch('/api/shipping/quote?tenant=temozonia', {
+      const res = await fetch(`/api/shipping/quote?tenant=${tenantSlug}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -744,7 +744,7 @@ import { useCustomerAuth } from '@/stores/customerAuth';
 
     if (customer.postalCode) {
       zipInput.value = customer.postalCode;
-      fetchShippingQuotes(customer.postalCode, stateSelect.value);
+      fetchShippingQuotes(customer.postalCode, stateSelect.value, detectTenant());
     }
 
     // Suscribirse al store para items, métodos y tarifas
@@ -787,16 +787,30 @@ import { useCustomerAuth } from '@/stores/customerAuth';
       useCartStore.getState().updateCustomer({ postalCode: val });
       clearTimeout(quoteDebounceTimer);
       quoteDebounceTimer = setTimeout(() => {
-        fetchShippingQuotes(val, stateSelect.value);
+        fetchShippingQuotes(val, stateSelect.value, detectTenant());
       }, 350);
     });
 
     stateSelect.addEventListener('change', () => {
       const val = zipInput.value.trim();
       if (val.length === 5) {
-        fetchShippingQuotes(val, stateSelect.value);
+        fetchShippingQuotes(val, stateSelect.value, detectTenant());
       }
     });
+
+    function detectTenant(): string {
+      const hostname = window.location.hostname.toLowerCase();
+      const parts = hostname.split('.');
+      if (parts.length >= 3 && parts[0] !== 'www' && !/^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+        return parts[0];
+      }
+      const path = window.location.pathname.toLowerCase();
+      const match = path.match(/^\/([a-z0-9_-]+)/);
+      if (match && match[1] !== '' && match[1] !== 'api' && match[1] !== 'admin' && match[1] !== 'stores') {
+        return match[1];
+      }
+      return 'temozonia';
+    }
 
     // CTA principal
     ctaBtn.addEventListener('click', () => {

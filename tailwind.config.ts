@@ -9,6 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        canaco: {
+          primary: "#FAF8F5",
+          accent: "#1A3A5C",
+          "accent-dk": "#142E4A",
+          cream: "#FFFDF5",
+          henequen: "#E9D8A6",
+        },
         marea: {
           arena: "#FFF9F0",
           "arena-2": "#FEF3E2",
@@ -57,6 +64,7 @@ const config: Config = {
         },
       },
       fontFamily: {
+        canaco: ["var(--font-fraunces)", "Georgia", "serif"],
         display: ["var(--font-playfair)", "Georgia", "serif"],
         script: ["var(--font-cormorant)", "Georgia", "serif"],
         body: ["var(--font-inter)", "system-ui", "sans-serif"],

@@ -1,0 +1,9 @@
+---
+// src/pages/canaco/admin.astro — Panel Admin CANACO SERVYTUR Mérida
+import CanacoLayout from '../../layouts/CanacoLayout.astro';
+import AdminApp from '../../components/admin/AdminApp';
+---
+
+<CanacoLayout title="Panel Admin · CANACO SERVYTUR Mérida">
+  <AdminApp client:only="react" />
+</CanacoLayout>

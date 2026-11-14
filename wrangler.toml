@@ -12,6 +12,10 @@ not_found_handling = "single-page-application"
 [[routes]]
 pattern = "tiendas.arksystems.site/*"
 zone_name = "arksystems.site"
+
+[[routes]]
+pattern = "canaco.arksystems.site/*"
+zone_name = "arksystems.site"
 [vars]
 SITE_NAME = "Ark Systems"
 SITE_URL = "https://dev.blink.sv/"

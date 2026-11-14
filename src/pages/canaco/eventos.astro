@@ -1,0 +1,110 @@
+---
+// src/pages/canaco/eventos.astro — Eventos CANACO SERVYTUR Mérida
+import CanacoLayout from '../../layouts/CanacoLayout.astro';
+
+const EVENTOS = [
+  {
+    id: 'evt-001',
+    title: 'Desayuno Networking Empresarial',
+    fecha: '15 Feb 2026',
+    hora: '8:00 AM — 10:30 AM',
+    lugar: 'Salón Henequén, CANACO Mérida',
+    precio: 9500,
+    desc: 'Patrocinio Oro — 10 min de presentación + Banner en desayuno networking con 50 empresarios locales.',
+    tipo: 'Patrocinio',
+  },
+  {
+    id: 'evt-002',
+    title: 'Expo Feria del Comercio 2026',
+    fecha: '10–14 Mar 2026',
+    hora: '10:00 AM — 8:00 PM',
+    lugar: 'Centro de Convenciones Yucatán Siglo XXI',
+    precio: 8000,
+    desc: 'Stand Estándar 2x2 metros para exhibir productos y servicios durante 5 días de feria.',
+    tipo: 'Stand',
+  },
+  {
+    id: 'evt-003',
+    title: 'Foro de Liderazgo Comercial',
+    fecha: '05 Abr 2026',
+    hora: '9:00 AM — 2:00 PM',
+    lugar: 'Auditorio CANACO Mérida',
+    precio: 12000,
+    desc: 'Patrocinio Platino — Conferencia magistral + stand premium + logo en material de difusión.',
+    tipo: 'Patrocinio',
+  },
+  {
+    id: 'evt-004',
+    title: 'Rueda de Negocios Sureste',
+    fecha: '22 May 2026',
+    hora: '3:00 PM — 7:00 PM',
+    lugar: 'Salón Henequén, CANACO Mérida',
+    precio: 6000,
+    desc: 'Stand Básico 1x1 + agenda de citas B2B con compradores de Quintana Roo y Campeche.',
+    tipo: 'Stand',
+  },
+] as const;
+---
+
+<CanacoLayout title="Eventos · CANACO SERVYTUR Mérida" description="Calendario de eventos, stands y patrocinios de CANACO SERVYTUR Mérida. Expo Feria del Comercio 2026.">
+
+  <section class="max-w-[1160px] mx-auto px-4 pt-16 pb-10">
+    <div class="mb-10 text-center">
+      <h2 class="font-canaco font-black text-[30px] sm:text-[40px] tracking-tight text-canaco-accent mb-3">
+        Próximos Eventos
+      </h2>
+      <p class="font-canaco text-lg text-canaco-accent/60 max-w-2xl mx-auto">
+        Reserva tu stand o patrocinio para los eventos de la Cámara en Mérida y Yucatán.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {EVENTOS.map((evt) => (
+        <article
+          class="relative group bg-white border border-canaco-accent/10 rounded-[24px] overflow-hidden hover:border-canaco-accent/40 hover:shadow-[0_20px_40px_rgba(26,58,92,0.08)] transition-all duration-300"
+        >
+          <div class="h-48 bg-canaco-primary/40 flex items-center justify-center relative overflow-hidden">
+            <span class="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-canaco-accent font-canaco font-bold text-[10px] uppercase tracking-wider shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              {evt.tipo}
+            </span>
+            <div class="absolute top-4 right-4 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-canaco-accent text-canaco-primary font-canaco font-bold text-[10px] uppercase tracking-wider">
+              ${evt.precio.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-canaco-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span class="font-canaco text-sm font-semibold text-canaco-accent">{evt.fecha}</span>
+            </div>
+            <div class="flex items-center gap-2 mb-1">
+              <svg class="w-4 h-4 text-canaco-accent/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span class="font-canaco text-sm text-canaco-accent/70">{evt.hora}</span>
+            </div>
+            <div class="mb-3">
+              <span class="font-canaco text-xs font-bold uppercase tracking-wider text-canaco-accent/50 block mb-1">Lugar</span>
+              <span class="font-canaco text-sm text-canaco-accent">{evt.lugar}</span>
+            </div>
+            <h3 class="font-canaco font-bold text-[18px] text-canaco-accent mb-3 leading-tight">{evt.title}</h3>
+            <p class="font-canaco text-sm text-canaco-accent/70 leading-relaxed mb-6">{evt.desc}</p>
+            <button class="w-full py-3.5 rounded-full bg-canaco-accent text-canaco-primary font-canaco font-bold text-sm uppercase tracking-wider hover:bg-canaco-accent-dk transition flex items-center justify-center gap-2">
+              Reservar
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </button>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="mt-12 pt-8 border-t border-canaco-accent/10 text-center">
+      <p class="font-canaco text-sm text-canaco-accent/50">
+        ¿Necesitas un paquete personalizado? Contáctanos por WhatsApp y cotizamos tu presencia en el evento.
+      </p>
+      <a href="https://wa.me/529999428850" target="_blank" rel="noopener" class="mt-4 inline-flex items-center gap-2 px-8 py-3 rounded-full border-2 border-canaco-accent text-canaco-accent font-canaco font-bold text-sm hover:bg-canaco-accent/10 transition">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Escribenos por WhatsApp
+      </a>
+    </div>
+  </section>
+
+</CanacoLayout>

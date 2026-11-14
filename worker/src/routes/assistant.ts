@@ -42,7 +42,14 @@ const TENANT_CONTEXT: Record<string, string> = {
   1. MAREA (/marea): Playeras personalizadas y moda caribeña en algodón peinado ($329-$399 MXN, tallas S-XXL, envío gratis en 2+ piezas).
   2. Temozonia (/temozonia): Carnes ahumadas artesanales con leña de jabín y longaniza de Valladolid.
   3. BAAKAL (/baakal): Servicios técnicos certificados de plomería, boilers y fugas de gas LP.
-- Plan para negocios ($299 MXN/mes): Cualquier marca, restaurante o contratista puede abrir su propia tienda online con diseño de autor, 0% comisiones por venta, cobro directo por SPEI BBVA, cotizador Envia.com y asistente IA 3D.`
+- Plan para negocios ($299 MXN/mes): Cualquier marca, restaurante o contratista puede abrir su propia tienda online con diseño de autor, 0% comisiones por venta, cobro directo por SPEI BBVA, cotizador Envia.com y asistente IA 3D.`,
+  canaco: `
+- Giro: CANACO SERVYTUR Mérida — Cámara Nacional de Comercio, Servicios y Turismo de Mérida, Yucatán.
+- Producto: Stands y patrocinios para la Expo Feria del Comercio 2026 y eventos empresariales de la Cámara.
+- Stands disponibles: Stand Estándar 2x2 ($8,000 MXN), Stand Básico 1x1 ($6,000 MXN).
+- Patrocinios: Oro – Desayuno Networking ($9,500 MXN, 10 min presentación + banner), Platino – Foro de Liderazgo ($12,000 MXN, conferencia + stand premium).
+- Métodos de pago: Transferencia SPEI BBVA, pago en efectivo al recibir, coordinación por WhatsApp.
+- URL de la tienda: /canaco`,
 };
 
 assistantRoute.post('/recommend', async (c) => {
@@ -274,7 +281,8 @@ INSTRUCCIONES CLAVE:
     const targetUrl =
       matchedTenant.slug === 'temozonia' ? '/temozonia' :
       matchedTenant.slug === 'baakal' ? '/baakal' :
-      matchedTenant.slug === 'marea' ? '/marea' : '/';
+      matchedTenant.slug === 'marea' ? '/marea' :
+      matchedTenant.slug === 'canaco' ? '/canaco' : '/';
 
     let explanation = `Te recomiendo visitar ${matchedTenant.name}, donde encontrarás "${firstService?.name}" con precios directos y pago seguro por SPEI o WhatsApp.`;
     if (matchedTenant.slug === 'marea') {
@@ -551,10 +559,17 @@ REGLAS DE CONVERSACIÓN:
         reply = `🔧 En BAAKAL contamos con técnicos certificados en plomería y gas LP con garantía por escrito. Para lo que necesitas te recomendamos "${matched?.name}" con tarifa base de $${estimatedTotal} MXN. ¿Coordinamos tu visita por WhatsApp?`;
         matchedServiceIds = matched ? [matched.id] : [];
         whatsappMessage = `Hola BAAKAL! 🔧 Solicito el servicio "${matched?.name}" ($${estimatedTotal} MXN).`;
+      } else if (tenant.slug === 'canaco') {
+        matched = matched || services[0];
+        estimatedTotal = matched?.price || 8000;
+        const stands = services.slice(0, 3).map(s => `${s.name} ($${s.price})`).join(', ');
+        reply = `🏛️ ¡Hola! Soy Ark, tu asistente de CANACO SERVYTUR Mérida. Para la Expo Feria del Comercio 2026 tenemos "${matched?.name}" por $${estimatedTotal} MXN (también ${stands}). Reserva tu stand o patrocinio por WhatsApp y te enviamos la factura.`;
+        matchedServiceIds = matched ? [matched.id] : [];
+        whatsappMessage = `Hola CANACO SERVYTUR Mérida! 🏛️ Quiero reservar "${matched?.name}" ($${estimatedTotal} MXN).`;
       } else {
         if (lowerMsg.includes('playera') || lowerMsg.includes('marea') || lowerMsg.includes('ropa')) {
           estimatedTotal = 349;
-          reply = `🌊 Para playeras personalizadas y streetwear del Caribe te recomiendo nuestra tienda oficial **MAREA** (/marea). Tienen diseños desde $329 MXN en tallas S a XXL y envío gratis en 2+ piezas.`;
+          reply = `🌊 Para playeras personalizadas y streetwear del Caribe te recomendamos nuestra tienda oficial **MAREA** (/marea). Tienen diseños desde $329 MXN en tallas S a XXL y envío gratis en 2+ piezas.`;
           whatsappMessage = `Hola Ark Commerce! Me interesa comprar playeras en MAREA.`;
         } else if (lowerMsg.includes('carne') || lowerMsg.includes('ahumad') || lowerMsg.includes('costilla') || lowerMsg.includes('temozon')) {
           estimatedTotal = 389;
@@ -570,6 +585,7 @@ REGLAS DE CONVERSACIÓN:
           reply = `👋 ¡Hola! Soy Ark, tu asistente 3D en Ark Commerce. Puedo conectarte con nuestras tiendas oficiales: **MAREA** (playeras personalizadas), **Temozonia** (carnes ahumadas), **BAAKAL** (plomería y gas) o ayudarte a abrir tu propia tienda por $299/mes.`;
           whatsappMessage = `Hola Ark Commerce! Quiero información sobre sus tiendas y productos.`;
         }
+      }
       }
     }
 
