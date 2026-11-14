@@ -1,6 +1,6 @@
 // Service Worker — Ark Commerce PWA (offline + install)
 // Scope: raíz del sitio (servido desde /sw.js)
-const CACHE_NAME = 'ark-commerce-canaco-v1';
+const CACHE_NAME = 'ark-commerce-canaco-v2';
 const OFFLINE_URL = '/canaco/';
 
 // Recursos estáticos a cachear al instalar (contexto CANACO)
@@ -16,7 +16,7 @@ const PRECACHE_URLS = [
 ];
 
 // Assets dinámicos de runtime (estilos, scripts del build) se agregan al caché bajo demanda
-const RUNTIME_CACHE = 'ark-commerce-canaco-runtime';
+const RUNTIME_CACHE = 'ark-commerce-canaco-runtime-v2';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -53,6 +53,20 @@ self.addEventListener('fetch', (event) => {
       }).catch(() =>
         caches.match(request).then((cached) => cached || caches.match(OFFLINE_URL))
       )
+    );
+    return;
+  }
+
+  // Keep the embeddable widget fresh after deploys; retain its cached copy for offline use.
+  if (url.pathname === '/widget.js') {
+    event.respondWith(
+      fetch(request).then((response) => {
+        if (response.status === 200 && response.type === 'basic') {
+          const cloned = response.clone();
+          caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, cloned));
+        }
+        return response;
+      }).catch(() => caches.match(request))
     );
     return;
   }
