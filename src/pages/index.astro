@@ -160,7 +160,9 @@ const ogImage = `${siteUrl}/images/ark/ark_promo_banner.png`;
           const params = new URLSearchParams(window.location.search);
           const tenant = params.get('tenant');
           const host = window.location.hostname;
-          if (tenant === 'temozonia' || host.startsWith('temozonia.')) {
+          if (tenant === 'canaco' || host.startsWith('canaco.')) {
+            window.location.replace('/canaco' + window.location.search);
+          } else if (tenant === 'temozonia' || host.startsWith('temozonia.')) {
             window.location.replace('/temozonia' + window.location.search);
           } else if (tenant === 'baakal' || host.startsWith('baakal.')) {
             window.location.replace('/baakal' + window.location.search);
