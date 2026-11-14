@@ -23,6 +23,10 @@ type Canned = {
   customers: any[];
   whatsapp_messages: any[];
   staypuft_audit_log: any[];
+  content_sections: any[];
+  content_eventos: any[];
+  content_contacto_general: any[];
+  content_catalogo_servicios: any[];
 };
 
 function lastBind<T>(binds: T[], idx: number): T | undefined {
@@ -30,7 +34,7 @@ function lastBind<T>(binds: T[], idx: number): T | undefined {
 }
 
 function makeDb(canned: Canned, writes: string[]) {
-  const TABLES = ['tenants', 'products', 'orders', 'order_items', 'customers', 'whatsapp_messages', 'staypuft_audit_log'];
+  const TABLES = ['tenants', 'products', 'orders', 'order_items', 'customers', 'whatsapp_messages', 'staypuft_audit_log', 'content_sections', 'content_eventos', 'content_contacto_general', 'content_catalogo_servicios'];
   function tableOf(sql: string): string | null {
     const s = sql.toUpperCase();
     for (const t of TABLES) {
@@ -201,6 +205,83 @@ function freshCanned(): Canned {
       { id: 'w-3', tenant_id: 'temozonia', phone: '52111', sender_name: 'Otro', direction: 'inbound', message_text: 'Hola', matched_tenant: 'temozonia', matched_service: 'Carne Ahumada', estimated_price: 380, status: 'lead', created_at: '2026-11-11T09:00:00Z' },
     ],
     staypuft_audit_log: [],
+    content_sections: [
+      {
+        id: 'cs_hero_1',
+        tenant_id: 'ten_canaco_01',
+        page: 'home',
+        section_type: 'hero',
+        title: 'Contenido de ejemplo',
+        subtitle: 'Sección de prueba',
+        body: 'Cuerpo de ejemplo para la sección hero.',
+        cta_label: 'Más información',
+        cta_link: '/canaco/contenido',
+        image: '/images/canaco/ejemplo.jpg',
+        display_order: 1,
+        active: 1,
+        version: '1',
+        source_note: 'placeholder — contenido de ejemplo, sin datos oficiales',
+        created_at: baseNow,
+        updated_at: baseNow,
+        updated_by: 'staypuft',
+      },
+    ],
+    content_eventos: [
+      {
+        id: 'ce_1',
+        tenant_id: 'ten_canaco_01',
+        nombre: 'Evento de ejemplo',
+        descripcion: 'Descripción de ejemplo para eventos.',
+        alcance: null,
+        formato: null,
+        fecha: null,
+        proxima_fecha: null,
+        lugar: null,
+        expectativa: null,
+        actividades: null,
+        patrocinios: null,
+        costos_stands_preventa: null,
+        display_order: 1,
+        active: 1,
+        version: '1',
+        source_note: 'placeholder — contenido de ejemplo, sin datos oficiales',
+        created_at: baseNow,
+        updated_at: baseNow,
+        updated_by: 'staypuft',
+      },
+    ],
+    content_contacto_general: [
+      {
+        id: 'ccg_1',
+        tenant_id: 'ten_canaco_01',
+        departamento: 'Departamento de ejemplo',
+        correo: 'ejemplo@canaco.test',
+        telefono: '000 000 0000',
+        telefonos_expo_feria: null,
+        version: '1',
+        source_note: 'placeholder — contenido de ejemplo, sin datos oficiales',
+        created_at: baseNow,
+        updated_at: baseNow,
+        updated_by: 'staypuft',
+      },
+    ],
+    content_catalogo_servicios: [
+      {
+        id: 'ccs_1',
+        tenant_id: 'ten_canaco_01',
+        categoria: 'Categoría de ejemplo',
+        descripcion: 'Descripción de ejemplo para el catálogo de servicios.',
+        departamento: 'Departamento de ejemplo',
+        contacto: null,
+        display_order: 1,
+        active: 1,
+        version: '1',
+        source_note: 'placeholder — contenido de ejemplo, sin datos oficiales',
+        created_at: baseNow,
+        updated_at: baseNow,
+        updated_by: 'staypuft',
+      },
+    ],
   };
 }
 
@@ -240,6 +321,7 @@ const INTERNAL_ROUTES = [
   '/api/internal/tenants/canaco/customers',
   '/api/internal/tenants/canaco/leads',
   '/api/internal/tenants/canaco/leads/summary',
+  '/api/internal/tenants/canaco/content',
   '/api/internal/metrics',
   '/api/internal/audit',
   '/api/internal/diagnostics',
@@ -443,6 +525,88 @@ describe('StayPuft connector — routes and data', () => {
     expect(json.data.totals.unique_contacts).toBe(1);
   });
 
+  // =========================================================================
+  // Content route tests (GET /api/internal/tenants/:slug/content)
+  // =========================================================================
+
+  it('GET /tenants/canaco/content by slug -> 200 with pages, eventos, contacto_general, catalogo_servicios', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/canaco/content', undefined, { 'X-Tenant-ID': 'canaco' }));
+    expect(res.status).toBe(200), `route returned ${res.status}`;
+    const json = await res.json();
+    expect(json.success).toBe(true);
+    expect(json.operator).toBe('staypuft');
+    expect(json.tenant).toBe('canaco');
+    expect(Array.isArray(json.data.pages)).toBe(true);
+    expect(Array.isArray(json.data.eventos)).toBe(true);
+    expect(Array.isArray(json.data.catalogo_servicios)).toBe(true);
+    expect(json.data.contacto_general).not.toBeNull();
+    expect(json.data.pages.some((p: any) => p.section_type === 'hero')).toBe(true);
+    expect(json.data.pages[0].title).toBe('Contenido de ejemplo');
+    expect(json.data.eventos[0].nombre).toBe('Evento de ejemplo');
+    expect(json.data.contacto_general.departamento).toBe('Departamento de ejemplo');
+    expect(json.data.catalogo_servicios[0].categoria).toBe('Categoría de ejemplo');
+    // pagination envelope present
+    expect(json.pagination.page).toBe(1);
+    expect(json.pagination.perPage).toBe(20);
+    expect(typeof json.pagination.total).toBe('number');
+  });
+
+  it('GET /tenants/ten_canaco_01/content by id -> 200 (canaco id != slug)', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/ten_canaco_01/content'));
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.success).toBe(true);
+    expect(json.tenant).toBe('canaco');
+    expect(Array.isArray(json.data.pages)).toBe(true);
+    expect(json.data.pages.length).toBeGreaterThan(0);
+  });
+
+  it('GET /tenants/unknown/content -> 404, no data leaked', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/unknown/content'));
+    expect(res.status).toBe(404);
+    const text = await res.text();
+    expect(text).not.toContain('Contenido de ejemplo');
+    expect(text).not.toContain('Evento de ejemplo');
+  });
+
+  it('GET /tenants/ark/content -> 200 with empty-but-valid shape (never 500)', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    const res = await fetchApp(app, req('/api/internal/tenants/ark/content'));
+    expect(res.status).toBe(200), `route returned ${res.status}`;
+    const json = await res.json();
+    expect(json.success).toBe(true);
+    expect(Array.isArray(json.data.pages)).toBe(true);
+    expect(json.data.pages).toEqual([]);
+    expect(Array.isArray(json.data.eventos)).toBe(true);
+    expect(json.data.eventos).toEqual([]);
+    expect(json.data.contacto_general).toBeNull();
+    expect(Array.isArray(json.data.catalogo_servicios)).toBe(true);
+    expect(json.data.catalogo_servicios).toEqual([]);
+    expect(json.pagination.total).toBe(0);
+  });
+
+  it('no StayPuft content call writes to any table except audit log', async () => {
+    const app = makeApp(makeEnv(canned, writes));
+    await fetchApp(app, req('/api/internal/tenants/canaco/content'));
+    await fetchApp(app, req('/api/internal/tenants/ten_canaco_01/content'));
+    const forbidden = writes.filter((w) =>
+      /INSERT INTO content/i.test(w) ||
+      /UPDATE content/i.test(w) ||
+      /DELETE FROM content/i.test(w) ||
+      /INSERT INTO orders/i.test(w) ||
+      /UPDATE orders.*status/i.test(w) ||
+      /UPDATE products.*price/i.test(w) ||
+      /INSERT INTO order_items/i.test(w) ||
+      /DELETE /i.test(w)
+    );
+    expect(forbidden).toEqual([]);
+    const nonAudit = writes.filter((w) => !/staypuft_audit_log/i.test(w));
+    expect(nonAudit).toEqual([]);
+  });
+
   it('GET /metrics aggregates orders and revenue by tenant without PII', async () => {
     const app = makeApp(makeEnv(canned, writes));
     const res = await fetchApp(app, req('/api/internal/metrics'));
@@ -486,6 +650,12 @@ describe('StayPuft connector — routes and data', () => {
     expect(Array.isArray(json.data.shipped_without_tracking)).toBe(true);
     expect(Array.isArray(json.data.tenants_without_products)).toBe(true);
     expect(json.data.shipped_without_tracking.some((o: any) => o.id === 'o-shipped-notrack')).toBe(true);
+    expect(Array.isArray(json.data.content_query)).toBe(true);
+    for (const check of json.data.content_query) {
+      expect(check.content_query).toBe('ok');
+      expect(check).toHaveProperty('tenant_id');
+      expect(check).toHaveProperty('tenant_slug');
+    }
   });
 
   it('cross-tenant read: StayPuft can access any tenant, but a response never mixes tenants', async () => {

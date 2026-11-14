@@ -511,6 +511,74 @@ internal.get('/tenants/:slug/leads/summary', async (c) => {
 });
 
 // =========================================================================
+// GET /api/internal/tenants/:slug/content
+// =========================================================================
+internal.get('/tenants/:slug/content', async (c) => {
+  const pathTenant = await resolvePathTenant(c);
+  if (!pathTenant) return notFound(c);
+  return withAudit(c, async () => {
+    const tenant = pathTenant;
+    const { page, perPage, offset } = parsePagination(c);
+    const { results: sections } = await c.env.DB.prepare(
+      `SELECT id, page, section_type, title, subtitle, body, cta_label, cta_link, image,
+              display_order, active, version, source_note, created_at, updated_at, updated_by
+       FROM content_sections
+       WHERE tenant_id = ?
+       ORDER BY active DESC, display_order, id
+       LIMIT ? OFFSET ?`
+    )
+      .bind(tenant.id, perPage, offset)
+      .all<any>();
+    const totalRow = await c.env.DB.prepare('SELECT COUNT(*) AS n FROM content_sections WHERE tenant_id = ?')
+      .bind(tenant.id)
+      .first<{ n: number }>();
+
+    const { results: eventos } = await c.env.DB.prepare(
+      `SELECT id, nombre, descripcion, alcance, formato, fecha, proxima_fecha, lugar, expectativa,
+              actividades, patrocinios, costos_stands_preventa, display_order, active, version, source_note,
+              created_at, updated_at, updated_by
+       FROM content_eventos
+       WHERE tenant_id = ?
+       ORDER BY active DESC, display_order, id`
+    ).bind(tenant.id).all<any>();
+
+    const contacto = await c.env.DB.prepare(
+      `SELECT id, departamento, correo, telefono, telefonos_expo_feria, version, source_note,
+              created_at, updated_at, updated_by
+       FROM content_contacto_general
+       WHERE tenant_id = ?`
+    ).bind(tenant.id).first<any>();
+
+    const { results: catalogo } = await c.env.DB.prepare(
+      `SELECT id, categoria, descripcion, departamento, contacto, display_order, active, version, source_note,
+              created_at, updated_at, updated_by
+       FROM content_catalogo_servicios
+       WHERE tenant_id = ?
+       ORDER BY active DESC, display_order, id`
+    ).bind(tenant.id).all<any>();
+
+    const total = totalRow?.n ?? 0;
+    return c.json({
+      success: true,
+      operator: STAYPUFT_OPERATOR,
+      tenant: tenant.slug,
+      data: {
+        pages: sections || [],
+        eventos: eventos || [],
+        contacto_general: contacto ?? null,
+        catalogo_servicios: catalogo || [],
+      },
+      pagination: {
+        page,
+        perPage,
+        total,
+        total_pages: Math.ceil(total / perPage) || 0,
+      },
+    });
+  }, pathTenant);
+});
+
+// =========================================================================
 // GET /api/internal/metrics
 // =========================================================================
 internal.get('/metrics', async (c) => {
@@ -614,6 +682,20 @@ internal.get('/diagnostics', async (c) => {
       }
     });
 
+    // Exercise the same content queries the tenant-scoped content route uses,
+    // per tenant, so diagnostics surfaces a 500ing content route instead of hiding it.
+    const contentQueryCheck = (allTenants || []).map((t: any) => {
+      try {
+        c.env.DB.prepare(`SELECT id FROM content_sections WHERE tenant_id = ? LIMIT 1`).bind(t.id).all<any>();
+        c.env.DB.prepare(`SELECT id FROM content_eventos WHERE tenant_id = ? LIMIT 1`).bind(t.id).all<any>();
+        c.env.DB.prepare(`SELECT id FROM content_contacto_general WHERE tenant_id = ? LIMIT 1`).bind(t.id).all<any>();
+        c.env.DB.prepare(`SELECT id FROM content_catalogo_servicios WHERE tenant_id = ? LIMIT 1`).bind(t.id).all<any>();
+        return { tenant_id: t.id, tenant_slug: t.slug, content_query: 'ok' };
+      } catch (err: any) {
+        return { tenant_id: t.id, tenant_slug: t.slug, content_query: 'error', error: String(err?.message ?? err) };
+      }
+    });
+
     return c.json({
       success: true,
       operator: STAYPUFT_OPERATOR,
@@ -625,6 +707,7 @@ internal.get('/diagnostics', async (c) => {
         shipped_without_tracking: missingTracking || [],
         tenants_without_products: tenantsNoProducts || [],
         products_query: productsQueryCheck,
+        content_query: contentQueryCheck,
       },
     });
   });
