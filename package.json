@@ -9,6 +9,7 @@
     "astro:dev": "astro dev",
     "astro:build": "astro build",
     "astro:preview": "astro preview",
+    "test": "vitest run",
     "build": "astro build && wrangler deploy --dry-run",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv"
   },
@@ -32,6 +33,7 @@
     "@astrojs/cloudflare": "^12.0.0",
     "@cloudflare/workers-types": "^5.20261010.1",
     "typescript": "^5.6.0",
+    "vitest": "^3.2.7",
     "wrangler": "^4.149.0"
   }
 }

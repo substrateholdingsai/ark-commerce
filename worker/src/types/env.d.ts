@@ -22,6 +22,7 @@ export type Env = {
   ARKANGEL_ADMIN_TOKEN?: string;
   ARKANGEL_URL?: string;
   ARKANGEL?: { fetch: (input: RequestInfo, init?: RequestInit) => Promise<Response> };
+  COMMERCE_STAYPUFT_API_KEY?: string;
 };
 
 export type Tenant = {

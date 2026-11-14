@@ -97,7 +97,7 @@ temozonia/
 │   ├── routes/               # Rutas base (health.ts, index.ts)
 │   └── src/
 │       ├── lib/              # security.ts (Geofencing, Rate Limit, Anti-Injection, HMAC), auth-core.ts, cart.ts, crypto.ts, email.ts, envia.ts, tokens.ts
-│       ├── routes/           # Endpoints API (products, checkout, store, admin, auth, cart, shipping, assistant, webhook_whatsapp)
+│       ├── routes/           # Endpoints API (products, checkout, store, admin, auth, cart, shipping, assistant, webhook_whatsapp, internal/staypuft)
 │       ├── schemas/          # Validación Zod (checkout.ts)
 │       └── types/            # Tipos Env, Tenant, auth (env.d.ts, auth.d.ts)
 ├── astro.config.mjs          # Config Astro + Cloudflare adapter
@@ -189,7 +189,7 @@ Tablas: `tenants`, `tenant_users`, `customers`, `carts`, `store_sessions`, `acti
 - Relaciones con `ON DELETE CASCADE` entre tenant y entidades hijas
 - Índices optimizados por tenant, estado, fechas y cliente
 - Seed data con 4 tenants + usuarios admin + productos
-- Migraciones: `schema.sql`, `schema_auth.sql`, `schema_auth2.sql`, `schema_auth3.sql`, `schema_shipping.sql`, `whatsapp_table.sql`, `baakal.sql`, `marea.sql`
+- Migraciones: `schema.sql`, `schema_auth.sql`, `schema_auth2.sql`, `schema_auth3.sql`, `schema_shipping.sql`, `whatsapp_table.sql`, `baakal.sql`, `marea.sql`, `schema_staypuft_audit.sql` (migración 10: tabla `staypuft_audit_log`, log inmutable del operador StayPuft)
 
 ## 8. Páginas Astro
 | Página | Ruta | Descripción |
@@ -263,3 +263,75 @@ pnpm cf-typegen   # Generar tipos Cloudflare Env
 - **Asistente 3D Ark**: Widget universal (`public/widget.js`) y buscador principal (`AiSearchConcierge.tsx`) unificados con escena interactiva **Spline 3D**, dictado por voz (`es-MX`) y cerebro multi-tienda (`TENANT_CONTEXT`)
 - **Configurador Skin Lab**: Islands React `ProductConfigurator` + `DesignGallery` integrados en `/skinlabclothing` con fallbacks offline, selección cruzada de diseño (evento `marea:select-design`) y carrito configurado sincronizado con el storefront (evento `marea:cart-add`)
 - **Automatización**: Scripts de onboarding, importación de catálogos, validación de tenants, smoke test de checkout y facturación PDF disponibles
+
+## 12. Conector Interno StayPuft — Acceso Total a Ark Commerce
+
+El conector StayPuft expone la superficie de lectura y diagnóstico interna del worker Ark Commerce bajo `/api/internal/*`, protegido con la clave `X-StayPuft-Key` contra el secreto `COMMERCE_STAYPUFT_API_KEY` (nuevo secreto de Wrangler, independiente de las claves de Ark Sales / Hermes / Caja / Curie / Ledger).
+
+### 12.1 Autenticación (fail-closed)
+
+| Requisito | Comportamiento |
+|---|---|
+| Cabecera `X-StayPuft-Key` ausente | `401 Unauthorized` |
+| Clave incorrecta | `401 Unauthorized` (comparación en tiempo constante, sin pistas) |
+| Secreto `COMMERCE_STAYPUFT_API_KEY` no configurado en el worker | Todas las llamadas devuelven `401` |
+| Cualquier llamada autorizada | Se registra en `staypuft_audit_log` (tabla inmutable, migración 10) |
+
+**Registro del secreto (solo Pavel, nunca en código ni en wrangler.toml):**
+```bash
+openssl rand -hex 32
+npx wrangler secret put COMMERCE_STAYPUFT_API_KEY
+```
+
+### 12.2 Reglas no negociables
+
+- Fail-closed en todas las rutas internas. Sin clave válida = `401`; sin tenant válido = `404`.
+- Paginación con tope de 100 y default 20 en cada listado (`page`, `perPage`). Nunca carga todas las filas.
+- Solo lectura en v1: no hay `POST`/`PUT`/`DELETE` para StayPuft. No crea órdenes, no cambia estados de orden, no genera guías de envío (tienen costo), no cambia precios, no emite reembolsos.
+- Aislamiento multi-tenant: cada lectura está acotada a un tenant resuelto vía `?tenant=` / `X-Tenant-ID` / resolución del worker (fallback `ark`). El acceso a otro tenant devuelve `404`, nunca `403` con pista, nunca datos ajenos.
+- Nada de PII ni secretos en respuestas ni logs: claves de Envia/Resend/BTCPay/Meta y contraseñas se omiten o enmascaran (`****` + últimos 4 caracteres); nunca se devuelve `password_hash` ni CLABE completa.
+- El log de auditoría registra: timestamp, operador `staypuft`, método, ruta, tenant, tipo/ID del objetivo y resultado. Sin PII.
+- Los precios de D1 son la fuente de verdad; el asistente de IA nunca inventa precios y el conector solo devuelve precios de D1.
+- Ningún cambio irreversible o con movimiento de dinero sin aprobación explícita de Pavel en el chat para esa acción concreta (puente con Caja/Ledger para CFDI tras pago confirmado; Commerce no emite CFDI).
+- Cualquier contraseña de admin por defecto del mapa debe ser rotada por Pavel; este conector no la usa ni la rota.
+- Sin despliegue a producción sin aprobación de Pavel. Sin migración D1 sin su aprobación (reportar número de migración primero: **10**).
+
+### 12.3 Endpoints internos (`/api/internal/*`)
+
+| Ruta | Método | Descripción |
+|---|---|---|
+| `/api/internal/status` | GET | Salud, versión, estado D1/KV SESSION/KV CACHE/R2 STORAGE/QUEUE, conteos de tenants, productos y órdenes |
+| `/api/internal/tenants` | GET | Lista paginada de tenants: id, slug, name, domain, whatsapp, status |
+| `/api/internal/tenants/:slug` | GET | Detalle de tenant: configuración, WhatsApp, banco/CLABE (enmascarado), BTCPay, dirección de origen, Envia (secret enmascarado) |
+| `/api/internal/tenants/:slug/products` | GET | Lista paginada de productos, activos e inactivos, con precio y stock |
+| `/api/internal/tenants/:slug/products/:id` | GET | Detalle de producto (independientemente de si está activo) |
+| `/api/internal/tenants/:slug/orders` | GET | Lista paginada de órdenes con filtro `?status=pending|paid|delivered|shipped`; incluye carrier, servicio, tracking y costo de envío |
+| `/api/internal/tenants/:slug/orders/:id` | GET | Detalle de orden con ítems, cliente y datos de envío |
+| `/api/internal/tenants/:slug/customers` | GET | Lista paginada de clientes (sin `password_hash` ni datos de pago) |
+| `/api/internal/tenants/:slug/leads` | GET | Mensajes/leads de WhatsApp paginados (matched_tenant, matched_service, estimated_price, status) |
+| `/api/internal/tenants/:slug/leads/summary` | GET | Métricas de leads aisladas por tenant; vista global solo para `ark` |
+| `/api/internal/metrics` | GET | Órdenes e ingresos por tenant (agregados, sin PII) |
+| `/api/internal/audit` | GET | Log de auditoría del operador Staypuft, paginado |
+| `/api/internal/diagnostics` | GET | Productos rotos, precios obsoletos, órdenes atascadas en `pending`, envíos `shipped` sin tracking, tenants sin productos |
+
+Cualquier ruta interna existente que no esté listada arriba debe auditorizarse, autorizarse con la clave de StayPuft y documentarse aquí; no debe quedar ninguna ruta interna sin listar.
+
+### 12.4 Flujo CANACO — Expo Feria del Comercio 2026 (preparación, sin acciones)
+
+- Tienda: `https://tiendas.arksystems.site/canaco/?tenant=canaco`
+- Stand Estándar 2x2: **$8,000 MXN** (99 disponibles) — $8,000 es exactamente el límite seguro de CoDi.
+- Patrocinio Oro Desayuno Networking: **$9,500 MXN** (10 disponibles) — por encima del límite de CoDi; **no presentar CoDi como rail de pago para el patrocinio sin verificar primero el rail de Caja**.
+- WhatsApp checkout: `+52 999 942 8850`, atención Lun-Vie 09:00-18:00.
+- Después del pago confirmado: CFDI se gestiona vía Ledger / Facturapi; Commerce no emite CFDI.
+
+### 12.5 Checklist de verificación local (pendiente de aprobación de despliegue)
+
+1. `GET /api/internal/status` → `200`, servicios `ok`, conteos coherentes con D1.
+2. `GET /api/internal/tenants` → listado paginado (default 20, cap 100) que incluye `canaco`.
+3. `GET /api/internal/tenants/canaco/products` → Stand Estándar 2x2 a $8,000 con stock 99; Patrocinio Oro a $9,500 con stock 10 (conteos live de D1, no snapshot del mapa).
+4. `GET /api/internal/tenants/canaco/orders?status=pending` → paginado, 20 por defecto, sin órdenes de temozonia/baakal/marea.
+5. `GET /api/internal/tenants/canaco` → `envia.api_key` enmascarado (`****cret`), `clabe` enmascarado (`****7890`), ninguna clave de API en texto claro.
+6. `GET /api/internal/audit` → entrada registrada por cada llamada anterior con `operator = staypuft`.
+7. Sin clave / clave incorrecta → `401` en todas las rutas anteriores; acceso cruzado a `temozonia` desde `canaco` → `404` sin datos ajenos.
+
+El conector queda listo para operación local. Después de la aprobación de Pavel, este conector se documenta en `custom.commerce` (doc y helper del operador StayPuft), igual que Ark Sales, Hermes, Caja, Curie y Ledger.
